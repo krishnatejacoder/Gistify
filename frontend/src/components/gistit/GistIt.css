@@ -1,0 +1,141 @@
+*{
+    user-select: none;
+    margin:0;
+    padding: 0;
+    font-family: "Baloo 2", sans-serif;
+}
+.but_style{
+    all:unset;
+    outline: none;
+    color:white;    
+    width:90%;
+    border-radius: 15px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.outer_container{
+    width: 100%;
+    height: 688px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap:30px;
+}
+.middle_section{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content:flex-start;
+    gap:30px;
+}
+.title_section .heading{
+    font-size: 22px;
+    font-weight:600;
+    color:#363636;
+    line-height: 33px;
+}
+.title_section .subheading{
+    font-size: 17px;
+    line-height: 33px;
+    color: #363636;
+}
+
+.title_section{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.toggling{
+    padding:5px 7px;
+    display: flex;
+    background-color: #A2A2A2;
+    width: 182px;
+    height: 28px;
+    border-radius: 30px;
+    justify-content: space-around;
+    align-items: center;
+}
+.mid_container{
+    display: flex;
+    flex-direction: column;
+    gap:30px;
+}
+
+.upload_section{
+    border:1px dashed black;
+    height: 241px;
+    width: 469px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.files_opened{
+    width: 100%;
+    height: 47px;
+    border-radius: 15px;
+    background-color: #ECECEC;
+    display: flex;
+    justify-content: flex-start;
+}
+.open_file{
+    padding: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.open_file_left{
+    display: flex;
+    gap:10px;
+    font-weight: bold;
+    align-items: center;
+    font-size: 14px;
+}
+.open_file_right{
+    font-weight: 400;
+    font-size: 20px ;
+}
+
+.cross{
+    display: block;
+    font-size: 30px;
+}
+
+.right_section{
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.wrapping_both{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap:30px;
+}
+.gist_options{
+    height: 116px;
+    width: 158px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    background-color: #BEBEBE;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.gistit_button{
+    height: 47px;
+    width: 158px;
+    background-color: #DEDCDC;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

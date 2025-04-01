@@ -1,0 +1,68 @@
+.navbar {
+    background-color: #e5e5e5;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding-left: 10px;
+  }
+  
+  .nav-links {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+  
+  .nav-item {
+    cursor: pointer;
+    position: relative;
+    color: #555;
+  }
+  
+  .nav-item.active {
+    font-weight: bold;
+    color: black;
+  }
+  
+  .nav-item.active .underline {
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: black;
+  }
+  
+  .icons {
+    display: flex;
+    gap: 16px;
+    padding-right: 10px;
+  }
+  
+  .icon {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+  }
+  
+  .bell {
+    color: #004d40;
+  }
+  
+  .user {
+    color: gray;
+  }
+  
+  .sun {
+    color: green;
+  }
+  
