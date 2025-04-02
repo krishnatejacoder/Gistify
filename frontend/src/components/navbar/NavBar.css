@@ -15,18 +15,33 @@
   }
   
   .nav-links {
+    text-decoration: none;
     display: flex;
     gap: 24px;
     list-style: none;
     font-size: 1.1rem;
     font-weight: 500;
+    list-style: none;
   }
   
   .nav-item {
+    text-decoration: none;
+    font-style: normal;
     cursor: pointer;
     position: relative;
     color: #555;
+    list-style: none;
   }
+  .nav-item a {
+    text-decoration: none; /* Remove default underline from links */
+    color: inherit; /* Inherit color from parent (.nav-item) */
+}
+
+.nav-item.active a {
+    font-weight: bold;
+    color: black;
+}
+
   
   .nav-item.active {
     font-weight: bold;

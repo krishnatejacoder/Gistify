@@ -14,6 +14,10 @@
     font-weight: bold;
 }
 
+.but_style:hover{
+    cursor: pointer;
+}
+
 .outer_container{
     width: 100%;
     height: 688px;
