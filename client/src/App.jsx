@@ -18,6 +18,7 @@ import Login from "./pages/Login/Login.jsx";
 import Signup from './pages/Signup/Signup.jsx';
 import NotFound from './pages/Not Found/NotFound.jsx';
 import MainNavigation from './components/navbar/MainNavigation.jsx'
+import './App.css'
 
 
 function AppContent() {

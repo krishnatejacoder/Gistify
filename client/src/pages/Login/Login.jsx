@@ -1,7 +1,14 @@
-import './Login.css';
+import styles from './Login.module.css';
 
 export default function Login(){
   return (
-    <div></div>
+    <div className={styles.loginContainer}>
+      <p className=''></p>
+      <div></div>
+      <div></div>
+      <div></div>
+      <p></p>
+      <div></div>
+    </div>
   );
 }

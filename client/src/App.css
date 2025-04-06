@@ -16,11 +16,6 @@
   -webkit-tap-highlight-color: transparent; /* Standard way */
 }
 
-.mainContent {
-  padding-top: 80px;
-  min-height: calc(100vh - 80px);
-}
-
 .baloo-2-regular {
   font-family: "Baloo 2", sans-serif;
   font-optical-sizing: auto;
