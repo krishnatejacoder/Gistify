@@ -1,0 +1,95 @@
+:root {
+  --primary-color: #313bac;
+  --secondary-color: #cea82a;
+  --accent-color: #aafbb1;
+  --success-color: #2ecc71;
+  --danger-color: #e74c3c;
+  --button-color: #5e5fa5;
+  --icon-click-scale: 0.8;
+  --icon-hover-scale: 1.1;
+}
+
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent; /* Standard way */
+}
+
+.main-content {
+  padding-top: 80px;
+  min-height: calc(100vh - 80px);
+}
+
+.baloo-2-regular {
+  font-family: "Baloo 2", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.baloo-2-medium {
+  font-family: "Baloo 2", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.baloo-2-semiBold {
+  font-family: "Baloo 2", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.baloo-2-bold {
+  font-family: "Baloo 2", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.piazzolla-regular {
+  font-family: "Piazzolla", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.piazzolla-medium {
+  font-family: "Piazzolla", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.piazzolla-semiBold {
+  font-family: "Piazzolla", serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.piazzolla-bold {
+  font-family: "Piazzolla", serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.piazzolla-extraBold {
+  font-family: "Piazzolla", serif;
+  font-optical-sizing: auto;
+  font-weight: 800;
+  font-style: normal;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
