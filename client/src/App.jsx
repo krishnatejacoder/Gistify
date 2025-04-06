@@ -9,6 +9,11 @@ import {
 import AuthProvider from "./context/AuthContext/AuthProvider.jsx";
 import MainLayout from "./components/Layout/MainLayout.jsx";
 import Dashboard from "./pages/Dashboard/Dashboard.jsx";
+import Forum from './pages/Forum/Forum.jsx';
+import GistHistory from './pages/GistHistory/GistHistory.jsx';
+import GistIt from './pages/GistIt/GistIt.jsx';
+import Search from './pages/Search/Search.jsx';
+import SmartLibrary from './pages/SmartLibrary/SmartLibrary.jsx';
 
 
 function AppContent() {
@@ -34,9 +39,10 @@ function AppContent() {
               <>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/forum" element={<Forum />} />
+                <Route path="/gisthistory" element={<GistHistory />} />
                 <Route path="/gistit" element={<GistIt />} />
                 <Route path="/search" element={<Search />} />
-                <Route path="/forum" element={<Forum />} />
                 <Route path="/smartlibrary" element={<SmartLibrary />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
