@@ -25,7 +25,7 @@ function AppContent() {
   const navigate = useNavigate();
   const hiddenNavPages = ["/signup", "/login"];
 
-  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const user = JSON.parse(localStorage.getItem("userGistify") || null);
 
   useEffect(() => {
     if (!user && !hiddenNavPages.includes(location.pathname)) {
