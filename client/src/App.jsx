@@ -14,6 +14,9 @@ import GistHistory from './pages/GistHistory/GistHistory.jsx';
 import GistIt from './pages/GistIt/GistIt.jsx';
 import Search from './pages/Search/Search.jsx';
 import SmartLibrary from './pages/SmartLibrary/SmartLibrary.jsx';
+import Login from "./pages/Login/Login.jsx";
+import Signup from './pages/Signup/Signup.jsx';
+import NotFound from './pages/Not Found/NotFound.jsx';
 
 
 function AppContent() {
@@ -46,12 +49,14 @@ function AppContent() {
                 <Route path="/smartlibrary" element={<SmartLibrary />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
+                <Route path="*" element={<NotFound />} />
               </>
             ) : (
               <>
                 <Route path="/" element={<Login />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
+                <Route path="*" element={<NotFound />} />
               </>
             )}
           </Routes>
