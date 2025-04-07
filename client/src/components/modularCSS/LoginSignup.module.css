@@ -10,14 +10,28 @@
   transform: translateX(-50%) translateY(-50%);
 }
 
+.signupContainer{
+  width: 408px;
+  height: 605px;
+  background-color: #FEF6F6;
+  box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.34);
+  border-radius: 27px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+
 .title{
   display: inline-block;
   position: absolute;
   top: 19px;
-  left: 73px;
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 26px;
   text-align: center;
   color: var(--primary-color);
+  white-space: nowrap;
 }
 
 .toggle{
@@ -25,7 +39,8 @@
   align-items: center;
   position: absolute;
   top: 71px;
-  left: 105px;
+  left: 50%;
+  transform: translateX(-50%);
   height: 34px;
   width: 149px;
   border-radius: 30px;
@@ -55,7 +70,7 @@
   right: 17px;
 }
 
-.inputBox{
+.inputBoxLogin{
   display: inline-block;
   height: 49px;
   width: 300px;
@@ -68,16 +83,63 @@
   border: 1px solid black;
 }
 
+.inputBoxSignup{
+  display: inline-block;
+  height: 49px;
+  width: 346px;
+  border-radius: 11px;
+  padding-left: 14px;
+  padding-top: 1px;
+  font-size: 15px;
+  line-height: 15px;
+  background-color: rgba(255, 255, 255, 0);
+  border: 1px solid black;
+}
+
 .inpBoxUsername{
   position: absolute;
   top: 130px;
-  left: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.inpBoxEmail{
+  position: absolute;
+  top: 199px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .inpBoxPassword{
   position: absolute;
   top: 208px;
-  left: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.inpBoxPasswordSignup{
+  position: absolute;
+  top: 269px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.inpBoxConfirmPassword{
+  position: absolute;
+  top: 442px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.directionsPassword{
+  position: absolute;
+  top: 335px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 348px;
+  height: 89px;
+  background-color: #E5E5E5;
+  border-radius: 15px;
 }
 
 .inpLabelContainer {
@@ -93,29 +155,24 @@
   pointer-events: none;
 }
 
-.inputBox::placeholder{
+.inputWrapper .inputBox::placeholder{
   opacity: 1;
   transition: opacity 0.2s ease;
 }
 
-.inputBox:focus ~ .inpLabelContainer{
-  color: var(--primary-color);
-  transform: translateY(-24px);
-  opacity: 1;
-}
-
-.inputBox:focus::placeholder{
+.inputWrapper .inputBox:focus::placeholder{
   opacity: 0;
 }
 
 .dontMsgContainer{
   position: absolute;
-  top: 274px;
-  top: 273px;
-  left: 87px;
+  bottom: 74px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 2px;
+  white-space: nowrap;
 }
 
 .dont{
@@ -134,8 +191,9 @@
   align-items: center;
   justify-content: center;
   position: absolute;
-  top: 312px;
-  left: 124px;
+  bottom: 21px;
+  left: 50%;
+  transform: translateX(-50%);
   height: 39px;
   width: 111px;
   border-radius: 10px;
@@ -155,4 +213,25 @@
   position: absolute;
   right: 43px;
   top: 221px;
+}
+
+.eyeIconSignup {
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  color: var(--primary-color);
+  position: absolute;
+  right: 43px;
+  top: 281px;
+}
+
+.inputWrapper {
+  position: relative;
+}
+
+.inputWrapper input:focus + .inpLabelContainer,
+.inputWrapper input:not(:placeholder-shown) + .inpLabelContainer {
+  color: var(--primary-color);
+  transform: translateY(-13px);
+  opacity: 1;
 }
