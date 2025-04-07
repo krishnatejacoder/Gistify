@@ -100,7 +100,7 @@
 
 .inputBox:focus ~ .inpLabelContainer{
   color: var(--primary-color);
-  transform: translateY(-24px);
+  transform: translateY(-13px);
   opacity: 1;
 }
 
