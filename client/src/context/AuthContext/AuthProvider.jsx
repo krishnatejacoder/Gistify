@@ -6,9 +6,11 @@ export default function AuthProvider({children}){
 
     function login(userData){
         setUser(userData);
+        localStorage.setItem("userGistify", JSON.stringify(userData));
     }
-    function logout(userData){
+    function logout(){
         setUser(null);
+        localStorage.removeItem("userGistify");
     }
 
     return(

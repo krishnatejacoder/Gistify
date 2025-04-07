@@ -19,10 +19,10 @@
 }
 
 .inpActivePassword{
-  top: 210px;
+  top: 211px;
 }
 
-.signupContainer .inpActivePassword{
+.signup.inpActivePassword{
   top: 272px;
 }
 
@@ -44,4 +44,16 @@ input:-webkit-autofill {
 .toggleOverlay.signup{
   left: auto;
   right: 5px;
+}
+
+.directionsPassword div{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.directionsPassword div:nth-child(2) p:nth-child(2){
+  position: absolute;
+  top: 35px;
+  margin-right: 15px;
 }

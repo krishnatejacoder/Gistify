@@ -7,7 +7,7 @@
   --danger-color: #e74c3c;
   --button-color: #5e5fa5;
   --icon-click-scale: 0.8;
-  --icon-hover-scale: 1.1;
+  --icon-hover-scale: 1.03;
 }
 
 * {
@@ -90,8 +90,4 @@ button {
   all: unset;
   cursor: pointer;
   font-family: inherit;
-}
-
-button:hover{
-  scale: var(--icon-hover-scale);
 }

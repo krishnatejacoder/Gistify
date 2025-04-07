@@ -34,42 +34,6 @@
   white-space: nowrap;
 }
 
-.toggle{
-  display: flex;
-  align-items: center;
-  position: absolute;
-  top: 71px;
-  left: 50%;
-  transform: translateX(-50%);
-  height: 34px;
-  width: 149px;
-  border-radius: 30px;
-  font-size: 15px;
-  background-color: var(--button-color);
-  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.17);
-}
-
-.toggleOverlay{
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  height: 24px;
-  width: 71px;
-  border-radius: 15px;
-  background-color: #fef6f6;
-  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
-}
-
-.toggleLogin{
-  position: absolute;
-  left: 22px;
-}
-
-.toggleSignUp{
-  position: absolute;
-  right: 17px;
-}
-
 .inputBoxLogin{
   display: inline-block;
   height: 49px;
@@ -140,6 +104,11 @@
   height: 89px;
   background-color: #E5E5E5;
   border-radius: 15px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 10px 15px;
+  font-size: 12.5px;
+  line-height: 16px;
 }
 
 .inpLabelContainer {
@@ -155,12 +124,14 @@
   pointer-events: none;
 }
 
-.inputWrapper .inputBox::placeholder{
+.inputBoxLogin::placeholder,
+.inputBoxSignup::placeholder {
   opacity: 1;
   transition: opacity 0.2s ease;
 }
 
-.inputWrapper .inputBox:focus::placeholder{
+.inputBoxLogin:focus::placeholder,
+.inputBoxSignup:focus::placeholder {
   opacity: 0;
 }
 
@@ -183,25 +154,6 @@
 .dontCTA{
   font-size: 14.5px;
   color: var(--primary-color);
-  cursor: pointer;
-}
-
-.buttonCTA{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  bottom: 21px;
-  left: 50%;
-  transform: translateX(-50%);
-  height: 39px;
-  width: 111px;
-  border-radius: 10px;
-  font-size: 17.5px;
-  color: white;
-  text-align: center;
-  background-color: var(--button-color);
-  box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.17);
   cursor: pointer;
 }
 
@@ -234,4 +186,80 @@
   color: var(--primary-color);
   transform: translateY(-13px);
   opacity: 1;
+}
+
+.buttonWrapper {
+  position: absolute;
+  bottom: 21px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.buttonCTA {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 39px;
+  width: 111px;
+  border-radius: 10px;
+  font-size: 17.5px;
+  color: white;
+  text-align: center;
+  background-color: var(--button-color);
+  box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.17);
+  cursor: pointer;
+  overflow: hidden;
+  z-index: 1;
+  line-height: 0.1;
+  transition: all 0.2s ease;
+}
+
+.buttonCTA:hover {
+  transform: scale(1.05);
+}
+
+.toggleOverlay {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  height: 24px;
+  width: 71px;
+  border-radius: 15px;
+  background-color: #fef6f6;
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  will-change: transform;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 71px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 34px;
+  width: 149px;
+  border-radius: 30px;
+  font-size: 15px;
+  background-color: var(--button-color);
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.17);
+  overflow: hidden;
+}
+
+.toggleLogin {
+  cursor: pointer;
+  position: absolute;
+  left: 22px;
+  z-index: 1;
+  transition: color 0.3s ease;
+}
+
+.toggleSignUp {
+  cursor: pointer;
+  position: absolute;
+  right: 18px;
+  z-index: 1;
+  transition: color 0.3s ease;
 }
