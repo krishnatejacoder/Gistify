@@ -117,9 +117,9 @@ export default function LoginSignup() {
       <form action="">
         <p className={`${styles.title} piazzolla-bold`}>Welcome to Gistify</p>
         <div className={styles.toggle}>
-          <div className={styles.toggleOverlay}></div>
+          <div className={`${styles.toggleOverlay} toggleOverlay signup`}></div>
           <p
-            style={{ color: "black" }}
+            style={{ color: "white" }}
             className={`${styles.toggleLogin} baloo-2-semiBold loginToggle`}
             onClick={() => {
               navigate("/login");
@@ -128,7 +128,7 @@ export default function LoginSignup() {
             Login
           </p>
           <p
-            style={{ color: "white" }}
+            style={{ color: "black" }}
             className={`${styles.toggleSignUp} baloo-2-semiBold signupToggle`}
             onClick={() => {
               navigate("/signup");
@@ -161,7 +161,7 @@ export default function LoginSignup() {
           <input
             placeholder="Email"
             className={`${styles.inputBoxSignup} baloo-2-regular ${styles.inpBoxEmail}`}
-            type="text"
+            type="email"
             name="email"
             id="email"
             value={signupFormData.email}
@@ -183,6 +183,10 @@ export default function LoginSignup() {
             type={showPassword ? "text" : "password"}
             name="password"
             id="password"
+            value={signupFormData.password}
+            onChange={(e) =>
+              setSignupFormData((cur) => ({ ...cur, password: e.target.value }))
+            }
           />
           <div
             className={`${styles.inpLabelContainer} baloo-2-semiBold inpActivePassword`}
@@ -228,13 +232,13 @@ export default function LoginSignup() {
 
         <div className={`${styles.dontMsgContainer} baloo-2-medium`}>
           <p className={styles.dont}>Don't have an account?</p>
-          <p className={styles.dontCTA} onClick={() => navigate("/signup")}>
-            SignUp
+          <p className={styles.dontCTA} onClick={() => navigate("/login")}>
+            Login
           </p>
         </div>
 
         <div className={`${styles.buttonCTA} baloo-2-semiBold `}>
-          <p>Login</p>
+          <p>SignUp</p>
         </div>
       </form>
     </div>

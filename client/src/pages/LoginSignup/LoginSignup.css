@@ -33,3 +33,15 @@
 .inpActiveConfirmPassword{
   top: 444px;
 }
+
+input:-webkit-autofill {
+  box-shadow: 0 0 0px 1000px #fef6f6 inset !important;
+  -webkit-box-shadow: 0 0 0px 1000px #fef6f6 inset !important;
+  -webkit-text-fill-color: black !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.toggleOverlay.signup{
+  left: auto;
+  right: 5px;
+}
