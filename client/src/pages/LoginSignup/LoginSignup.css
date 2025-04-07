@@ -21,3 +21,15 @@
 .inpActivePassword{
   top: 210px;
 }
+
+.signupContainer .inpActivePassword{
+  top: 272px;
+}
+
+.inpActiveEmail{
+  top: 202px;
+}
+
+.inpActiveConfirmPassword{
+  top: 444px;
+}

@@ -87,6 +87,11 @@ a {
 }
 
 button {
+  all: unset;
   cursor: pointer;
   font-family: inherit;
+}
+
+button:hover{
+  scale: var(--icon-hover-scale);
 }
