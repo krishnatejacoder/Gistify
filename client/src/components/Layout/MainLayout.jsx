@@ -1,4 +1,4 @@
-import styles from './MainLayout.module..css';
+import styles from './MainLayout.module.css';
 
 export default function MainLayout({children}){
   return(

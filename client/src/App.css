@@ -2,6 +2,7 @@
   --primary-color: #313bac;
   --secondary-color: #cea82a;
   --accent-color: #aafbb1;
+  --grey-color: rgb(180, 180, 180);
   --success-color: #2ecc71;
   --danger-color: #e74c3c;
   --button-color: #5e5fa5;
@@ -14,11 +15,7 @@
   padding: 0px;
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent; /* Standard way */
-}
-
-.mainContent {
-  padding-top: 80px;
-  min-height: calc(100vh - 80px);
+  user-select: none;
 }
 
 .baloo-2-regular {
