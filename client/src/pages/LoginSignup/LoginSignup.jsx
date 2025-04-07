@@ -183,6 +183,10 @@ export default function LoginSignup() {
             type={showPassword ? "text" : "password"}
             name="password"
             id="password"
+            value={signupFormData.password}
+            onChange={(e) =>
+              setSignupFormData((cur) => ({ ...cur, password: e.target.value }))
+            }
           />
           <div
             className={`${styles.inpLabelContainer} baloo-2-semiBold inpActivePassword`}
@@ -228,13 +232,13 @@ export default function LoginSignup() {
 
         <div className={`${styles.dontMsgContainer} baloo-2-medium`}>
           <p className={styles.dont}>Don't have an account?</p>
-          <p className={styles.dontCTA} onClick={() => navigate("/signup")}>
-            SignUp
+          <p className={styles.dontCTA} onClick={() => navigate("/login")}>
+            Login
           </p>
         </div>
 
         <div className={`${styles.buttonCTA} baloo-2-semiBold `}>
-          <p>Login</p>
+          <p>SignUp</p>
         </div>
       </form>
     </div>
