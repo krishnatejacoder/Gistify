@@ -1,0 +1,23 @@
+.signupToggle{
+  cursor: pointer;
+}
+
+/* .signupToggle:hover::after{
+  content: '';
+  display: inline-block;
+  height: 24px;
+  width: 62px;
+  position: absolute;
+  left: -6px;
+  border-radius: 15px;
+  background-color: #ffffff59;
+  z-index: 0;
+} */
+
+.inpActiveUsername{
+  top: 144px;
+}
+
+.inpActivePassword{
+  top: 222px;
+}
