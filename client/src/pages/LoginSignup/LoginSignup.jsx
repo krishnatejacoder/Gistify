@@ -1,9 +1,11 @@
 import styles from '../../components/modularCSS/LoginSignup.module.css';
 import { useNavigate } from 'react-router-dom';
-import './Login.css';
+import './LoginSignup.css';
 import { useState } from 'react';
+import Eye from '../../assets/icons/eye/eye.svg?react';
+import EyeSlash from '../../assets/icons/eye/eyeSlash.svg?react';
 
-export default function Login(){
+export default function LoginSignup(){
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -28,6 +30,11 @@ export default function Login(){
           <div className={`${styles.inpLabelContainer } baloo-2-semiBold inpActivePassword`}>
             <p>Password</p>
           </div>
+          {showPassword ? (
+            <Eye className={styles.eyeIcon} onClick={() => setShowPassword(false)} />
+          ) : (
+            <EyeSlash className={styles.eyeIcon} onClick={() => setShowPassword(true)} />
+          )}
         </div>
         <div className={`${styles.dontMsgContainer} baloo-2-medium`}>
           <p className={styles.dont}>Don't have an account?</p>
