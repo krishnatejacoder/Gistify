@@ -117,9 +117,9 @@ export default function LoginSignup() {
       <form action="">
         <p className={`${styles.title} piazzolla-bold`}>Welcome to Gistify</p>
         <div className={styles.toggle}>
-          <div className={styles.toggleOverlay}></div>
+          <div className={`${styles.toggleOverlay} toggleOverlay signup`}></div>
           <p
-            style={{ color: "black" }}
+            style={{ color: "white" }}
             className={`${styles.toggleLogin} baloo-2-semiBold loginToggle`}
             onClick={() => {
               navigate("/login");
@@ -128,7 +128,7 @@ export default function LoginSignup() {
             Login
           </p>
           <p
-            style={{ color: "white" }}
+            style={{ color: "black" }}
             className={`${styles.toggleSignUp} baloo-2-semiBold signupToggle`}
             onClick={() => {
               navigate("/signup");
@@ -161,7 +161,7 @@ export default function LoginSignup() {
           <input
             placeholder="Email"
             className={`${styles.inputBoxSignup} baloo-2-regular ${styles.inpBoxEmail}`}
-            type="text"
+            type="email"
             name="email"
             id="email"
             value={signupFormData.email}
