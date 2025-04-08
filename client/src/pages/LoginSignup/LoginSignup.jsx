@@ -91,7 +91,7 @@ export default function LoginSignup() {
             if(!(signupFormData.password === signupFormData.confirmPassword)){
               alert("Confirm Password and Password must be same");
             }
-            if(!(test.oneLower && test.oneDigit && test.ln && test.oneUpper && test.oneSpecial)) {
+            else if(!(test.oneLower && test.oneDigit && test.ln && test.oneUpper && test.oneSpecial)) {
               alert("Please match the password format");
             }
             else{
