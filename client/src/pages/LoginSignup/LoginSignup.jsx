@@ -6,10 +6,21 @@ import Eye from "../../assets/icons/eye/eye.svg?react";
 import EyeSlash from "../../assets/icons/eye/eyeSlash.svg?react";
 import { AuthContext } from "../../context/AuthContext/AuthContext";
 
+function isAuthorized(users, providedUsername, providedPassword){
+  const userExists = users.find(user => {
+    return user.username === providedUsername && user.password === providedPassword;
+  });
+  return !!userExists;
+}
+
 export default function LoginSignup() {
   const navigate = useNavigate();
   const location = useLocation();
   const loginContext = useContext(AuthContext);
+  const validUsers = [{
+    username: "shah",
+    password: "1234"
+  }]
 
   const [test, setTest] = useState({
     oneLower: false,
@@ -30,6 +41,7 @@ export default function LoginSignup() {
     password: "",
     confirmPassword: "",
   });
+
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
@@ -72,12 +84,18 @@ export default function LoginSignup() {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          if (location.pathname === "/login") {
-            loginContext.login(loginFormData);
+          if (location.pathname === "/login" && isAuthorized(validUsers, loginFormData.username, loginFormData.password)) {
+            loginContext.login({username: loginFormData.username});
             navigate("/dashboard");
           } else {
-            if(test.oneLower && test.oneDigit && test.ln && test.oneUpper && test.oneSpecial) {
-              loginContext.login({username: signupFormData.username, email: signupFormData.email});
+            if(!(signupFormData.password === signupFormData.confirmPassword)){
+              alert("Confirm Password and Password must be same");
+            }
+            if(!(test.oneLower && test.oneDigit && test.ln && test.oneUpper && test.oneSpecial)) {
+              alert("Please match the password format");
+            }
+            else{
+              loginContext.login({username: signupFormData.username});
               navigate("/dashboard");
             }
           }
@@ -135,6 +153,7 @@ export default function LoginSignup() {
                 name="password"
                 id="password"
                 value={loginFormData.password}
+                required
                 onChange={(e) =>
                   setLoginFormData((cur) => ({ ...cur, password: e.target.value }))
                 }
@@ -171,6 +190,7 @@ export default function LoginSignup() {
                 name="username"
                 id="username"
                 value={signupFormData.username}
+                required
                 onChange={(e) =>
                   setSignupFormData((cur) => ({ ...cur, username: e.target.value }))
                 }
@@ -187,6 +207,7 @@ export default function LoginSignup() {
                 name="email"
                 id="email"
                 value={signupFormData.email}
+                required
                 onChange={(e) =>
                   setSignupFormData((cur) => ({ ...cur, email: e.target.value }))
                 }
@@ -203,6 +224,7 @@ export default function LoginSignup() {
                 name="password"
                 id="password"
                 value={signupFormData.password}
+                required
                 onChange={(e) =>
                   setSignupFormData((cur) => ({ ...cur, password: e.target.value }))
                 }
@@ -251,6 +273,7 @@ export default function LoginSignup() {
                 name="confirmPassword"
                 id="confirmPassword"
                 value={signupFormData.confirmPassword}
+                required
                 onChange={(e) =>
                   setSignupFormData((cur) => ({
                     ...cur,
