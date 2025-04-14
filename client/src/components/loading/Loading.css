@@ -1,3 +1,22 @@
 .loadingContainer{
-  
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.loadingContainer span{
+  font-size: 26px;
+  color: #313BAC;
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.loadingContainer svg{
+  width: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateY(-40%) translateX(-50%);
 }
