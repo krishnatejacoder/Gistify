@@ -17,6 +17,8 @@ import SmartLibrary from './pages/SmartLibrary/SmartLibrary.jsx';
 import LoginSignup from "./pages/LoginSignup/LoginSignup.jsx";
 import NotFound from './pages/Not Found/NotFound.jsx';
 import MainNavigation from './components/navbar/MainNavigation.jsx'
+import Toast from "./components/Toast/Toast.jsx";
+import 'react-toastify/dist/ReactToastify.css';
 import './App.css'
 
 
@@ -37,6 +39,7 @@ function AppContent() {
     <AuthProvider>
       <div className="app">
         {user && !hiddenNavPages.includes(location.pathname) && <MainNavigation />}
+        <Toast />
         <MainLayout>
           <Routes>
             {user ? (
