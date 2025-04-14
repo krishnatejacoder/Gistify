@@ -86,6 +86,7 @@ export default function LoginSignup() {
           e.preventDefault();
           if (location.pathname === "/login" && isAuthorized(validUsers, loginFormData.username, loginFormData.password)) {
             loginContext.login({username: loginFormData.username});
+            
             navigate("/dashboard");
           } else {
             if(!(signupFormData.password === signupFormData.confirmPassword)){
@@ -96,6 +97,7 @@ export default function LoginSignup() {
             }
             else{
               loginContext.login({username: signupFormData.username});
+              alert("Signup Successful!");
               navigate("/dashboard");
             }
           }
