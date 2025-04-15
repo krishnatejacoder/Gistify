@@ -90,4 +90,21 @@ button {
   all: unset;
   cursor: pointer;
   font-family: inherit;
+  transition: all 0.3s ease-out;
+}
+
+button:disabled:hover{
+  filter: brightness(100%);
+}
+
+button:hover{
+  filter: brightness(90%);
+}
+
+button:active{
+  scale: 0.95;
+}
+
+button:disabled:active{
+  scale: 1;
 }

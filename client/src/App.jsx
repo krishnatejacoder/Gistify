@@ -20,6 +20,7 @@ import MainNavigation from './components/navbar/MainNavigation.jsx'
 import Toast from "./components/Toast/Toast.jsx";
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css'
+import ChatbotPage from "./pages/GistIt/ChatBot.jsx";
 
 
 function AppContent() {
@@ -53,6 +54,7 @@ function AppContent() {
                 <Route path="/smartlibrary" element={<SmartLibrary />} />
                 <Route path="/login" element={<LoginSignup />} />
                 <Route path="/signup" element={<LoginSignup />} />
+                <Route path="/chatbot" element={<ChatbotPage />} />
                 <Route path="*" element={<NotFound />} />
               </>
             ) : (

@@ -1,0 +1,117 @@
+.gistitContainer {
+  position: relative;
+  display: flex;
+  padding: 25px 55px 0px 75px;
+  gap: 58px;
+}
+
+.contentDisplay {
+  height: 529px;
+  width: 410px;
+  overflow: auto;
+  border: 2px solid black;
+}
+
+.iframe-container {
+  width: 100%;
+  height: calc(100% - 4px); 
+}
+
+.docx-content{
+  padding: 15px;
+}
+
+.docx-content pre,
+.text-content pre {
+  white-space: pre-wrap;
+  font-family: inherit;
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+.summary-section {
+  background-color: #F5F5F5;
+  padding: 13px 27px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.17);
+  border-radius: 10px;
+  width: 842px;
+  height: 471px;
+  overflow: auto;
+}
+
+.gistitContainer button {
+  background-color: #5E5FA5;
+  color: white;
+  font-size: 16px;
+  width: 184px;
+  height: 43px;
+  text-align: center;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.17);
+  border-radius: 12px;
+  position: absolute;
+  right: 0;
+  bottom: -60px;
+}
+
+.summary-content {
+  color:#232323;
+}
+
+.secondHalf{
+  position: relative;
+  width: 842px;
+  height: 471px;
+  display: flex;
+  flex-direction: column;
+}
+
+.docx-html-content {
+  font-family: inherit;
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+.docx-html-content img {
+  max-width: 100%;
+  height: auto;
+  margin: 10px 0;
+}
+
+.docx-html-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 15px 0;
+}
+
+.docx-html-content table, 
+.docx-html-content th, 
+.docx-html-content td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.docx-html-content th {
+  background-color: #f2f2f2;
+  text-align: left;
+}
+
+.docx-html-content h1, 
+.docx-html-content h2, 
+.docx-html-content h3, 
+.docx-html-content h4, 
+.docx-html-content h5, 
+.docx-html-content h6 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.docx-html-content p {
+  margin-bottom: 16px;
+}
+
+.docx-html-content ul, 
+.docx-html-content ol {
+  margin-bottom: 16px;
+  padding-left: 20px;
+}
