@@ -101,9 +101,9 @@ def upload_file():
     try:
         filename = secure_filename(file.filename)
         response = cloudinary.uploader.upload(
-            file, 
-            public_id=filename, 
-            folder="Gistify", 
+            file,
+            public_id=filename,
+            folder="Gistify",
             resource_type="raw",
             format="pdf",
             access_mode="public",
@@ -119,8 +119,8 @@ def upload_file():
 
         doc_id = str(uuid.uuid4())
         collection.add(
-            ids=[doc_id], 
-            documents=[text], 
+            ids=[doc_id],
+            documents=[text],
             metadatas=[{"source": filename, "cloudinary_url": cloudinary_url}]
         )
 
@@ -129,27 +129,52 @@ def upload_file():
             "sample": text[:250],
             "source": filename,
             "cloudinary_url": cloudinary_url,
-            "doc_id": doc_id
+            "doc_id": doc_id,
+            "file": {
+                "filePath": cloudinary_url,
+                "id": doc_id,
+                "pdfName": filename
+            }
         })
     except Exception as e:
         logger.error(f"Upload error: {e}")
         return jsonify({"error": "An error occurred during upload"}), 500
-
+    
 @app.route("/summarize", methods=["POST"])
 def summarize():
     data = request.get_json()
     doc_id = data.get("doc_id")
-    if not doc_id:
-        return jsonify({"error": "doc_id is required"}), 400
+    file_path = data.get("file_path")  # Get the file_path
+    summary_type = data.get("summary_type")
+    file_name = data.get("file_name")
 
-    try:
-        result = collection.get(ids=[doc_id])
+    if not summary_type:
+        return jsonify({"error": "summary_type is required"}), 400
+
+    if file_path:
+        # Extract text from PDF using the file_path (Cloudinary URL)
+        text = get_text_from_pdf_from_url(file_path)
+        if "Error" in text:
+            return jsonify({"error": text}), 500
+
+        # Generate a unique doc_id for this summarization
+        new_doc_id = str(uuid.uuid4())
+
+        # Add the text to ChromaDB
+        collection.add(
+            ids=[new_doc_id],
+            documents=[text],
+            metadatas=[{"source": file_name, "cloudinary_url": file_path}]
+        )
+
+        # Now perform summarization using the new_doc_id
+        result = collection.get(ids=[new_doc_id])
         if not result['documents']:
-            return jsonify({"error": "Document not found"}), 404
-
+            return jsonify({"error": "Failed to retrieve document from ChromaDB after adding"}), 500
         full_text = result['documents'][0]
         metadata = result['metadatas'][0]
         cloudinary_url = metadata.get("cloudinary_url", "")
+        source_file_name = metadata.get("source", "Unknown")
 
         def generate(text, task):
             input_text = f"{task}:\n{text[:5000]}"
@@ -157,20 +182,61 @@ def summarize():
             output = model.generate(inputs.input_ids, max_length=500, num_beams=4, temperature=0.7)
             return tokenizer.decode(output[0], skip_special_tokens=True)
 
-        summary = generate(full_text, "Summarize this")
+        summary = generate(full_text, f"Summarize this in a {summary_type} way")
         advantages = generate(full_text, "List advantages")
         disadvantages = generate(full_text, "List disadvantages")
 
         summary_data = {
-            "doc_id": doc_id,
-            "source": metadata.get("source", "Unknown"),
+            "doc_id": new_doc_id,
+            "source": source_file_name,
             "cloudinary_url": cloudinary_url,
             "summary": summary,
             "advantages": advantages,
             "disadvantages": disadvantages,
             "timestamp": datetime.utcnow()
         }
+        summaries_collection.insert_one(summary_data)
+        logger.info(f"Summary saved to MongoDB for doc_id: {new_doc_id}")
 
+        return jsonify({
+            "summary": summary,
+            "advantages": advantages,
+            "disadvantages": disadvantages,
+            "source": source_file_name,
+            "cloudinary_url": cloudinary_url
+        })  # Explicit return after processing file_path
+
+    elif not doc_id:
+        return jsonify({"error": "Either doc_id or file_path is required"}), 400
+    else:
+        # If doc_id is provided (e.g., for direct text input handled earlier)
+        result = collection.get(ids=[doc_id])
+        if not result['documents']:
+            return jsonify({"error": "Document not found"}), 404
+        full_text = result['documents'][0]
+        metadata = result['metadatas'][0]
+        cloudinary_url = metadata.get("cloudinary_url", "")
+        file_name = metadata.get("source", "Unknown")
+
+        def generate(text, task):
+            input_text = f"{task}:\n{text[:5000]}"
+            inputs = tokenizer(input_text, return_tensors="pt", truncation=True, max_length=1024)
+            output = model.generate(inputs.input_ids, max_length=500, num_beams=4, temperature=0.7)
+            return tokenizer.decode(output[0], skip_special_tokens=True)
+
+        summary = generate(full_text, f"Summarize this in a {summary_type} way")
+        advantages = generate(full_text, "List advantages")
+        disadvantages = generate(full_text, "List disadvantages")
+
+        summary_data = {
+            "doc_id": doc_id,
+            "source": file_name,
+            "cloudinary_url": cloudinary_url,
+            "summary": summary,
+            "advantages": advantages,
+            "disadvantages": disadvantages,
+            "timestamp": datetime.utcnow()
+        }
         summaries_collection.insert_one(summary_data)
         logger.info(f"Summary saved to MongoDB for doc_id: {doc_id}")
 
@@ -178,12 +244,9 @@ def summarize():
             "summary": summary,
             "advantages": advantages,
             "disadvantages": disadvantages,
-            "source": metadata.get("source", "Unknown"),
+            "source": file_name,
             "cloudinary_url": cloudinary_url
         })
-    except Exception as e:
-        logger.error(f"Summarization error: {e}")
-        return jsonify({"error": "An error occurred during summarization"}), 500
 
 @app.route("/ask", methods=["POST"])
 def ask():

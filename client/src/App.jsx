@@ -28,7 +28,18 @@ function AppContent() {
   const navigate = useNavigate();
   const hiddenNavPages = ["/signup", "/login"];
 
-  const user = JSON.parse(localStorage.getItem("userGistify") || null);
+  const storedUser = localStorage.getItem("userGistify");
+  let user = null;
+
+  if (storedUser && storedUser !== "undefined") {
+    try {
+      user = JSON.parse(storedUser);
+    } catch (error) {
+      console.error("Error parsing user from localStorage:", error);
+      // Handle the error, perhaps by clearing the invalid localStorage item
+      localStorage.removeItem("userGistify");
+    }
+  }
 
   useEffect(() => {
     if (!user && !hiddenNavPages.includes(location.pathname)) {

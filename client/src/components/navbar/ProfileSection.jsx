@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useState, useEffect, useRef } from "react";
 import Setting from "./Setting";
@@ -10,6 +10,7 @@ export default function ProfileSection({
   onclose,
   setSettingClicked,
 }) {
+  const navigate = useNavigate();
   useEffect(() => {
     if (isSettingClicked) {
       onclose();
@@ -35,15 +36,12 @@ export default function ProfileSection({
   }, [isVisible]);
 
   const handleSignOut = () => {
-    // Remove authToken and user from localStorage
+    localStorage.removeItem("userGistify");
     localStorage.removeItem("authToken");
-    localStorage.removeItem("user");
 
-    // Optionally, clear any session storage if needed
     sessionStorage.removeItem("user");
     sessionStorage.setItem("welcomeMessageShown", JSON.stringify(false));
 
-    // Redirect to the login page
     navigate("/login");
   };
 

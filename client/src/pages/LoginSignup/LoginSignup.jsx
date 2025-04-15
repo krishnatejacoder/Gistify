@@ -7,6 +7,7 @@ import EyeSlash from "../../assets/icons/eye/eyeSlash.svg?react";
 import { AuthContext } from "../../context/AuthContext/AuthContext";
 import { notifySuccess, notifyError, notifyInfo, notifyWarn } from "../../components/Toast/Toast";
 import Loading from "../../components/loading/Loading";
+import axios from "axios";
 
 function isAuthorized(users, providedUsername, providedPassword){
   const userExists = users.find(user => {
@@ -49,43 +50,66 @@ export default function LoginSignup() {
 
   const handleLogin = async () => {
     setLoading(true);
-    const success = await isAuthorized(validUsers, loginFormData.username, loginFormData.password);
+    try {
+      const res = await axios.post("http://localhost:5000/api/auth/login", {
+        username: loginFormData.username,
+        password: loginFormData.password,
+      });
 
-    if(success){
-      notifySuccess("Login Successful");
-      setTimeout(() => {
-        setLoading(false);
-        if(success){
-          loginContext.login({username: loginFormData.username});
+      console.log(res);
+
+      if (res && res.data) {
+        notifySuccess("Login Successful");
+        setTimeout(() => {
+          setLoading(false);
+          loginContext.login(res.data.username);
+          localStorage.setItem('accessToken', res.data.token);
           navigate("/dashboard");
-        }
-      }, 2500);
-    }
-    else {
+        }, 1500);
+      } else {
+        throw new Error("Invalid Credentials");
+      }
+    } catch (err) {
       setLoading(false);
       notifyError("Invalid Credentials");
-    }    
-  }
-
+    }
+  };  
+  
+  
   const handleSignup = async () => {
     setLoading(true);
-    // Backend logic
-    const success = true;
-    if(success){
-      notifySuccess("Login Successful");
+    if (!(signupFormData.password === signupFormData.confirmPassword)) {
+      notifyError("Confirm Password and Password must be the same");
+      setLoading(false);
+      return;
+    }
+  
+    if (!(test.oneLower && test.oneDigit && test.ln && test.oneUpper && test.oneSpecial)) {
+      notifyError("Please match the password format");
+      setLoading(false);
+      return;
+    }
+  
+    try {
+      const res = await axios.post("http://localhost:5000/api/auth/signup", {
+        username: signupFormData.username,
+        email: signupFormData.email,
+        password: signupFormData.password,
+      });
+  
+      notifySuccess("Signup Successful");
       setTimeout(() => {
         setLoading(false);
-        if(success){
-          loginContext.login({username: signupFormData.username});
-          navigate("/dashboard");
-        }
+        loginContext.login({ username: signupFormData.username });
+        localStorage.setItem('accessToken', res.data.token);
+        navigate("/dashboard");
       }, 2500);
-    }
-    else {
+    } catch (err) {
       setLoading(false);
-      notifyError("Some Error");
-    }  
+      notifyError(err.response?.data?.message || "Signup Failed");
+    }
   }
+  
 
   useEffect(() => {
     if (/[a-z]/.test(signupFormData.password)) {
