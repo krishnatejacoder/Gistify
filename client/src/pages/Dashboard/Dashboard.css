@@ -1,0 +1,274 @@
+.dashboardContainer{
+  position: relative;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  /* pad: ; */
+}
+
+.dashboardContainer .recentSummaries{
+  position: absolute;
+  top: 10px;
+  left: 67px;
+  width: 381px;
+  height: 553px;
+  background-color: #FEF6F6;
+  box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.19);
+  border-radius: 19px;
+}
+
+.dashboardContainer .recentSummaries .title{
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 22px;
+  color: #313BAC;
+  text-align: center;
+}
+
+.dashboardContainer .recentSummaries .summaries{
+  position: absolute;
+  top: 57px;
+  left: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 28px;
+}
+
+.dashboardContainer .recentSummaries .summary{
+  position: relative;
+  width: 331px;
+  height: 124px;
+  background-color: #F8F7F7;
+  border-radius: 14px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.14);
+}
+
+.dashboardContainer .recentSummaries .summaries .titleCard{
+  width: calc(100% - 38px);
+  position: absolute;
+  top: 13px;
+  left: 19px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboardContainer .recentSummaries .titleCard .titlePaper{
+  font-size: 18px;
+}
+
+.dashboardContainer .recentSummaries .titleCard .titleDate{
+  font-size: 14px;
+}
+
+.dashboardContainer .summary .desc{
+  position: absolute;
+  left: 19px;
+  bottom: 12px;
+  font-size: 14.5px;
+  width: 293px;
+  color: rgba(67, 67, 67, 0.81);
+}
+
+.dashboardContainer .recentSummaries .viewMore{
+  position: absolute;
+  bottom: 15px;
+  left: 131px;
+  width: 119px;
+  height: 35px;
+  background-color: #5E5FA5;
+  color: white;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.dashboardContainer .gistArea{
+  position: absolute;
+  top: 41px;
+  left: 539px;
+  display: flex;
+  gap: 32px;
+}
+
+.dashboardContainer .gistArea .welcome{
+  font-size: 22px;
+  color: #6E00B3;
+  text-align: center;
+  margin-top: 5px;
+}
+
+.dashboardContainer .gistArea .welcomeQuestion{
+  display: flex;
+  gap: 4px;
+}
+
+.dashboardContainer .gistArea .welcomeHelp{
+  color: rgba(67, 64, 64, 0.83);
+  font-size: 15px;
+}
+.dashboardContainer .gistArea .intro{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.dashboardContainer .gistArea .secondaryIntro{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1px;
+}
+
+.dashboardContainer .leftC{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.dashboardContainer .leftC .uploadContent .uploadArea{
+  width: 469px;
+  height: 241px;
+  stroke-dasharray: 15 8 3 5;
+  position: relative;
+  border-radius: 20px;
+}
+
+.dashboardContainer .leftC .uploadContent .text{
+  font-size: 18px;
+  line-height: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: 46px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.dashboardContainer .uploadContent .text div{
+  display: flex;
+  gap: 4px;
+}
+
+.dashboardContainer .uploadArea img{
+  display: block;
+}
+
+.dashboardContainer .uploadArea .uploadCloud{
+  position: absolute;
+  top: 43.44px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.dashboardContainer .uploadArea .uploadedFile{
+  margin: 11px 5px 0px 5px;
+  padding: 10px 17px;
+  background-color: rgba(254, 246, 246, 0.8);
+  box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.13);
+  border-radius: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.dashboardContainer .uploadedFile .primary{
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.dashboardContainer .uploadedFile .primary p{
+  position: relative;
+  top: 2px;
+}
+
+.dashboardContainer .uploadedFile .PDF{
+  width: 22px;
+}
+
+.dashboardContainer .uploadedFile .cross{
+  width: 25px;
+}
+
+.dashboardContainer .gistIt{
+  position: absolute;
+  bottom: -58px;
+  left: 4px;
+  font-size: 18.5px;
+  color: #fff;
+  background-color: #3F4086;
+  border-radius: 10px;
+  width: 143px;
+  height: 47px;
+  text-align: center;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.17);
+}
+
+.dashboardContainer .gistIt:disabled{
+  color: rgb(91, 91, 91);
+  background-color: #dad5d5;
+  box-shadow: 0px 0px 0px rgba(0, 0, 0, 0);
+  cursor:auto;
+}
+
+.dashboardContainer .rightC{
+  position: relative;
+  width: auto;
+}
+
+.dashboardContainer .options{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 150px;
+  padding: 9px;
+  background-color: #5E5FA5;
+  color: white;
+  gap: 13px;
+  border-radius: 15px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.dashboardContainer .opt{
+  position: absolute;
+  top: 115px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 15px;
+}
+
+.dashboardContainer .activeContainer{
+  position: absolute;
+  background-color: #C5D8FF;
+  border-radius: 8px;
+  width: 134px;
+  height: 26px;
+  left: 50%;
+  top: 8px;
+  transform: translateX(-50%);
+}
+
+.dashboardContainer .option{
+  position: relative;
+  font-size: 15px;
+  transition: all 0.25s ease-out;
+}
+
+.dashboardContainer .textContent textarea{
+  width: 469px;
+  height: 237px;
+  font-size: 14px;
+  padding: 8px 13px;
+  resize: none;
+  border-radius: 10px;
+  color: rgb(62, 62, 62);
+}

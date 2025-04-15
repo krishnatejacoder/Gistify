@@ -2,7 +2,10 @@ import { AuthContext } from "./AuthContext";
 import { useState } from "react";
 
 export default function AuthProvider({children}){
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(() => {
+        const storedUser = localStorage.getItem("userGistify");
+        return storedUser ? JSON.parse(storedUser) : null;
+      });
 
     function login(userData){
         setUser(userData);

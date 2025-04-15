@@ -1,6 +1,6 @@
 import "./Loading.css";
 
-export default function Loading({val}) {
+export default function Loading({ val }) {
   return (
     <div className="loadingContainer piazzolla-bold">
       <span>{val}</span>
@@ -13,20 +13,20 @@ export default function Loading({val}) {
           fy=".3125"
           gradientTransform="scale(1.5)"
         >
-          <stop offset="0" stop-color="#0500A5"></stop>
-          <stop offset=".3" stop-color="#0500A5" stop-opacity=".9"></stop>
-          <stop offset=".6" stop-color="#0500A5" stop-opacity=".6"></stop>
-          <stop offset=".8" stop-color="#0500A5" stop-opacity=".3"></stop>
-          <stop offset="1" stop-color="#0500A5" stop-opacity="0"></stop>
+          <stop offset="0" stopColor="#0500A5" />
+          <stop offset=".3" stopColor="#0500A5" stopOpacity=".9" />
+          <stop offset=".6" stopColor="#0500A5" stopOpacity=".6" />
+          <stop offset=".8" stopColor="#0500A5" stopOpacity=".3" />
+          <stop offset="1" stopColor="#0500A5" stopOpacity="0" />
         </radialGradient>
         <circle
-          transform-origin="center"
+          transformOrigin="center"
           fill="none"
           stroke="url(#a6)"
-          stroke-width="13"
-          stroke-linecap="round"
-          stroke-dasharray="200 1000"
-          stroke-dashoffset="0"
+          strokeWidth="13"
+          strokeLinecap="round"
+          strokeDasharray="200 1000"
+          strokeDashoffset="0"
           cx="100"
           cy="100"
           r="70"
@@ -35,24 +35,24 @@ export default function Loading({val}) {
             type="rotate"
             attributeName="transform"
             calcMode="spline"
-            dur="2"
+            dur="2s"
             values="360;0"
             keyTimes="0;1"
             keySplines="0 0 1 1"
             repeatCount="indefinite"
-          ></animateTransform>
+          />
         </circle>
         <circle
-          transform-origin="center"
+          transformOrigin="center"
           fill="none"
           opacity=".2"
           stroke="#0500A5"
-          stroke-width="13"
-          stroke-linecap="round"
+          strokeWidth="13"
+          strokeLinecap="round"
           cx="100"
           cy="100"
           r="70"
-        ></circle>
+        />
       </svg>
     </div>
   );
