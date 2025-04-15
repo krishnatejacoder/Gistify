@@ -1,43 +1,50 @@
-require('dotenv').config();
+require('dotenv').config(); // Load all environment variables
 const express = require('express');
-const app = express();
-const router = express.Router();
 const mongoose = require('mongoose');
+const cors = require('cors');
 const methodOverride = require('method-override');
-const PORT = 5000;
 const fileRoutes = require('./routes/fileRoutes');
 const summaryRoutes = require('./routes/summaryRoutes');
-const multer = require('multer');
-const {storage} = require('./cloudinary/index')
+const authRoutes = require('./routes/authRoutes');
+const gistRoutes = require('./routes/gistRoutes');
+const authenticateToken = require('./middleware/auth');
 
-app.use(express.json()); 
+const app = express();
+
+// Middleware
+app.use(cors());
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride('_method'));
 
-app.use(methodOverride('_method')); 
+// Routes
+app.use('/files', authenticateToken, fileRoutes);
+app.use('/summary', authenticateToken, summaryRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/gists', authenticateToken, gistRoutes);
 
-app.use('/files', fileRoutes);
-app.use('/summary', summaryRoutes);
-
+// MongoDB Connection
 const connectDB = async () => {
-    try {
-      await mongoose.connect("mongodb://localhost:27017/gistifyDB", {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
-      console.log("✅ MongoDB connected successfully");
-    } catch (error) {
-      console.error("❌ MongoDB connection error:", error);
-      process.exit(1); // Exit process if connection fails
-    }
-  };
-  
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('✅ MongoDB connected successfully');
+  } catch (error) {
+    console.error('❌ MongoDB connection error:', error.message);
+    process.exit(1);
+  }
+};
 connectDB();
 
-app.get('/', (req,res)=>{
-    res.send('<h1>HOME ROUTE</h1>')
-})
+// Base Route
+app.get('/', (req, res) => {
+  res.send('<h1>HOME ROUTE</h1>');
+});
 
-app.listen(PORT, () =>{
-    console.log(`ON PORT ${PORT}`);
-    
-})
+// Start Server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on PORT ${PORT}`);
+});
