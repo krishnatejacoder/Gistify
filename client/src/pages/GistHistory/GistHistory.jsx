@@ -1,10 +1,10 @@
-// GistHistory.jsx
 import React, { useState, useEffect, useContext } from 'react';
-import './GistHistory.css'; // Create this CSS file
+import './GistHistory.css';
 import { AuthContext } from '../../context/AuthContext/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Loading from '../../components/Loading/Loading';
 import { notifyError } from '../../components/Toast/Toast';
+import axios from 'axios'; // Import axios
 
 export default function GistHistory() {
   const { user } = useContext(AuthContext);
@@ -18,33 +18,12 @@ export default function GistHistory() {
       setIsLoading(true);
       setError(null);
       try {
-        // Simulate fetching history from your backend
-        // Replace this with your actual API call
-        const response = await new Promise((resolve) => {
-          setTimeout(() => {
-            resolve([
-              {
-                id: 1,
-                title: "Reinstating ReLU Activation in LLM",
-                author: "Paulo Finardi",
-                lastVisited: "Mar 13, 2025",
-                createdOn: "Mar 12, 2025",
-                // ... other relevant data
-              },
-              {
-                id: 2,
-                title: "Understanding Transformer Networks",
-                author: "Vaswani et al.",
-                lastVisited: "Apr 10, 2025",
-                createdOn: "Apr 05, 2025",
-                // ... other relevant data
-              },
-              // ... more history items
-            ]);
-          }, 1500); // Simulate network delay
+        const response = await axios.get('http://localhost:5000/api/gists/history', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
         });
-
-        setHistory(response);
+        setHistory(response.data);
         setIsLoading(false);
       } catch (err) {
         console.error("Error fetching gist history:", err);
@@ -63,6 +42,10 @@ export default function GistHistory() {
     }
   }, [user]);
 
+  const handleCardClick = (gist) => {
+    navigate(`/gistit/${gist._id}`, { state: { gistData: gist, fromHistory: true } });
+  };
+
   if (isLoading) {
     return <Loading val="Loading Gist History" />;
   }
@@ -80,14 +63,14 @@ export default function GistHistory() {
       <h1 className="page-title baloo-2-semiBold">Gist History</h1>
       <div className="history-cards">
         {history.map((item) => (
-          <div key={item.id} className="history-card">
+          <div key={item._id} className="history-card" onClick={() => handleCardClick(item)} style={{ cursor: 'pointer' }}>
             <div className="card-left">
               <h2 className="card-title baloo-2-medium">{item.title}</h2>
-              {item.author && <p className="card-author baloo-2-regular">By {item.author}</p>}
+              {/* You might want to display the original filename or a formatted date here */}
+              <p className="card-created baloo-2-regular">Created On: {new Date(item.createdAt).toLocaleDateString()}</p>
             </div>
             <div className="card-right">
-              <p className="card-visited baloo-2-regular">Last Visited: {item.lastVisited}</p>
-              <p className="card-created baloo-2-regular">Created On: {item.createdOn}</p>
+              {/* You can add more details here if needed */}
             </div>
           </div>
         ))}
