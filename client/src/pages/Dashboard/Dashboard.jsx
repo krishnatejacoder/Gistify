@@ -193,143 +193,147 @@ export default function Dashboard() {
 
   return (
     <div className='dashboardContainer'>
-      <div className="recentSummaries">
-        <p className='title piazzolla-bold'>Recent Summaries</p>
-        <div className="summaries">
-          {recentSummaries.map((summary, index) => (
-            <div key={index} className='summary'>
-              <div className="titleCard">
-                <p className="titlePaper baloo-2-medium">{summary.title}</p>
-                <p className="titleDate baloo-2-regular">{new Date(summary.createdAt).toLocaleDateString()}</p>
-              </div>
-              <p className="desc baloo-2-regular">{summary.summary}</p>
-            </div>
-          ))}
-        </div>
-        <button className='viewMore baloo-2-semiBold' onClick={() => navigate("/gisthistory")}>View More</button>
-      </div>
-      <div className="gistArea">
-        {/* ... (rest of your UI - intro, upload area, text area, options) */}
-        <div className="leftC">
-          <div className="intro">
-            <p className="welcome baloo-2-semiBold">Welcome Back {user.username}!</p>
-            <div className="secondaryIntro">
-              <div className='welcomeQuestion'>
-                <p className="baloo-2-regular" style={{ color: "rgba(67, 64, 64, 0.83)" }}>What would you like to </p>
-                <p className="baloo-2-semiBold" style={{ color: "#6E00B3" }}>Gistify </p>
-                <p className="baloo-2-regular" style={{ color: "rgba(67, 64, 64, 0.83)" }}>today?</p>
-              </div>
-              <p className="welcomeHelp baloo-2-regular">Upload a PDF or Docx, paste text</p>
-            </div>
-          </div>
-          {selectedUploadOption === 0 ? (
-            <div className="uploadContent">
-              <div
-                className="uploadArea"
-                onDragOver={handleDragOver}
-                onDrop={handleDrop}
-                tabIndex="0"
-              >
-                <img src={uploadArea} alt="uploadArea" />
-                <img className='uploadCloud' src={uploadCloud} alt="cloud" />
-
-                <div className="text">
-                  <p className='baloo-2-medium' style={{ color: "rgba(0,0,0,0.77)" }}>Drag & Drop</p>
-                  <div>
-                    <p className='baloo-2-medium' style={{ color: "rgba(0,0,0,0.77)" }}>or</p>
-                    <p
-                      className='baloo-2-bold'
-                      style={{ color: "#6E00B3", cursor: "pointer" }}
-                      onClick={handleBrowseClick}
-                    >
-                      Browse
-                    </p>
-                    <p className='baloo-2-medium' style={{ color: "rgba(0,0,0,0.77)" }}>PDF</p>
-                  </div>
+      <form onSubmit={(e) => {
+        e.preventDefault()
+        handleGistItClick()
+      }}>
+        <div className="recentSummaries">
+          <p className='title piazzolla-bold'>Recent Summaries</p>
+          <div className="summaries">
+            {recentSummaries.map((summary, index) => (
+              <div key={index} className='summary'>
+                <div className="titleCard">
+                  <p className="titlePaper baloo-2-medium">{summary.title}</p>
+                  <p className="titleDate baloo-2-regular">{new Date(summary.createdAt).toLocaleDateString()}</p>
                 </div>
-
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  style={{ display: 'none' }}
-                  accept=".pdf,.docx"
-                  onChange={handleFileSelect}
-                  key={uploadedFile ? "file-input-1" : "file-input-0"}
-                />
-
-                {isUploaded && (
-                  <div className="uploadedFile">
-                    <div className="primary">
-                      <img className="PDF" src={PDF} alt="pdf" />
-                      <p className='baloo-2-medium' style={{ color: "black", fontSize: "15px" }}>{uploadedFile.name}</p>
-                    </div>
-                    <img
-                      className='cross'
-                      src={cross}
-                      alt="cross"
-                      onClick={handleRemoveFile}
-                      style={{ cursor: "pointer" }}
-                    />
-                  </div>
-                )}
+                <p className="desc baloo-2-regular">{summary.summary}</p>
+              </div>
+            ))}
+          </div>
+          <button className='viewMore baloo-2-semiBold' onClick={() => navigate("/gisthistory")}>View More</button>
+        </div>
+        <div className="gistArea">
+          <div className="leftC">
+            <div className="intro">
+              <p className="welcome baloo-2-semiBold">Welcome Back {user.username}!</p>
+              <div className="secondaryIntro">
+                <div className='welcomeQuestion'>
+                  <p className="baloo-2-regular" style={{ color: "rgba(67, 64, 64, 0.83)" }}>What would you like to </p>
+                  <p className="baloo-2-semiBold" style={{ color: "#6E00B3" }}>Gistify </p>
+                  <p className="baloo-2-regular" style={{ color: "rgba(67, 64, 64, 0.83)" }}>today?</p>
+                </div>
+                <p className="welcomeHelp baloo-2-regular">Upload a PDF or Docx, paste text</p>
               </div>
             </div>
-          ) : (
-            <div className='textContent'>
-              <textarea value={text} onChange={(e) => setText(e.target.value)} name="text" id="text" className='baloo-2-regular'></textarea>
-            </div>
-          )}
-        </div>
-        <div className="rightC">
-          <div className="opt">
-            <div className="uploadOptions options">
-              <div
-                className="activeContainer"
-                style={{
-                  top: `${8 + selectedUploadOption * 36.5}px`,
-                  transition: 'top 0.3s ease'
-                }}
-              ></div>
-              {uploadOptions.map((val, id) => (
-                <button
-                  className='option baloo-2-semiBold'
-                  key={id}
-                  onClick={() => setSelectedUploadOption(id)}
-                  style={{
-                    color: selectedUploadOption === id ? "black" : "white",
-                    zIndex: 1
-                  }}
+            {selectedUploadOption === 0 ? (
+              <div className="uploadContent">
+                <div
+                  className="uploadArea"
+                  onDragOver={handleDragOver}
+                  onDrop={handleDrop}
+                  tabIndex="0"
                 >
-                  {val}
-                </button>
-              ))}
-            </div>
-            <div className="summaryOptions options">
-              <div
-                className="activeContainer"
-                style={{
-                  top: `${8 + selectedSummaryOption * 36.5}px`,
-                  transition: 'top 0.3s ease'
-                }}
-              ></div>
-              {summaryOptions.map((val, id) => (
-                <button
-                  className='option baloo-2-semiBold'
-                  key={id}
-                  onClick={() => setSelectedSummaryOption(id)}
-                  style={{
-                    color: selectedSummaryOption === id ? "black" : "white",
-                    zIndex: 1
-                  }}
-                >
-                  {val}
-                </button>
-              ))}
-            </div>
+                  <img src={uploadArea} alt="uploadArea" />
+                  <img className='uploadCloud' src={uploadCloud} alt="cloud" />
+
+                  <div className="text">
+                    <p className='baloo-2-medium' style={{ color: "rgba(0,0,0,0.77)" }}>Drag & Drop</p>
+                    <div>
+                      <p className='baloo-2-medium' style={{ color: "rgba(0,0,0,0.77)" }}>or</p>
+                      <p
+                        className='baloo-2-bold'
+                        style={{ color: "#6E00B3", cursor: "pointer" }}
+                        onClick={handleBrowseClick}
+                      >
+                        Browse
+                      </p>
+                      <p className='baloo-2-medium' style={{ color: "rgba(0,0,0,0.77)" }}>PDF</p>
+                    </div>
+                  </div>
+
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    style={{ display: 'none' }}
+                    accept=".pdf,.docx"
+                    onChange={handleFileSelect}
+                    key={uploadedFile ? "file-input-1" : "file-input-0"}
+                  />
+
+                  {isUploaded && (
+                    <div className="uploadedFile">
+                      <div className="primary">
+                        <img className="PDF" src={PDF} alt="pdf" />
+                        <p className='baloo-2-medium' style={{ color: "black", fontSize: "15px" }}>{uploadedFile.name}</p>
+                      </div>
+                      <img
+                        className='cross'
+                        src={cross}
+                        alt="cross"
+                        onClick={handleRemoveFile}
+                        style={{ cursor: "pointer" }}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className='textContent'>
+                <textarea value={text} onChange={(e) => setText(e.target.value)} name="text" id="text" className='baloo-2-regular'></textarea>
+              </div>
+            )}
           </div>
-          <button disabled={!isUploaded && !text} className='gistIt baloo-2-semiBold' onClick={handleGistItClick}>Gist IT!</button>
+          <div className="rightC">
+            <div className="opt">
+              <div className="uploadOptions options">
+                <div
+                  className="activeContainer"
+                  style={{
+                    top: `${8 + selectedUploadOption * 36.5}px`,
+                    transition: 'top 0.3s ease'
+                  }}
+                ></div>
+                {uploadOptions.map((val, id) => (
+                  <button
+                    className='option baloo-2-semiBold'
+                    key={id}
+                    onClick={() => setSelectedUploadOption(id)}
+                    style={{
+                      color: selectedUploadOption === id ? "black" : "white",
+                      zIndex: 1
+                    }}
+                  >
+                    {val}
+                  </button>
+                ))}
+              </div>
+              <div className="summaryOptions options">
+                <div
+                  className="activeContainer"
+                  style={{
+                    top: `${8 + selectedSummaryOption * 36.5}px`,
+                    transition: 'top 0.3s ease'
+                  }}
+                ></div>
+                {summaryOptions.map((val, id) => (
+                  <button
+                    className='option baloo-2-semiBold'
+                    key={id}
+                    onClick={() => setSelectedSummaryOption(id)}
+                    style={{
+                      color: selectedSummaryOption === id ? "black" : "white",
+                      zIndex: 1
+                    }}
+                  >
+                    {val}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <button type='submit' disabled={!isUploaded && !text} className='gistIt baloo-2-semiBold'>Gist IT!</button>
+          </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 }

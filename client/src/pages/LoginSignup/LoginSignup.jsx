@@ -106,7 +106,9 @@ export default function LoginSignup() {
       }, 2500);
     } catch (err) {
       setLoading(false);
-      notifyError(err.response?.data?.message || "Signup Failed");
+      notifyError(err.response?.data?.error || "Signup Failed");
+
+      // console.log(err.response.data);
     }
   }
   

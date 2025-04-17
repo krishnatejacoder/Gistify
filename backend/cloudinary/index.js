@@ -12,6 +12,7 @@ const storage = new CloudinaryStorage({
     params: {
         folder: 'Gistify', // Your preferred folder
         resource_type: 'auto',
+        allowed_formats : ['pdf','txt','docx']
     },
 });
 
