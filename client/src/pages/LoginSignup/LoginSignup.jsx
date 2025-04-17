@@ -66,12 +66,10 @@ export default function LoginSignup() {
           localStorage.setItem('accessToken', res.data.token);
           navigate("/dashboard");
         }, 1500);
-      } else {
-        throw new Error("Invalid Credentials");
       }
     } catch (err) {
       setLoading(false);
-      notifyError("Invalid Credentials");
+      notifyError(err.response?.data?.error || "Login Failed");
     }
   };  
   
