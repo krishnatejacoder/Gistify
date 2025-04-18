@@ -13,6 +13,7 @@ export default function GistIt() {
   const [isLoading, setIsLoading] = useState(true);
   const [fileProcessed, setFileProcessed] = useState(false);
   const [summary, setSummary] = useState('');
+  const [addis, setAddis] = useState({});
 
   useEffect(() => {
     const processContent = async () => {
@@ -30,7 +31,8 @@ export default function GistIt() {
         }
 
         if (gistData.sourceType === 'file') {
-          const file = gistData.content;
+          const file = gistData.file;
+          console.log(gistData)
 
           if (!file) {
             notifyError('No file selected');
@@ -43,7 +45,8 @@ export default function GistIt() {
             setContent({ type: 'pdf', data: url, name: file.name });
             setFileProcessed(true);
             setIsLoading(false);
-            setSummary("Summary will appear here based on the concise option selected.");
+            setSummary(gistData.content);
+            setAddis({advantages: gistData.advantages, disadvantages: gistData.disadvantages});
           } else if (
             file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
             file.type === 'application/msword' ||
@@ -68,6 +71,7 @@ export default function GistIt() {
               setFileProcessed(true);
               setIsLoading(false);
               setSummary("Summary will appear here based on the concise option selected.");
+              setAddis({advantages:"rn in dev, take a pill chill", disadvantages: "rn in dev, dude take a Chai break!"})
             } catch (docxError) {
               console.error('Error processing DOCX:', docxError);
               notifyError('Failed to process DOCX file');
@@ -87,14 +91,15 @@ export default function GistIt() {
           setFileProcessed(true);
           setIsLoading(false);
           setSummary("Summary will appear here based on the concise option selected.");
+          setAddis({advantages:"rn in dev, take a pill chill", disadvantages: "rn in dev, dude take a Chai break!"})
         } else {
           notifyError('Invalid content source');
           setIsLoading(false);
         }
 
-        if (gistData && gistData.summaryType) {
-          setSummary("The actual summary based on '" + gistData.summaryType + "' will be fetched here.");
-        }
+        // if (gistData && gistData.summaryType) {
+        //   setSummary("The actual summary based on '" + gistData.summaryType + "' will be fetched here.");
+        // }
       } catch (error) {
         console.error('Error processing content:', error);
         notifyError(error.message || 'Failed to process content');
@@ -151,7 +156,18 @@ export default function GistIt() {
         <div className="summary-section">
           <h2 className='baloo-2-semiBold'>Summary ({location.state?.gistData?.summaryType || 'concise'})</h2>
           <div className="summary-content baloo-2-regular">
-            <p>{summary}</p>
+            <div className="summary">
+              <p className='gistTitles'>Summary</p>
+              <p className='gistInfo'>{summary}</p>
+            </div>
+            <div className="advant">
+              <p className='gistTitles'>Advantages</p>
+              <p className='gistInfo'>{addis.advantages}</p>
+            </div>
+            <div className="disadvant">
+              <p className='gistTitles'>Disadvantages</p>
+              <p className='gistInfo'>{addis.disadvantages}</p>
+            </div>
           </div>
         </div>
         <button className='baloo-2-semiBold' onClick={goToChatbot}>Continue to Chat Bot</button>

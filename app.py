@@ -148,6 +148,8 @@ def summarize():
     summary_type = data.get("summary_type")
     file_name = data.get("file_name")
 
+    print()
+
     logger.info(f"Received /summarize request with: doc_id='{doc_id}', file_path='{file_path}', summary_type='{summary_type}', file_name='{file_name}'")
 
     if not summary_type:
@@ -192,7 +194,9 @@ def summarize():
                 input_text = f"{task}:\n{text[:5000]}"
                 logger.info(f"Generating '{task}' summary with input (first 100 chars): '{input_text[:100]}...'")
                 inputs = tokenizer(input_text, return_tensors="pt", truncation=True, max_length=1024)
-                output = model.generate(inputs.input_ids, max_length=500, num_beams=4, temperature=0.7)
+                # Move inputs to the same device as model
+                inputs = {k: v.to(model.device) for k, v in inputs.items()}
+                output = model.generate(**inputs, max_length=500, num_beams=4, temperature=0.7)
                 decoded_output = tokenizer.decode(output[0], skip_special_tokens=True)
                 logger.info(f"Generated '{task}' summary (first 100 chars): '{decoded_output[:100]}...'")
                 return decoded_output
@@ -248,6 +252,7 @@ def summarize():
                 logger.info(f"Generating '{task}' summary with input (first 100 chars): '{input_text[:100]}...'")
                 inputs = tokenizer(input_text, return_tensors="pt", truncation=True, max_length=1024)
                 output = model.generate(inputs.input_ids, max_length=500, num_beams=4, temperature=0.7)
+                logger.info(f"Input device: {inputs['input_ids'].device}")
                 decoded_output = tokenizer.decode(output[0], skip_special_tokens=True)
                 logger.info(f"Generated '{task}' summary (first 100 chars): '{decoded_output[:100]}...'")
                 return decoded_output
@@ -286,4 +291,5 @@ def ask():
     pass
 
 if __name__ == "__main__":
+    logger.info(f"Model device: {model.device}")
     app.run(host="0.0.0.0", port=5001)

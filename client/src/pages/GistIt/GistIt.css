@@ -115,3 +115,13 @@
   margin-bottom: 16px;
   padding-left: 20px;
 }
+
+.gistTitles{
+  font-size: 14.5px;
+  color: #6E00B3;
+}
+
+.gistInfo{
+  font-size: 14.5px;
+  color: #232323;
+}

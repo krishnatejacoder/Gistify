@@ -35,8 +35,8 @@ export default function Dashboard() {
           },
         });
         if (isMounted) setRecentSummaries(response.data);
-      } catch (error) {
-        console.error('Error fetching recent summaries:', error);
+      } catch (err) {
+        console.error('Error fetching recent summaries:', err);
         notifyError('Failed to load recent summaries.');
       }
     };
@@ -119,17 +119,25 @@ export default function Dashboard() {
           },
         });
 
+        console.log(uploadResponse);
+
+        
         const filePath = uploadResponse.data?.file?.filePath;
+        console.log(filePath);
 
         if (!filePath) throw new Error('No file path returned from server');
 
         const flaskResponse = await axios.post('http://localhost:5001/summarize', {
+          doc_id: uploadResponse.data.file.id,
           file_path: filePath,
           summary_type: summaryOptions[selectedSummaryOption].toLowerCase(),
           file_name: uploadedFile.name,
         });
 
+        console.log(flaskResponse)
+
         const { summary, advantages, disadvantages } = flaskResponse.data;
+        console.log("Summary: ",summary)
 
         navigate('/gistit', {
           state: {
@@ -138,6 +146,7 @@ export default function Dashboard() {
               content: summary,
               originalFileName: uploadedFile.name,
               summaryType: summaryOptions[selectedSummaryOption].toLowerCase(),
+              file: uploadedFile,
               advantages,
               disadvantages,
             },
@@ -168,9 +177,9 @@ export default function Dashboard() {
       } else {
         notifyWarn('Please select a file or enter text before proceeding.');
       }
-    } catch (error) {
-      console.error('Summarization error:', error);
-      notifyError('An error occurred while processing your request.');
+    } catch (err) {
+      console.error('Summarization error:', err);
+      notifyError(err.response?.data?.error || 'An error occurred while processing your request.');
     } finally {
       setLoading(false);
     }
