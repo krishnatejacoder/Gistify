@@ -114,20 +114,20 @@
 .inpLabelContainer {
   position: absolute;
   left: 45px;
-  font-size: 14px;
+  font-size: 15px;
   color: var(--grey-color);
-  opacity: 0;
+  opacity: 1;
   transform: translateY(0px);
   padding-inline: 4px;
-  transition: transform 0.15s ease, opacity 0.15s ease, font-size 0.15s ease;
+  font-weight: regular;
+  transition: color 0.35s ease, transform 0.35s ease, font-size 0.35s ease, font-weight 0.35s ease;
   background-color: #FEF6F6;
   pointer-events: none;
 }
 
 .inputBoxLogin::placeholder,
 .inputBoxSignup::placeholder {
-  opacity: 1;
-  transition: opacity 0.2s ease;
+  opacity: 0;
 }
 
 .inputBoxLogin:focus::placeholder,
@@ -184,7 +184,9 @@
 .inputWrapper input:focus + .inpLabelContainer,
 .inputWrapper input:not(:placeholder-shown) + .inpLabelContainer {
   color: var(--primary-color);
-  transform: translateY(-13px);
+  font-weight: SemiBold;
+  transform: translateY(-22px);
+  font-size: 14px;
   opacity: 1;
 }
 

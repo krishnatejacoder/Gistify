@@ -15,30 +15,30 @@
 } */
 
 .inpActiveUsername{
-  top: 133px;
+  top: 142px;
 }
 
 .inpActivePassword{
-  top: 211px;
+  top: 221px;
 }
 
 .signup.inpActivePassword{
-  top: 272px;
+  top: 281px;
 }
 
 .inpActiveEmail{
-  top: 202px;
+  top: 211px;
 }
 
 .inpActiveConfirmPassword{
-  top: 444px;
+  top: 454px;
 }
 
 input:-webkit-autofill {
   box-shadow: 0 0 0px 1000px #fef6f6 inset !important;
   -webkit-box-shadow: 0 0 0px 1000px #fef6f6 inset !important;
   -webkit-text-fill-color: black !important;
-  transition: background-color 5000s ease-in-out 0s;
+  transition: background-color 50ms ease-in-out 0s;
 }
 
 .toggleOverlay.signup{
