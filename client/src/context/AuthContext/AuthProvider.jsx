@@ -9,13 +9,13 @@ export default function AuthProvider({children}){
         let parsedUser = null;
 
         if (storedAuthUser && storedAuthUser !== "undefined") {
-        try {
-            parsedUser = JSON.parse(storedAuthUser);
-        } catch (error) {
-            console.error("Error parsing auth user from localStorage:", error);
-            localStorage.removeItem("authUser"); // Clear invalid data
+            try {
+                parsedUser = JSON.parse(storedAuthUser);
+            } catch (error) {
+                console.error("Error parsing auth user from localStorage:", error);
+                localStorage.removeItem("authUser"); // Clear invalid data
+            }
         }
-    }
 
     setUser(parsedUser);
   }, []);

@@ -221,6 +221,7 @@ export default function Dashboard() {
         </div>
 
         {/* MAIN GIST AREA */}
+        {console.log(user)}
         <div className="gistArea">
           <div className="leftC">
             <div className="intro">
@@ -258,7 +259,7 @@ export default function Dashboard() {
                       >
                         Browse
                       </p>
-                      <p className='baloo-2-medium' style={{ color: "rgba(0,0,0,0.77)" }}>PDF</p>
+                      <p className='baloo-2-medium' style={{ color: "rgba(0,0,0,0.77)" }}>PDF / Docx</p>
                     </div>
                   </div>
 

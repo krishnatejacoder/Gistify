@@ -79,6 +79,7 @@ const StyledContainer = styled(ToastContainer)`
     font-size: 15px;
     padding: 10px 33px 11px 13px;
     width: auto;
+    z-index:4;
   }
 
   .Toastify__toast-icon{
@@ -98,7 +99,7 @@ const StyledContainer = styled(ToastContainer)`
 
   .Toastify__toast-body {
     font-size: 15px;
-    color:rgb(43, 43, 43);
+    color:rgb(66, 66, 66);
     letter-spacing: 0%;
     margin: 0;
   }

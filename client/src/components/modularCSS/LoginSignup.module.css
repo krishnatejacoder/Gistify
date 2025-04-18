@@ -113,14 +113,13 @@
 
 .inpLabelContainer {
   position: absolute;
-  left: 45px;
+  left: 43px;
   font-size: 15px;
   color: var(--grey-color);
   opacity: 1;
   transform: translateY(0px);
   padding-inline: 4px;
-  font-weight: 400;
-  transition: color 0.25s ease, transform 0.25s ease, font-size 0.25s ease, font-weight 0.25s ease;
+  transition: color 0.2s ease, transform 0.2s ease, font-size 0.2s ease, font-weight 0.2s ease;
   background-color: #FEF6F6;
   pointer-events: none;
 }

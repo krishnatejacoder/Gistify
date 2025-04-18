@@ -285,10 +285,31 @@ def summarize():
             logger.error(f"An unexpected error occurred while processing doc_id '{doc_id}': {e}", exc_info=True)
             return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
 
+
 @app.route("/ask", methods=["POST"])
 def ask():
-    # ... (rest of your ask route with potential logging if needed)
-    pass
+    data = request.get_json()
+    question = data.get("question")
+    doc_id = data.get("doc_id")
+    if not question or not doc_id:
+        return jsonify({"error": "Both question and doc_id are required"}), 400
+
+    result = collection.get(ids=[doc_id])
+    if not result['documents']:
+        return jsonify({"error": "Document not found"}), 404
+
+    context = result['documents'][0]
+    prompt = f"Answer the question:\nQuestion: {question}\nContext: {context[:5000]}"
+    inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=1024)
+    output = model.generate(inputs.input_ids, max_length=200, num_beams=4, temperature=0.7)
+    answer = tokenizer.decode(output[0], skip_special_tokens=True)
+
+    return jsonify({
+        "answer": answer,
+        "context_used": len(context),
+        "source": result['metadatas'][0].get("source", "Unknown")
+    })
+
 
 if __name__ == "__main__":
     logger.info(f"Model device: {model.device}")

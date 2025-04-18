@@ -62,7 +62,7 @@ export default function LoginSignup() {
         notifySuccess("Login Successful");
         setTimeout(() => {
           setLoading(false);
-          loginContext.login(res.data.username);
+          loginContext.login({username: res.data.username, email: res.data.email });
           localStorage.setItem('accessToken', res.data.token);
           navigate("/dashboard");
         }, 1500);
@@ -210,7 +210,7 @@ export default function LoginSignup() {
                     setLoginFormData((cur) => ({ ...cur, username: e.target.value }))
                   }
                 />
-                <div className={`${styles.inpLabelContainer} inpActiveUsername baloo-2-semiBold`}>
+                <div className={`${styles.inpLabelContainer} inpActiveUsername baloo-2-regular`}>
                   <p>Username</p>
                 </div>
               </div>
@@ -227,7 +227,7 @@ export default function LoginSignup() {
                     setLoginFormData((cur) => ({ ...cur, password: e.target.value }))
                   }
                 />
-                <div className={`${styles.inpLabelContainer} inpActivePassword baloo-2-semiBold`}>
+                <div className={`${styles.inpLabelContainer} inpActivePassword baloo-2-regular`}>
                   <p>Password</p>
                 </div>
                 {showPassword ? (
@@ -264,7 +264,7 @@ export default function LoginSignup() {
                     setSignupFormData((cur) => ({ ...cur, username: e.target.value }))
                   }
                 />
-                <div className={`${styles.inpLabelContainer} inpActiveUsername baloo-2-semiBold`}>
+                <div className={`${styles.inpLabelContainer} inpActiveUsername baloo-2-regular`}>
                   <p>Username</p>
                 </div>
               </div>
@@ -281,7 +281,7 @@ export default function LoginSignup() {
                     setSignupFormData((cur) => ({ ...cur, email: e.target.value }))
                   }
                 />
-                <div className={`${styles.inpLabelContainer} inpActiveEmail baloo-2-semiBold`}>
+                <div className={`${styles.inpLabelContainer} inpActiveEmail baloo-2-regular`}>
                   <p>Email</p>
                 </div>
               </div>
@@ -298,7 +298,7 @@ export default function LoginSignup() {
                     setSignupFormData((cur) => ({ ...cur, password: e.target.value }))
                   }
                 />
-                <div className={`${styles.inpLabelContainer} inpActivePassword signup baloo-2-semiBold`}>
+                <div className={`${styles.inpLabelContainer} inpActivePassword signup baloo-2-regular`}>
                   <p>Password</p>
                 </div>
                 {showPassword ? (
@@ -350,7 +350,7 @@ export default function LoginSignup() {
                     }))
                   }
                 />
-                <div className={`${styles.inpLabelContainer} inpActiveConfirmPassword baloo-2-semiBold`}>
+                <div className={`${styles.inpLabelContainer} inpActiveConfirmPassword baloo-2-regular`}>
                   <p>Confirm Password</p>
                 </div>
               </div>
