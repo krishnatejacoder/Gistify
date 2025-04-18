@@ -181,7 +181,8 @@
   position: relative;
 }
 
-.inputWrapper input:focus + .inpLabelContainer{
+.inputWrapper input:focus + .inpLabelContainer,
+.inputWrapper input:not(:placeholder-shown) + .inpLabelContainer {
   color: var(--primary-color);
   transform: translateY(-22px);
   font-size: 14px;
