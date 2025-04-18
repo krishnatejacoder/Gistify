@@ -119,8 +119,8 @@
   opacity: 1;
   transform: translateY(0px);
   padding-inline: 4px;
-  font-weight: regular;
-  transition: color 0.35s ease, transform 0.35s ease, font-size 0.35s ease, font-weight 0.35s ease;
+  font-weight: 400;
+  transition: color 0.25s ease, transform 0.25s ease, font-size 0.25s ease, font-weight 0.25s ease;
   background-color: #FEF6F6;
   pointer-events: none;
 }
@@ -181,12 +181,11 @@
   position: relative;
 }
 
-.inputWrapper input:focus + .inpLabelContainer,
-.inputWrapper input:not(:placeholder-shown) + .inpLabelContainer {
+.inputWrapper input:focus + .inpLabelContainer{
   color: var(--primary-color);
-  font-weight: SemiBold;
   transform: translateY(-22px);
   font-size: 14px;
+  font-weight: 600;
   opacity: 1;
 }
 
