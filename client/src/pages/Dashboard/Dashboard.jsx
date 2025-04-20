@@ -221,7 +221,7 @@ export default function Dashboard() {
         </div>
 
         {/* MAIN GIST AREA */}
-        {console.log(user)}
+        {/* {console.log(user)} */}
         <div className="gistArea">
           <div className="leftC">
             <div className="intro">

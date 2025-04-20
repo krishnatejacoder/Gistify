@@ -6,7 +6,7 @@ export function DarkModeProvider({children}){
 
     useEffect(() => {
         localStorage.setItem("darkModeChoiceGistify", JSON.stringify(isDarkMode));
-        document.body.style.backgroundColor = isDarkMode ? "#242c24" : "#FFFFFF";
+        document.body.style.backgroundColor = isDarkMode ? "rgba(20,20,20)" : "#FFFFFF";
         // document.body.style.color = isDarkMode ? "white" : "black";
     }, [isDarkMode]);
 

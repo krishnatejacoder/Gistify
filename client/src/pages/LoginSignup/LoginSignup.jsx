@@ -56,7 +56,7 @@ export default function LoginSignup() {
         password: loginFormData.password,
       });
 
-      console.log(res);
+      // console.log(res);
 
       if (res && res.data) {
         notifySuccess("Login Successful");
