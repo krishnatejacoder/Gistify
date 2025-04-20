@@ -3,12 +3,21 @@
 }
 
 .loginSignupContainer{
+  background-color: #FEF6F6;
+  box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.34);
+  border-radius: 27px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  overflow: hidden;
+  will-change: transform, width;
   opacity: 1;
-  transition: height 0.3s ease, width 0.3s ease;
+  transition: height 0.3s ease, width 0.2s ease-out;
 }
 
 .innerContainer{
-  transition: opacity 0.2s ease;
+  transition: opacity 0.05s ease-in-out;
 }
 
 /* .signupToggle:hover::after{
@@ -70,27 +79,28 @@ input:-webkit-autofill {
 .loginContainer{
   width: 360px;
   height: 372px;
-  background-color: #FEF6F6;
-  box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.34);
-  border-radius: 27px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translateX(-50%) translateY(-50%);
 }
 
 .signupContainer{
   width: 408px;
   height: 605px;
-  background-color: #FEF6F6;
-  box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.34);
-  border-radius: 27px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translateX(-50%) translateY(-50%);
 }
 
 .fadeOut{
   opacity: 0;
+}
+
+.toggle{
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  transition: color 0.3s ease, font-weight 0.3s ease;
+}
+
+.toggle:hover{
+  color: rgb(255, 255, 255);
+}
+
+.toggle.active{
+  color: rgba(0, 0, 0, 0.864);
+  font-weight: 600;
 }

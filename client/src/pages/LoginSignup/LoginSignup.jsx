@@ -114,14 +114,8 @@ export default function LoginSignup() {
   }
 
   const handleNavigate = (toLocation) => {
-    containerRef.current.classList.add("fadeOut");
     console.log(containerRef.current.classList)
     navigate(toLocation);
-    
-    const timer = setTimeout(() => {
-      containerRef.current.classList.remove("fadeOut");
-    }, 200);
-    setFadeOutTimer(timer);
   }
   
 
@@ -160,12 +154,6 @@ export default function LoginSignup() {
     }
   }, [signupFormData]);
 
-  useEffect(() => {
-    return () => {
-      clearTimeout(fadeOutTimer); // cleanup
-    };
-  }, [fadeOutTimer]);
-
   return (
     <>
       <div className={`${location.pathname === "/login" ? 'loginContainer' : 'signupContainer'} loginSignupContainer`}>
@@ -201,15 +189,13 @@ export default function LoginSignup() {
               }}
             ></div>
             <p
-              style={{ color: location.pathname === "/login" ? "black" : "white" }}
-              className={`${styles.toggleLogin} baloo-2-semiBold`}
+              className={`${styles.toggleLogin} toggle ${location.pathname == "/login" ? "active" : ""} baloo-2-regular`}
               onClick={() => handleNavigate("/login")}
             >
               Login
             </p>
             <p
-              style={{ color: location.pathname === "/signup" ? "black" : "white" }}
-              className={`${styles.toggleSignUp} baloo-2-semiBold`}
+              className={`${styles.toggleSignUp} toggle ${location.pathname == "/signup" ? "active" : ""} baloo-2-regular`}
               onClick={() => handleNavigate("/signup")}
             >
               Signup
