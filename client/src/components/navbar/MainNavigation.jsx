@@ -27,16 +27,16 @@ export default function NavBar() {
     <div>  
       <nav className="navbar">
         <div className="logo piazzolla-bold">Gistify</div>
-        <ul className="nav-links baloo-2-semiBold">
-        {menuItems.map((item, index) => (
-          <li key={item.name} className="nav-group">
-            <div className={`nav-item ${item.paths.includes(location.pathname) ? "active" : ""}`}>
-              <Link to={item.paths[0]}>{item.name}</Link>
-              {item.paths.includes(location.pathname) && <span className="underline"></span>}
-            </div>
-            {index !== menuItems.length - 1 && <span className="sep"></span>}
-          </li>
-        ))}
+        <ul className="nav-links baloo-2-regular">
+          {menuItems.map((item, index) => (
+            <li key={item.name} className="nav-group">
+              <div className={`nav-item ${item.paths.includes(location.pathname) ? "active" : ""}`}>
+                <Link to={item.paths[0]}>{item.name}</Link>
+                {item.paths.includes(location.pathname) && <span className="underline"></span>}
+              </div>
+              {index !== menuItems.length - 1 && <span className="sep"></span>}
+            </li>
+          ))}
         </ul>
         <div className="icons">
         <img

@@ -1,7 +1,7 @@
 import styles from "../../components/modularCSS/LoginSignup.module.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./LoginSignup.css";
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import Eye from "../../assets/icons/eye/eye.svg?react";
 import EyeSlash from "../../assets/icons/eye/eyeSlash.svg?react";
 import { AuthContext } from "../../context/AuthContext/AuthContext";
@@ -20,6 +20,9 @@ export default function LoginSignup() {
   const navigate = useNavigate();
   const location = useLocation();
   const loginContext = useContext(AuthContext);
+  const [fadeOutTimer, setFadeOutTimer] = useState();
+  const containerRef = useRef();
+
   const validUsers = [{
     username: "shah",
     password: "1234"
@@ -109,6 +112,17 @@ export default function LoginSignup() {
       // console.log(err.response.data);
     }
   }
+
+  const handleNavigate = (toLocation) => {
+    containerRef.current.classList.add("fadeOut");
+    console.log(containerRef.current.classList)
+    navigate(toLocation);
+    
+    const timer = setTimeout(() => {
+      containerRef.current.classList.remove("fadeOut");
+    }, 200);
+    setFadeOutTimer(timer);
+  }
   
 
   useEffect(() => {
@@ -146,9 +160,15 @@ export default function LoginSignup() {
     }
   }, [signupFormData]);
 
+  useEffect(() => {
+    return () => {
+      clearTimeout(fadeOutTimer); // cleanup
+    };
+  }, [fadeOutTimer]);
+
   return (
     <>
-      <div className={location.pathname === "/login" ? styles.loginContainer : styles.signupContainer}>
+      <div className={`${location.pathname === "/login" ? 'loginContainer' : 'signupContainer'} loginSignupContainer`}>
       {loading ? (
         <Loading val={location.pathname === "/login" ? "Logging In" : "Signing Up"} />
       ) : (
@@ -183,185 +203,187 @@ export default function LoginSignup() {
             <p
               style={{ color: location.pathname === "/login" ? "black" : "white" }}
               className={`${styles.toggleLogin} baloo-2-semiBold`}
-              onClick={() => navigate("/login")}
+              onClick={() => handleNavigate("/login")}
             >
               Login
             </p>
             <p
               style={{ color: location.pathname === "/signup" ? "black" : "white" }}
               className={`${styles.toggleSignUp} baloo-2-semiBold`}
-              onClick={() => navigate("/signup")}
+              onClick={() => handleNavigate("/signup")}
             >
               Signup
             </p>
           </div>
 
-          {location.pathname === "/login" ? (
-            <>
-              <div className={styles.inputWrapper}>
-                <input
-                  placeholder="Username"
-                  className={`${styles.inputBoxLogin} baloo-2-regular ${styles.inpBoxUsername}`}
-                  type="text"
-                  name="username"
-                  id="username"
-                  value={loginFormData.username}
-                  onChange={(e) =>
-                    setLoginFormData((cur) => ({ ...cur, username: e.target.value }))
-                  }
-                />
-                <div className={`${styles.inpLabelContainer} inpActiveUsername baloo-2-regular`}>
-                  <p>Username</p>
-                </div>
-              </div>
-              <div className={styles.inputWrapper}>
-                <input
-                  placeholder="Password"
-                  className={`${styles.inputBoxLogin} baloo-2-regular ${styles.inpBoxPassword}`}
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  id="password"
-                  value={loginFormData.password}
-                  required
-                  onChange={(e) =>
-                    setLoginFormData((cur) => ({ ...cur, password: e.target.value }))
-                  }
-                />
-                <div className={`${styles.inpLabelContainer} inpActivePassword baloo-2-regular`}>
-                  <p>Password</p>
-                </div>
-                {showPassword ? (
-                  <Eye
-                    className={styles.eyeIcon}
-                    onClick={() => setShowPassword(false)}
+          <div ref={containerRef} className="innerContainer">
+            {location.pathname === "/login" ? (
+              <>
+                <div className={styles.inputWrapper}>
+                  <input
+                    placeholder="Username"
+                    className={`${styles.inputBoxLogin} baloo-2-regular ${styles.inpBoxUsername}`}
+                    type="text"
+                    name="username"
+                    id="username"
+                    value={loginFormData.username}
+                    onChange={(e) =>
+                      setLoginFormData((cur) => ({ ...cur, username: e.target.value }))
+                    }
                   />
-                ) : (
-                  <EyeSlash
-                    className={styles.eyeIcon}
-                    onClick={() => setShowPassword(true)}
+                  <div className={`${styles.inpLabelContainer} inpActiveUsername baloo-2-regular`}>
+                    <p>Username</p>
+                  </div>
+                </div>
+                <div className={styles.inputWrapper}>
+                  <input
+                    placeholder="Password"
+                    className={`${styles.inputBoxLogin} baloo-2-regular ${styles.inpBoxPassword}`}
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    id="password"
+                    value={loginFormData.password}
+                    required
+                    onChange={(e) =>
+                      setLoginFormData((cur) => ({ ...cur, password: e.target.value }))
+                    }
                   />
-                )}
-              </div>
-              <div className={`${styles.dontMsgContainer} baloo-2-medium`}>
-                <p className={styles.dont}>Don't have an account?</p>
-                <p className={styles.dontCTA} onClick={() => navigate("/signup")}>
-                  SignUp
-                </p>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className={`${styles.inputWrapper}`}>
-                <input
-                  placeholder="Username"
-                  className={`${styles.inputBoxSignup} baloo-2-regular ${styles.inpBoxUsername}`}
-                  type="text"
-                  name="username"
-                  id="username"
-                  value={signupFormData.username}
-                  required
-                  onChange={(e) =>
-                    setSignupFormData((cur) => ({ ...cur, username: e.target.value }))
-                  }
-                />
-                <div className={`${styles.inpLabelContainer} inpActiveUsername baloo-2-regular`}>
-                  <p>Username</p>
+                  <div className={`${styles.inpLabelContainer} inpActivePassword baloo-2-regular`}>
+                    <p>Password</p>
+                  </div>
+                  {showPassword ? (
+                    <Eye
+                      className={styles.eyeIcon}
+                      onClick={() => setShowPassword(false)}
+                    />
+                  ) : (
+                    <EyeSlash
+                      className={styles.eyeIcon}
+                      onClick={() => setShowPassword(true)}
+                    />
+                  )}
                 </div>
-              </div>
-              <div className={styles.inputWrapper}>
-                <input
-                  placeholder="Email"
-                  className={`${styles.inputBoxSignup} baloo-2-regular ${styles.inpBoxEmail}`}
-                  type="email"
-                  name="email"
-                  id="email"
-                  value={signupFormData.email}
-                  required
-                  onChange={(e) =>
-                    setSignupFormData((cur) => ({ ...cur, email: e.target.value }))
-                  }
-                />
-                <div className={`${styles.inpLabelContainer} inpActiveEmail baloo-2-regular`}>
-                  <p>Email</p>
+                <div className={`${styles.dontMsgContainer} baloo-2-medium`}>
+                  <p className={styles.dont}>Don't have an account?</p>
+                  <p className={styles.dontCTA} onClick={() => handleNavigate("/signup")}>
+                    SignUp
+                  </p>
                 </div>
-              </div>
-              <div className={styles.inputWrapper}>
-                <input
-                  placeholder="Password"
-                  className={`${styles.inputBoxSignup} baloo-2-regular ${styles.inpBoxPasswordSignup}`}
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  id="password"
-                  value={signupFormData.password}
-                  required
-                  onChange={(e) =>
-                    setSignupFormData((cur) => ({ ...cur, password: e.target.value }))
-                  }
-                />
-                <div className={`${styles.inpLabelContainer} inpActivePassword signup baloo-2-regular`}>
-                  <p>Password</p>
-                </div>
-                {showPassword ? (
-                  <Eye
-                    className={styles.eyeIconSignup}
-                    onClick={() => setShowPassword(false)}
+              </>
+            ) : (
+              <>
+                <div className={`${styles.inputWrapper}`}>
+                  <input
+                    placeholder="Username"
+                    className={`${styles.inputBoxSignup} baloo-2-regular ${styles.inpBoxUsername}`}
+                    type="text"
+                    name="username"
+                    id="username"
+                    value={signupFormData.username}
+                    required
+                    onChange={(e) =>
+                      setSignupFormData((cur) => ({ ...cur, username: e.target.value }))
+                    }
                   />
-                ) : (
-                  <EyeSlash
-                    className={styles.eyeIconSignup}
-                    onClick={() => setShowPassword(true)}
+                  <div className={`${styles.inpLabelContainer} inpActiveUsername baloo-2-regular`}>
+                    <p>Username</p>
+                  </div>
+                </div>
+                <div className={styles.inputWrapper}>
+                  <input
+                    placeholder="Email"
+                    className={`${styles.inputBoxSignup} baloo-2-regular ${styles.inpBoxEmail}`}
+                    type="email"
+                    name="email"
+                    id="email"
+                    value={signupFormData.email}
+                    required
+                    onChange={(e) =>
+                      setSignupFormData((cur) => ({ ...cur, email: e.target.value }))
+                    }
                   />
-                )}
-              </div>
-              <div className={`${styles.directionsPassword} directionsPassword  baloo-2-medium`}>
-                <div>
-                  <p style={test.oneLower ? { color: "var(--success-color)" } : { color: "var(--danger-color)" }}>
-                    Atleast one lowercase
-                  </p>
-                  <p style={test.oneDigit ? { color: "var(--success-color)" } : { color: "var(--danger-color)" }}>
-                    Atleast one digit
-                  </p>
-                  <p style={test.ln ? { color: "var(--success-color)" } : { color: "var(--danger-color)" }}>
-                    8 to 15 characters long
+                  <div className={`${styles.inpLabelContainer} inpActiveEmail baloo-2-regular`}>
+                    <p>Email</p>
+                  </div>
+                </div>
+                <div className={styles.inputWrapper}>
+                  <input
+                    placeholder="Password"
+                    className={`${styles.inputBoxSignup} baloo-2-regular ${styles.inpBoxPasswordSignup}`}
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    id="password"
+                    value={signupFormData.password}
+                    required
+                    onChange={(e) =>
+                      setSignupFormData((cur) => ({ ...cur, password: e.target.value }))
+                    }
+                  />
+                  <div className={`${styles.inpLabelContainer} inpActivePassword signup baloo-2-regular`}>
+                    <p>Password</p>
+                  </div>
+                  {showPassword ? (
+                    <Eye
+                      className={styles.eyeIconSignup}
+                      onClick={() => setShowPassword(false)}
+                    />
+                  ) : (
+                    <EyeSlash
+                      className={styles.eyeIconSignup}
+                      onClick={() => setShowPassword(true)}
+                    />
+                  )}
+                </div>
+                <div className={`${styles.directionsPassword} directionsPassword  baloo-2-medium`}>
+                  <div>
+                    <p style={test.oneLower ? { color: "var(--success-color)" } : { color: "var(--danger-color)" }}>
+                      Atleast one lowercase
+                    </p>
+                    <p style={test.oneDigit ? { color: "var(--success-color)" } : { color: "var(--danger-color)" }}>
+                      Atleast one digit
+                    </p>
+                    <p style={test.ln ? { color: "var(--success-color)" } : { color: "var(--danger-color)" }}>
+                      8 to 15 characters long
+                    </p>
+                  </div>
+                  <div>
+                    <p style={test.oneUpper ? { color: "var(--success-color)" } : { color: "var(--danger-color)" }}>
+                      Atleast one uppercase
+                    </p>
+                    <p style={test.oneSpecial ? { color: "var(--success-color)" } : { color: "var(--danger-color)" }}>
+                      Atleast one special character: @$#!%*?&
+                    </p>
+                  </div>
+                </div>
+                <div className={styles.inputWrapper}>
+                  <input
+                    placeholder="Confirm Password"
+                    className={`${styles.inputBoxSignup} baloo-2-regular ${styles.inpBoxConfirmPassword}`}
+                    type={showPassword ? "text" : "password"}
+                    name="confirmPassword"
+                    id="confirmPassword"
+                    value={signupFormData.confirmPassword}
+                    required
+                    onChange={(e) =>
+                      setSignupFormData((cur) => ({
+                        ...cur,
+                        confirmPassword: e.target.value,
+                      }))
+                    }
+                  />
+                  <div className={`${styles.inpLabelContainer} inpActiveConfirmPassword baloo-2-regular`}>
+                    <p>Confirm Password</p>
+                  </div>
+                </div>
+                <div className={`${styles.dontMsgContainer} baloo-2-medium`}>
+                  <p className={styles.dont}>Already have an account?</p>
+                  <p className={styles.dontCTA} onClick={() => handleNavigate("/login")}>
+                    Login
                   </p>
                 </div>
-                <div>
-                  <p style={test.oneUpper ? { color: "var(--success-color)" } : { color: "var(--danger-color)" }}>
-                    Atleast one uppercase
-                  </p>
-                  <p style={test.oneSpecial ? { color: "var(--success-color)" } : { color: "var(--danger-color)" }}>
-                    Atleast one special character: @$#!%*?&
-                  </p>
-                </div>
-              </div>
-              <div className={styles.inputWrapper}>
-                <input
-                  placeholder="Confirm Password"
-                  className={`${styles.inputBoxSignup} baloo-2-regular ${styles.inpBoxConfirmPassword}`}
-                  type={showPassword ? "text" : "password"}
-                  name="confirmPassword"
-                  id="confirmPassword"
-                  value={signupFormData.confirmPassword}
-                  required
-                  onChange={(e) =>
-                    setSignupFormData((cur) => ({
-                      ...cur,
-                      confirmPassword: e.target.value,
-                    }))
-                  }
-                />
-                <div className={`${styles.inpLabelContainer} inpActiveConfirmPassword baloo-2-regular`}>
-                  <p>Confirm Password</p>
-                </div>
-              </div>
-              <div className={`${styles.dontMsgContainer} baloo-2-medium`}>
-                <p className={styles.dont}>Already have an account?</p>
-                <p className={styles.dontCTA} onClick={() => navigate("/login")}>
-                  Login
-                </p>
-              </div>
-            </>
-          )}
+              </>
+            )}
+          </div>
           <div className={styles.buttonWrapper}>
             <button className={`${styles.buttonCTA} baloo-2-semiBold`}>
               {location.pathname === "/login" ? "Login" : "Signup"}
