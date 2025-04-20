@@ -3,7 +3,6 @@
   width: 100%;
   max-width: 1440px;
   margin: 0 auto;
-  /* pad: ; */
 }
 
 .dashboardContainer .recentSummaries{
@@ -11,7 +10,7 @@
   top: 10px;
   left: 67px;
   width: 381px;
-  height: 553px;
+  height: 560px;
   background-color: #FEF6F6;
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
   border-radius: 15px;
@@ -29,12 +28,13 @@
 
 .dashboardContainer .recentSummaries .summaries{
   position: absolute;
-  top: 57px;
+  top: 61px;
   left: 25px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 28px;
+  gap: 26px;
+  width: calc(100% - 50px);
 }
 
 .dashboardContainer .recentSummaries .summary{
@@ -44,6 +44,12 @@
   background-color: #F8F7F7;
   border-radius: 14px;
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.14);
+}
+
+.dashboardContainer .recentSummaries .summaries .noSummary {
+  text-align: center;
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 16px;
 }
 
 .dashboardContainer .recentSummaries .summaries .titleCard{
@@ -70,12 +76,14 @@
   bottom: 12px;
   font-size: 14.5px;
   width: 293px;
+  height: 57px;
+  text-overflow: ellipsis;
   color: rgba(67, 67, 67, 0.81);
 }
 
 .dashboardContainer .recentSummaries .viewMore{
   position: absolute;
-  bottom: 15px;
+  bottom: 20px;
   left: 131px;
   width: 119px;
   height: 35px;
@@ -127,12 +135,12 @@
 .dashboardContainer .leftC{
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 17px;
 }
 
 .dashboardContainer .leftC .uploadContent .uploadArea{
   width: 469px;
-  height: 241px;
+  height: 242px;
   stroke-dasharray: 15 8 3 5;
   position: relative;
   border-radius: 20px;
@@ -168,13 +176,25 @@
 }
 
 .dashboardContainer .uploadArea .uploadedFile{
-  margin: 11px 5px 0px 5px;
+  margin: 15px 5px 0px 5px;
   padding: 10px 17px;
   background-color: rgba(254, 246, 246, 0.8);
-  box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.13);
-  border-radius: 15px;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.13);
+  border-radius: 8px;
   display: flex;
   justify-content: space-between;
+  transform: translateY(-10px);
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: all 0.2s ease;
+}
+
+.dashboardContainer .uploadArea .uploadedFile.active{
+  visibility: visible;
+  pointer-events: all;
+  opacity: 1;
+  transform: translateY(0px);
 }
 
 .dashboardContainer .uploadedFile .primary{

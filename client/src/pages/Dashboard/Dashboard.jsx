@@ -20,6 +20,7 @@ export default function Dashboard() {
   const [selectedSummaryOption, setSelectedSummaryOption] = useState(0);
   const [recentSummaries, setRecentSummaries] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [uploadedFileFadeIn, setUploadedFileFadeIn] = useState(false);
 
   const uploadOptions = ['PDF / Docx', 'Text'];
   const summaryOptions = ['Concise', 'Analytical', 'Comprehensive'];
@@ -78,6 +79,7 @@ export default function Dashboard() {
 
     if (isValid) {
       setUploadedFile(file);
+      setUploadedFileFadeIn(true);
       setIsUploaded(true);
     } else {
       notifyError('Please upload a valid PDF or DOCX file');
@@ -98,8 +100,11 @@ export default function Dashboard() {
   };
 
   const handleRemoveFile = () => {
-    setUploadedFile(null);
-    setIsUploaded(false);
+    setUploadedFileFadeIn(false);
+    setTimeout(() => {
+      setIsUploaded(false);
+      setUploadedFile(null);
+    }, 300);
   };
 
   const handleGistItClick = async () => {
@@ -272,21 +277,23 @@ export default function Dashboard() {
                     key={uploadedFile ? "file-input-1" : "file-input-0"}
                   />
 
-                  {isUploaded && (
-                    <div className="uploadedFile">
-                      <div className="primary">
-                        <img className="PDF" src={PDF} alt="pdf" />
-                        <p className='baloo-2-medium' style={{ color: "black", fontSize: "15px" }}>{uploadedFile.name}</p>
-                      </div>
-                      <img
-                        className='cross'
-                        src={cross}
-                        alt="cross"
-                        onClick={handleRemoveFile}
-                        style={{ cursor: "pointer" }}
-                      />
-                    </div>
-                  )}
+                  <div className={`uploadedFile ${uploadedFileFadeIn ? "active" : ""}`}>
+                    {isUploaded && (
+                      <>
+                        <div className="primary">
+                          <img className="PDF" src={PDF} alt="pdf" />
+                          <p className='baloo-2-medium' style={{ color: "black", fontSize: "15px" }}>{uploadedFile.name}</p>
+                        </div>
+                        <img
+                          className='cross'
+                          src={cross}
+                          alt="cross"
+                          onClick={handleRemoveFile}
+                          style={{ cursor: "pointer" }}
+                        />
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
             ) : (
@@ -353,7 +360,7 @@ export default function Dashboard() {
             </div>
             <button 
               type='submit' 
-              disabled={(!isUploaded && !text.trim()) || loading} 
+              disabled={(!uploadedFileFadeIn && !text.trim()) || loading} 
               className='gistIt baloo-2-semiBold'
             >
               {loading ? 'Processing...' : 'Gist IT!'}
