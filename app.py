@@ -17,17 +17,9 @@ import requests
 from io import BytesIO
 from dotenv import load_dotenv
 import cloudinary.utils  # <-- Add this import
-from bson import ObjectId
-
-class CustomJSONEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, ObjectId):
-            return str(obj)
-        return json.JSONEncoder.default(self, obj)
 
 app = Flask(__name__)
 CORS(app)
-app.json_encoder = CustomJSONEncoder
 
 # Load environment variables
 load_dotenv()
@@ -236,6 +228,10 @@ def summarize():
             }
             result = summaries_collection.insert_one(summary_data)
             logger.info(f"Summary saved to MongoDB for doc_id: {new_doc_id}")
+
+            summary_doc = summaries_collection.find_one({"_id": result.inserted_id})
+
+            logger.info(summary_doc)
 
             return jsonify({
                 "summaryId": str(result.inserted_id),

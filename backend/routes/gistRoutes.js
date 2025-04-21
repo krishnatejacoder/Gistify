@@ -17,7 +17,7 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
 
   try {
     console.log("Hai")
-    const ragResponse = await axios.post('http://127.0.0.1:5001/summarize', {
+    const ragResponse = await axios.post('http://127.0.0.1:5001/summarize', {   // check
       ...req.body,
       file_path: fileContent
     });
@@ -32,12 +32,14 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
     // This is one of the most common issues when dealing with MongoDB IDs
     try {
       summaryId = new mongoose.Types.ObjectId(summaryId);
+      console.log(summaryId)
     } catch (err) {
       console.error("Invalid ObjectId format:", err);
       return res.status(400).json({ error: 'Invalid summary ID format' });
     }
-    
-    const summary = await Summary.findById(summaryId);
+    console.log(summaryId);
+    // const summary = await Summary.findById(summaryId);
+    const summary = await Summary.findOne({_id: summaryId});
     console.log("Found summary:", summary);
     
     if (!summary) return res.status(404).json({ error: 'Summary not found in DB' });
