@@ -222,16 +222,17 @@ def summarize():
                 "file_id": source_file_id,
                 "fileUrl": cloudinary_url,
                 "summary": summary,
+                "advantages": advantages,
+                "disadvantages": disadvantages,
                 "chromaId":new_doc_id,
-                "summaryText": summary,
                 "summaryType": data.get("summary_type"),
             }
             result = summaries_collection.insert_one(summary_data)
             logger.info(f"Summary saved to MongoDB for doc_id: {new_doc_id}")
 
-            summary_doc = summaries_collection.find_one({"_id": result.inserted_id})
+            # summary_doc = summaries_collection.find_one({"_id": result.inserted_id})
 
-            logger.info(summary_doc)
+            # logger.info(summary_doc)
 
             return jsonify({
                 "summaryId": str(result.inserted_id),

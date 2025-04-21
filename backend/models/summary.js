@@ -21,13 +21,13 @@ const SummarySchema = new mongoose.Schema({
     type: String, 
     required: true 
   },
-  summaryText: { 
+  advantages: { 
     type: String, 
     required: true 
   },
-  date: { 
-    type: Date, 
-    default: Date.now 
+  disadvantages: { 
+    type: String, 
+    required: true 
   },
   summaryType: {
     type: String,

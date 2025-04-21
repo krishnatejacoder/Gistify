@@ -30,13 +30,6 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
     
     // Convert the string ID to a MongoDB ObjectId
     // This is one of the most common issues when dealing with MongoDB IDs
-    try {
-      summaryId = new mongoose.Types.ObjectId(summaryId);
-      console.log(summaryId)
-    } catch (err) {
-      console.error("Invalid ObjectId format:", err);
-      return res.status(400).json({ error: 'Invalid summary ID format' });
-    }
     console.log(summaryId);
     // const summary = await Summary.findById(summaryId);
     const summary = await Summary.findOne({_id: summaryId});
@@ -45,7 +38,7 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
     if (!summary) return res.status(404).json({ error: 'Summary not found in DB' });
 
     const gist = new Gist({
-      userId: req.userId,
+      userId: req.body.userId,
       summaryId: summaryId,
       title
     });
@@ -55,9 +48,11 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
     res.json({ 
       gistId: gist._id,
       title, 
-      summaryText: summary.summaryText, 
+      summary: summary.summary, 
+      advantages: summary.advantages, 
+      disadvantages: summary.disadvantages, 
       fileURL: summary.fileUrl, 
-      date: summary.date, 
+      date: Date.now(), 
       summaryType: summary.summaryType 
     });
   } catch (error) {
