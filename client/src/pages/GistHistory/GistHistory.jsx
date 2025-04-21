@@ -51,11 +51,11 @@ export default function GistHistory() {
   }
 
   if (error) {
-    return <div className="gist-history-container error">{error}</div>;
+    return <div className="gist-history-container error baloo-2-medium">{error}</div>;
   }
 
   if (!user) {
-    return <div className="gist-history-container">Please log in to view your gist history.</div>;
+    return <div className="gist-history-container baloo-2-medium">Please log in to view your gist history.</div>;
   }
 
   return (
@@ -66,11 +66,9 @@ export default function GistHistory() {
           <div key={item._id} className="history-card" onClick={() => handleCardClick(item)} style={{ cursor: 'pointer' }}>
             <div className="card-left">
               <h2 className="card-title baloo-2-medium">{item.title}</h2>
-              {/* You might want to display the original filename or a formatted date here */}
               <p className="card-created baloo-2-regular">Created On: {new Date(item.createdAt).toLocaleDateString()}</p>
             </div>
             <div className="card-right">
-              {/* You can add more details here if needed */}
             </div>
           </div>
         ))}

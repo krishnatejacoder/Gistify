@@ -90,7 +90,9 @@ router.get('/document/:id', authenticateToken, async (req, res) => {
 // Gist History: Fetch all user gists
 router.get('/history', authenticateToken, async (req, res) => {
   try {
-    const gists = await Gist.find({ userId: req.user.id }).sort({ createdAt: -1 });
+    const gists = await Gist.find({ userId: req.user.userId }).sort({ createdAt: -1 });
+    console.log(gists)
+    // console.log(req)
     res.json(gists);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch history' });
