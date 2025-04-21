@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
 
 const SummarySchema = new mongoose.Schema({
-  userId: { 
+  user_id: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: "User", 
     required: true 
   },
-  fileId: { 
+  file_id: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: "File", 
     required: true 
@@ -17,6 +17,10 @@ const SummarySchema = new mongoose.Schema({
     ref: "ChromaDB", 
     required: true 
   },
+  summary: { 
+    type: String, 
+    required: true 
+  },
   summaryText: { 
     type: String, 
     required: true 
@@ -25,11 +29,11 @@ const SummarySchema = new mongoose.Schema({
     type: Date, 
     default: Date.now 
   },
-  summaryType : {
-    type : String,
-    enum : ['concise','analytical','comprehensive'],
-    required : true
+  summaryType: {
+    type: String,
+    enum: ['concise', 'analytical', 'comprehensive'],
+    required: true
   }
 });
 
-module.exports = mongoose.model("Summary", SummarySchema);
+module.exports = mongoose.model("Summary", SummarySchema, "Summary");
