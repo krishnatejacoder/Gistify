@@ -26,12 +26,12 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
 
     const summaryId = ragResponse.data.summaryId;
 
-    const summary = await Summary.findById(summaryId);
-    if (!summary) return res.status(404).json({ error: 'Summary not found in DB' });
+    // const summary = await Summary.findById(summaryId);
+    // if (!summary) return res.status(404).json({ error: 'Summary not found in DB' });
 
     const gist = new Gist({
-      userId: req.user.id,
-      summaryId: summary._id,
+      userId: req.userId,
+      summaryId: summaryId,
       title
       // chat is null by default
     });
