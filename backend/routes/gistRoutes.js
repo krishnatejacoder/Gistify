@@ -7,7 +7,6 @@ const Gist = require('../models/Gist');
 const Summary = require('../models/Summary'); // 👈 Import the Summary model
 const authenticateToken = require('../middleware/auth');
 const axios = require('axios');
-const mongoose = require('mongoose');
 
 router.post('/upload', authenticateToken, upload.single('file'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
@@ -26,23 +25,9 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
     console.log(ragResponse)
 
     const summaryId = ragResponse.data.summaryId;
-    console.log('Received summaryId from Flask:', summaryId);
-    if (!mongoose.Types.ObjectId.isValid(summaryId)) {
-      console.error('Invalid summaryId format:', summaryId);
-      return res.status(400).json({ error: 'Invalid summaryId format' });
-    }
-    console.log('Querying Summary with summaryId:', summaryId);
-    let summary = await Summary.findById(summaryId);
-    console.log('Retrieved Summary from findById:', summary);
-    if (!summary) {
-      console.warn('Summary not found by _id, trying chromaId:', ragResponse.data.chromaId);
-      summary = await Summary.findOne({ chromaId: ragResponse.data.chromaId });
-      console.log('Retrieved Summary from chromaId:', summary);
-      if (!summary) {
-        console.error('Summary not found by chromaId:', ragResponse.data.chromaId);
-        return res.status(404).json({ error: 'Summary not found in DB' });
-      }
-    }
+
+    const summary = await Summary.findById(summaryId);
+    if (!summary) return res.status(404).json({ error: 'Summary not found in DB' });
 
     const gist = new Gist({
       userId: req.user.id,
