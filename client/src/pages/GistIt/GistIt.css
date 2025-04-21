@@ -1,13 +1,18 @@
 .gistitContainer {
-  position: relative;
+  position: absolute;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  padding: 25px 55px 0px 75px;
+  justify-content: center;
   gap: 58px;
 }
 
 .contentDisplay {
-  height: 529px;
-  width: 410px;
+  position: relative;
+  bottom: 50px;
+  height: 549px;
+  width: 450px;
   overflow: auto;
   border: 2px solid black;
 }
@@ -124,4 +129,9 @@
 .gistInfo{
   font-size: 14.5px;
   color: #232323;
+}
+
+.gistitContainer .back{
+  position: absolute;
+  top: -55px;
 }

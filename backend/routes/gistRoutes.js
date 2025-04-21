@@ -65,12 +65,38 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
   }
 });
 
-// Dashboard: Fetch recent summaries
 router.get('/recent', authenticateToken, async (req, res) => {
   try {
-    const gists = await Gist.find({ userId: req.user.id }).sort({ createdAt: -1 }).limit(10);
-    res.json(gists);
+    const gists = await Gist.find({ userId: req.user.userId })
+      .sort({ createdAt: -1 })
+      .limit(3);
+    console.log('Gists fetched:', gists);
+
+    const data = await Promise.all(
+      gists.map(async (gist) => {
+        const summary = await Summary.findOne({ _id: gist.summaryId });
+        let truncatedSummary = summary.summary
+        if(truncatedSummary.length > 100){
+          truncatedSummary = truncatedSummary.substring(0, 100) + '...'
+        }
+        return {
+          ...gist.toObject(), 
+          summary: summary ? summary.summary : null,
+          truncatedSummary: truncatedSummary ? truncatedSummary : null,
+          advantages: summary ? summary.advantages : 'Unknown',
+          disadvantages: summary ? summary.disadvantages : 'Unknown',
+          file_id: summary ? summary.file_id : null,
+          fileUrl: summary ? summary.fileUrl : null,
+          chromaId: summary ? summary.chromaId : null,
+          summaryType: summary ? summary.summaryType : null,
+        };
+      })
+    );
+
+    // console.log('Response data:', data);
+    res.json(data);
   } catch (error) {
+    console.error('Error fetching recent summaries:', error);
     res.status(500).json({ error: 'Failed to fetch recent summaries' });
   }
 });
@@ -91,7 +117,7 @@ router.get('/document/:id', authenticateToken, async (req, res) => {
 router.get('/history', authenticateToken, async (req, res) => {
   try {
     const gists = await Gist.find({ userId: req.user.userId }).sort({ createdAt: -1 });
-    console.log(gists)
+    // console.log(gists)
     // console.log(req)
     res.json(gists);
   } catch (error) {

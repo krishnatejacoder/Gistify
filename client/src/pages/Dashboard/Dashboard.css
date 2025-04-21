@@ -55,7 +55,7 @@
 .dashboardContainer .recentSummaries .summaries .titleCard{
   width: calc(100% - 38px);
   position: absolute;
-  top: 13px;
+  top: 12px;
   left: 19px;
   display: flex;
   justify-content: space-between;
@@ -70,14 +70,14 @@
   font-size: 14px;
 }
 
-.dashboardContainer .summary .desc{
+.dashboardContainer .summary .desc {
   position: absolute;
-  left: 19px;
-  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 42px;
   font-size: 14.5px;
   width: 293px;
   height: 57px;
-  text-overflow: ellipsis;
   color: rgba(67, 67, 67, 0.81);
 }
 

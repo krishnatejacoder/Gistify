@@ -1,9 +1,23 @@
 /* ChatbotPage.css */
 .chatbot-container {
-  padding: 20px;
+  margin: 60px 45px;
   display: flex;
   justify-content: center;
   gap: 42px;
+}
+
+.chatbot-container .back{
+  position: absolute;
+  right: 45px;
+  top: 13px;
+  background-color: #5E5FA5;
+  color: white;
+  font-size: 16px;
+  width: 92px;
+  height: 35px;
+  text-align: center;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
 }
 
 .summary-display {

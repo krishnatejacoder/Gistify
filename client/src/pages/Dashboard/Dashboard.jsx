@@ -213,7 +213,7 @@ export default function Dashboard() {
                       {new Date(summary.createdAt).toLocaleDateString()}
                     </p>
                   </div>
-                  <p className="desc baloo-2-regular">{summary.summary}</p>
+                  <p className="desc baloo-2-regular">{summary.truncatedSummary}</p>
                 </div>
               ))
             ) : (

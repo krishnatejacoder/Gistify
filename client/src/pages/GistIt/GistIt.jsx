@@ -117,7 +117,8 @@ export default function GistIt() {
   }, [location.state]);
 
   const goToChatbot = () => {
-    navigate('/chatbot', { state: { summary: summary, content: content } });
+    console.log(location.state)
+    navigate('/chatbot', { state: location.state  });
   };
 
   if (isLoading) {
@@ -152,6 +153,7 @@ export default function GistIt() {
           <div>Failed to load file.</div>
         )}
       </div>
+      {/* <button className='baloo-2-semiBold back' onClick={goToChatbot}>Continue to Chat Bot</button> */}
       <div className='secondHalf'>
         <div className="summary-section">
           <h2 className='baloo-2-semiBold'>Summary ({location.state?.gistData?.summaryType || 'concise'})</h2>

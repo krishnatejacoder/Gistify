@@ -67,6 +67,7 @@ export default function GistHistory() {
             <div className="card-left">
               <h2 className="card-title baloo-2-medium">{item.title}</h2>
               <p className="card-created baloo-2-regular">Created On: {new Date(item.createdAt).toLocaleDateString()}</p>
+              <p className="card-desc">{item.summary}</p>
             </div>
             <div className="card-right">
             </div>
