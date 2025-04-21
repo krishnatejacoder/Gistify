@@ -254,8 +254,8 @@ export default function Dashboard() {
                   onDrop={handleDrop}
                   tabIndex="0"
                 >
-                  <img src={uploadArea} alt="uploadArea" />
-                  <img className='uploadCloud' src={uploadCloud} alt="cloud" />
+                  <img draggable="false" src={uploadArea} alt="uploadArea" />
+                  <img draggable="false" className='uploadCloud' src={uploadCloud} alt="cloud" />
 
                   <div className="text">
                     <p className='baloo-2-medium' style={{ color: "rgba(0,0,0,0.77)" }}>Drag & Drop</p>

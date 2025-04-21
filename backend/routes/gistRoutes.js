@@ -7,13 +7,13 @@ const Gist = require('../models/Gist');
 const Summary = require('../models/Summary'); // 👈 Import the Summary model
 const authenticateToken = require('../middleware/auth');
 const axios = require('axios');
+const mongoose = require('mongoose'); 
 
 router.post('/upload', authenticateToken, upload.single('file'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
 
   const title = req.body.title || req.file.originalname.split('.')[0];
   const fileContent = req.file.path;
-  // console.log(req)
 
   try {
     console.log("Hai")
@@ -24,27 +24,49 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
     console.log("yaaa")
     console.log(ragResponse)
 
-    const summaryId = ragResponse.data.summaryId;
-
-    // const summary = await Summary.findById(summaryId);
-    // if (!summary) return res.status(404).json({ error: 'Summary not found in DB' });
+    let summaryId = ragResponse.data.summaryId;
+    
+    console.log("Fetching summary with ID:", summaryId);
+    
+    // Convert the string ID to a MongoDB ObjectId
+    // This is one of the most common issues when dealing with MongoDB IDs
+    try {
+      summaryId = new mongoose.Types.ObjectId(summaryId);
+    } catch (err) {
+      console.error("Invalid ObjectId format:", err);
+      return res.status(400).json({ error: 'Invalid summary ID format' });
+    }
+    
+    const summary = await Summary.findById(summaryId);
+    console.log("Found summary:", summary);
+    
+    if (!summary) return res.status(404).json({ error: 'Summary not found in DB' });
 
     const gist = new Gist({
       userId: req.userId,
       summaryId: summaryId,
       title
-      // chat is null by default
     });
 
     await gist.save();
 
-    res.json({ gistId: gist._id, title, summaryText: summary.summaryText });
+    res.json({ 
+      gistId: gist._id,
+      title, 
+      summaryText: summary.summaryText, 
+      fileURL: summary.fileUrl, 
+      date: summary.date, 
+      summaryType: summary.summaryType 
+    });
   } catch (error) {
-    console.error('Upload error:', error);
+    console.error('Upload error:', error.message);
+    if (error.response) {
+      console.error('Response data:', error.response.data);
+      console.error('Response status:', error.response.status);
+    }
     res.status(500).json({ error: 'Failed to generate summary' });
   }
 });
-
 
 // Dashboard: Fetch recent summaries
 router.get('/recent', authenticateToken, async (req, res) => {
