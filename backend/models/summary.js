@@ -11,6 +11,12 @@ const SummarySchema = new mongoose.Schema({
     ref: "File", 
     required: true 
   },
+  fileUrl: { type: String, required: true },
+  chromaId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "ChromaDB", 
+    required: true 
+  },
   summaryText: { 
     type: String, 
     required: true 
@@ -19,6 +25,11 @@ const SummarySchema = new mongoose.Schema({
     type: Date, 
     default: Date.now 
   },
+  summaryType : {
+    type : String,
+    enum : ['concise','analytical','comprehensive'],
+    required : true
+  }
 });
 
 module.exports = mongoose.model("Summary", SummarySchema);

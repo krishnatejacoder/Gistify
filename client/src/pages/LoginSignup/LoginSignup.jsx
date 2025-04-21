@@ -65,7 +65,7 @@ export default function LoginSignup() {
         notifySuccess("Login Successful");
         setTimeout(() => {
           setLoading(false);
-          loginContext.login({username: res.data.username, email: res.data.email });
+          loginContext.login({username: res.data.username, email: res.data.email, userId: res.data.userId });
           localStorage.setItem('accessToken', res.data.token);
           navigate("/dashboard");
         }, 1500);

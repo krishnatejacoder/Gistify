@@ -4,24 +4,62 @@ const { cloudinary, storage } = require('../cloudinary/index');
 const multer = require('multer');
 const upload = multer({ storage });
 const Gist = require('../models/Gist');
+const Summary = require('../models/Summary'); // 👈 Import the Summary model
 const authenticateToken = require('../middleware/auth');
-const axios = require('axios'); // For Flask RAG API call
+const axios = require('axios');
+const mongoose = require('mongoose');
 
-// Dashboard: Upload research paper
 router.post('/upload', authenticateToken, upload.single('file'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+
   const title = req.body.title || req.file.originalname.split('.')[0];
-  const fileContent = req.file.path; // Path to send to RAG
+  const fileContent = req.file.path;
+  // console.log(req)
+
   try {
-    const ragResponse = await axios.post('http://localhost:5000/summarize', { file: fileContent });
-    const summary = ragResponse.data.summary;
-    const gist = new Gist({ userId: req.user.id, fileUrl: req.file.path, summary, title });
+    console.log("Hai")
+    const ragResponse = await axios.post('http://127.0.0.1:5001/summarize', {
+      ...req.body,
+      file_path: fileContent
+    });
+    console.log("yaaa")
+    console.log(ragResponse)
+
+    const summaryId = ragResponse.data.summaryId;
+    console.log('Received summaryId from Flask:', summaryId);
+    if (!mongoose.Types.ObjectId.isValid(summaryId)) {
+      console.error('Invalid summaryId format:', summaryId);
+      return res.status(400).json({ error: 'Invalid summaryId format' });
+    }
+    console.log('Querying Summary with summaryId:', summaryId);
+    let summary = await Summary.findById(summaryId);
+    console.log('Retrieved Summary from findById:', summary);
+    if (!summary) {
+      console.warn('Summary not found by _id, trying chromaId:', ragResponse.data.chromaId);
+      summary = await Summary.findOne({ chromaId: ragResponse.data.chromaId });
+      console.log('Retrieved Summary from chromaId:', summary);
+      if (!summary) {
+        console.error('Summary not found by chromaId:', ragResponse.data.chromaId);
+        return res.status(404).json({ error: 'Summary not found in DB' });
+      }
+    }
+
+    const gist = new Gist({
+      userId: req.user.id,
+      summaryId: summary._id,
+      title
+      // chat is null by default
+    });
+
     await gist.save();
-    res.json({ url: req.file.path, public_id: req.file.filename, summary, title });
+
+    res.json({ gistId: gist._id, title, summaryText: summary.summaryText });
   } catch (error) {
+    console.error('Upload error:', error);
     res.status(500).json({ error: 'Failed to generate summary' });
   }
 });
+
 
 // Dashboard: Fetch recent summaries
 router.get('/recent', authenticateToken, async (req, res) => {

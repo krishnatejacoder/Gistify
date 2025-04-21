@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/gistifyDB")
 client = MongoClient(MONGO_URI)
 db = client["gistifyDB"]
-summaries_collection = db["summaries"]
+summaries_collection = db["Summary"]
 
 # ChromaDB connection
 chroma_client = PersistentClient(path="./chroma_db")
@@ -148,7 +148,7 @@ def summarize():
     summary_type = data.get("summary_type")
     file_name = data.get("file_name")
 
-    print()
+    logger.info("Hai")
 
     logger.info(f"Received /summarize request with: doc_id='{doc_id}', file_path='{file_path}', summary_type='{summary_type}', file_name='{file_name}'")
 
@@ -174,7 +174,7 @@ def summarize():
             collection.add(
                 ids=[new_doc_id],
                 documents=[text],
-                metadatas=[{"source": file_name, "cloudinary_url": file_path}]
+                metadatas=[{"source": doc_id, "cloudinary_url": file_path}]
             )
             logger.info(f"Added document to ChromaDB with id: {new_doc_id}")
 
@@ -187,11 +187,11 @@ def summarize():
             full_text = result['documents'][0]
             metadata = result['metadatas'][0]
             cloudinary_url = metadata.get("cloudinary_url", "")
-            source_file_name = metadata.get("source", "Unknown")
+            source_file_id = metadata.get("source", "Unknown")
             logger.info(f"Retrieved full_text (first 100 chars): '{full_text[:100]}...', metadata: {metadata}")
 
             def generate(text, task):
-                input_text = f"{task}:\n{text[:5000]}"
+                input_text = f"{task}:\n{text[:1024]}"
                 logger.info(f"Generating '{task}' summary with input (first 100 chars): '{input_text[:100]}...'")
                 inputs = tokenizer(input_text, return_tensors="pt", truncation=True, max_length=1024)
                 # Move inputs to the same device as model
@@ -205,25 +205,32 @@ def summarize():
             advantages = generate(full_text, "List advantages")
             disadvantages = generate(full_text, "List disadvantages")
 
-            summary_data = {
+            gist_data = {
+                "user_id": data.get("userId"),
                 "doc_id": new_doc_id,
-                "source": source_file_name,
+                "source": source_file_id,
                 "cloudinary_url": cloudinary_url,
                 "summary": summary,
                 "advantages": advantages,
                 "disadvantages": disadvantages,
                 "timestamp": datetime.utcnow()
             }
-            summaries_collection.insert_one(summary_data)
+
+            summary_data = {
+                "user_id": data.get("userId"),
+                "file_id": source_file_id,
+                "fileUrl": cloudinary_url,
+                "summary": summary,
+                "chromaId":new_doc_id,
+                "summaryText": summary,
+                "summaryType": data.get("summary_type"),
+            }
+            result = summaries_collection.insert_one(summary_data)
             logger.info(f"Summary saved to MongoDB for doc_id: {new_doc_id}")
 
             return jsonify({
-                "summary": summary,
-                "advantages": advantages,
-                "disadvantages": disadvantages,
-                "source": source_file_name,
-                "cloudinary_url": cloudinary_url
-            })  # Explicit return after processing file_path
+                "summaryId": str(result.inserted_id),
+            })
 
         except Exception as e:
             logger.error(f"An unexpected error occurred while processing file_path: {e}", exc_info=True)
@@ -248,7 +255,7 @@ def summarize():
             logger.info(f"Retrieved full_text (first 100 chars): '{full_text[:100]}...', metadata: {metadata}")
 
             def generate(text, task):
-                input_text = f"{task}:\n{text[:5000]}"
+                input_text = f"{task}:\n{text[:1024]}"
                 logger.info(f"Generating '{task}' summary with input (first 100 chars): '{input_text[:100]}...'")
                 inputs = tokenizer(input_text, return_tensors="pt", truncation=True, max_length=1024)
                 output = model.generate(inputs.input_ids, max_length=500, num_beams=4, temperature=0.7)
@@ -299,7 +306,7 @@ def ask():
         return jsonify({"error": "Document not found"}), 404
 
     context = result['documents'][0]
-    prompt = f"Answer the question:\nQuestion: {question}\nContext: {context[:5000]}"
+    prompt = f"Answer the question:\nQuestion: {question}\nContext: {context[:1024]}"
     inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=1024)
     output = model.generate(inputs.input_ids, max_length=200, num_beams=4, temperature=0.7)
     answer = tokenizer.decode(output[0], skip_special_tokens=True)

@@ -116,6 +116,7 @@ export default function Dashboard() {
       if (selectedUploadOption === 0 && uploadedFile) {
         const formData = new FormData();
         formData.append('file', uploadedFile);
+        formData.append("userId",  JSON.parse(localStorage.getItem("userGistify")).userId);
 
         const uploadResponse = await axios.post('http://localhost:5000/files/upload', formData, {
           headers: {
@@ -131,12 +132,15 @@ export default function Dashboard() {
         console.log(filePath);
 
         if (!filePath) throw new Error('No file path returned from server');
+        formData.append("doc_id", uploadResponse.data.file.id)
+        formData.append("file_path", filePath)
+        formData.append("summary_type", summaryOptions[selectedSummaryOption].toLowerCase())
+        formData.append("file_name", uploadedFile.name)
 
-        const flaskResponse = await axios.post('http://localhost:5001/summarize', {
-          doc_id: uploadResponse.data.file.id,
-          file_path: filePath,
-          summary_type: summaryOptions[selectedSummaryOption].toLowerCase(),
-          file_name: uploadedFile.name,
+        const flaskResponse = await axios.post('http://localhost:5000/api/gists/upload', formData, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
         });
 
         console.log(flaskResponse)
