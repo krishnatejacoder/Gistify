@@ -27,6 +27,8 @@
   padding: 15px;
   margin-bottom: 20px;
   width: 80%;
+  height: 529px;
+  overflow: auto;
 }
 
 .summary-display h2 {
@@ -93,4 +95,19 @@
 
 .input-area button:hover {
   background-color: #218838;
+}
+
+.gistTitles{
+  font-size: 14.5px;
+  color: #6E00B3;
+}
+
+.gistInfo{
+  font-size: 14.5px;
+  color: #232323;
+}
+
+.gistitContainer .back{
+  position: absolute;
+  top: -55px;
 }

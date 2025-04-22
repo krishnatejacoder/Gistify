@@ -235,7 +235,7 @@ def summarize():
             # logger.info(summary_doc)
 
             return jsonify({
-                "summaryId": str(result.inserted_id),
+                "summaryId": str(result.inserted_id), "chromaId": new_doc_id
             })
 
         except Exception as e:
@@ -298,12 +298,13 @@ def summarize():
             logger.error(f"An unexpected error occurred while processing doc_id '{doc_id}': {e}", exc_info=True)
             return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
 
-
 @app.route("/ask", methods=["POST"])
 def ask():
     data = request.get_json()
     question = data.get("question")
     doc_id = data.get("doc_id")
+    logger.info(doc_id)
+    logger.info(question)
     if not question or not doc_id:
         return jsonify({"error": "Both question and doc_id are required"}), 400
 
@@ -314,7 +315,12 @@ def ask():
     context = result['documents'][0]
     prompt = f"Answer the question:\nQuestion: {question}\nContext: {context[:1024]}"
     inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=1024)
-    output = model.generate(inputs.input_ids, max_length=200, num_beams=4, temperature=0.7)
+    
+    # Move inputs to the same device as the model
+    device = model.device
+    inputs = {k: v.to(device) for k, v in inputs.items()}
+    
+    output = model.generate(**inputs, max_length=200, num_beams=4, temperature=0.7)
     answer = tokenizer.decode(output[0], skip_special_tokens=True)
 
     return jsonify({
@@ -322,7 +328,6 @@ def ask():
         "context_used": len(context),
         "source": result['metadatas'][0].get("source", "Unknown")
     })
-
 
 if __name__ == "__main__":
     logger.info(f"Model device: {model.device}")

@@ -1,63 +1,3 @@
-// // ChatbotPage.jsx (Create this new component)
-// import React, { useState } from 'react';
-// import { useLocation, useNavigate } from 'react-router-dom';
-// import './ChatBot.css'; // Create this CSS file
-
-// const ChatbotPage = () => {
-//   const location = useLocation();
-//   const { summary, content } = location.state || {};
-//   const [question, setQuestion] = useState('');
-//   const [messages, setMessages] = useState([]);
-//   const navigate = useNavigate();
-
-//   const handleSendMessage = () => {
-//     if (question.trim()) {
-//       const newUserMessage = { text: question, sender: 'user' };
-//       setMessages([...messages, newUserMessage]);
-//       setQuestion('');
-
-//       // Simulate receiving an AI response (replace with your actual API call)
-//       setTimeout(() => {
-//         const aiResponse = { text: `AI response to: "${question}" based on the summary.`, sender: 'ai' };
-//         setMessages([...messages, newUserMessage, aiResponse]);
-//       }, 1000);
-//     }
-//   };
-
-  
-//   return (
-//     <div className="chatbot-container">
-//       <button className='baloo-2-semiBold back' onClick={handleGoBack}>Back</button>
-//       <div className="summary-display">
-//         <h2>Summary</h2>
-//         <p>{summary || 'No summary available.'}</p>
-//       </div>
-//       <div className="chat-area">
-//         <div className="message-list">
-//           {messages.map((msg, index) => (
-//             <div key={index} className={`message ${msg.sender}`}>
-//               {msg.text}
-//             </div>
-//           ))}
-//         </div>
-//         <div className="input-area">
-//           <input
-//             type="text"
-//             placeholder="Ask a question..."
-//             value={question}
-//             onChange={(e) => setQuestion(e.target.value)}
-//           />
-//           <button onClick={handleSendMessage}>Send</button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ChatbotPage;
-
-
-// ChatbotPage.jsx
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './ChatBot.css';
@@ -65,56 +5,64 @@ import './ChatBot.css';
 const ChatbotPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { summary, content } = location.state.gistData || {};
+  const gistData = location.state?.gistData || {};
+  const { advantages: summary, content, sourceType, originalFileName, file } = gistData;
   const [question, setQuestion] = useState('');
   const [messages, setMessages] = useState([]);
-  const [isAsking, setIsAsking] = useState(false); // To disable input while waiting for response
+  const [isAsking, setIsAsking] = useState(false);
 
   const handleSendMessage = async () => {
-    if (question.trim() && content?.data) {
-      setIsAsking(true);
-      const newUserMessage = { text: question, sender: 'user' };
-      setMessages([...messages, newUserMessage]);
-      setQuestion('');
+    if (!question.trim()) return; // Ignore empty questions
+    if (!content) {
+      setMessages([
+        ...messages,
+        {
+          text: 'No content available to ask questions about. Please upload a file or select a gist first.',
+          sender: 'ai',
+          isError: true,
+        },
+      ]);
+      return;
+    }
 
-      try {
-        const response = await fetch('http://localhost:5001/ask', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            question: question,
-            doc_id: content.type === 'text' ? `text-${Date.now()}` : content.name, // Or a more stable ID if available
-          }),
-        });
+    setIsAsking(true);
+    const newUserMessage = { text: question, sender: 'user' };
+    setMessages([...messages, newUserMessage]);
+    setQuestion('');
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error('Error from Flask /ask:', errorData);
-          const aiErrorMessage = errorData?.error || 'Failed to get AI response.';
-          const aiResponseMessage = { text: aiErrorMessage, sender: 'ai', isError: true };
-          setMessages([...messages, newUserMessage, aiResponseMessage]);
-        } else {
-          const data = await response.json();
-          const aiResponseMessage = { text: data.answer, sender: 'ai' };
-          setMessages([...messages, newUserMessage, aiResponseMessage]);
-        }
-      } catch (error) {
-        console.error('Error sending question to Flask:', error);
-        const aiErrorMessage = 'Failed to communicate with the AI.';
-        const aiResponseMessage = { text: aiErrorMessage, sender: 'ai', isError: true };
-        setMessages([...messages, newUserMessage, aiResponseMessage]);
-      } finally {
-        setIsAsking(false);
+    try {
+      // Generate doc_id based on sourceType and file metadata
+      // const docId = sourceType === 'file' ? originalFileName || file?.name : `text-${Date.now()}`;
+      const response = await fetch('http://localhost:5001/ask', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          question,
+          doc_id: gistData.docId,
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        console.error('Error from Flask /ask:', data);
+        const aiErrorMessage = data?.error || 'Failed to get AI response.';
+        setMessages([...messages, newUserMessage, { text: aiErrorMessage, sender: 'ai', isError: true }]);
+      } else {
+        setMessages([...messages, newUserMessage, { text: data.answer, sender: 'ai' }]);
       }
-    } else if (!content?.data) {
-      alert('No content available to ask questions about.');
+    } catch (error) {
+      console.error('Error sending question to Flask:', error);
+      const aiErrorMessage = 'Failed to communicate with the AI.';
+      setMessages([...messages, newUserMessage, { text: aiErrorMessage, sender: 'ai', isError: true }]);
+    } finally {
+      setIsAsking(false);
     }
   };
 
   const handleGoBack = () => {
-    navigate(-1); // Go back to the previous page in history
+    navigate('/gistit', { state: location.state });
   };
 
   return (
@@ -123,8 +71,18 @@ const ChatbotPage = () => {
         Back
       </button>
       <div className="summary-display">
-        <h2>Summary</h2>
-        <p>{summary || 'No summary available.'}</p>
+        <div className="summary">
+          <p className='baloo-2-medium gistTitles'>Summary</p>
+          <p className='baloo-2-regular gistInfo'>{summary || 'No summary available.'}</p>
+        </div>
+        <div className="advant">
+          <p className='baloo-2-medium gistTitles'>Advantages</p>
+          <p className='baloo-2-regular gistInfo'>{gistData.advantages || 'No advantages available.'}</p>
+        </div>
+        <div className="disadvant">
+          <p className='baloo-2-medium gistTitles'>Disadvantages</p>
+          <p className='baloo-2-regular gistInfo'>{gistData.disadvantages || 'No disadvantages available.'}</p>
+        </div>
       </div>
       <div className="chat-area">
         <div className="message-list">

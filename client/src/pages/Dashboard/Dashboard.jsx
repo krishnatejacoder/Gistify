@@ -147,6 +147,7 @@ export default function Dashboard() {
 
         const { summary, advantages, disadvantages } = flaskResponse.data;
         console.log("Summary: ",summary)
+        console.log("chroma id: ",flaskResponse.data.chromaId)
 
         navigate('/gistit', {
           state: {
@@ -156,6 +157,8 @@ export default function Dashboard() {
               originalFileName: uploadedFile.name,
               summaryType: summaryOptions[selectedSummaryOption].toLowerCase(),
               file: uploadedFile,
+              fileURL: flaskResponse.data.fileURL,
+              docId: flaskResponse.data.chromaId,
               advantages,
               disadvantages,
             },
@@ -176,8 +179,11 @@ export default function Dashboard() {
             gistData: {
               sourceType: 'text',
               content: summary,
-              originalFileName: 'text-input.txt',
+              originalFileName:'text-input.txt',
               summaryType: summaryOptions[selectedSummaryOption].toLowerCase(),
+              file: uploadedFile,
+              fileURL: flaskResponse.data.fileUrl,
+              docId: flaskResponse.data.docId,
               advantages,
               disadvantages,
             },

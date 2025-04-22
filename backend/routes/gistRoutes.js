@@ -34,6 +34,7 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
     // const summary = await Summary.findById(summaryId);
     const summary = await Summary.findOne({_id: summaryId});
     console.log("Found summary:", summary);
+    console.log("Chroma ID:", ragResponse.data.chromaId); // Explicit check
     
     if (!summary) return res.status(404).json({ error: 'Summary not found in DB' });
 
@@ -44,17 +45,22 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
     });
 
     await gist.save();
-
-    res.json({ 
+    const resp = { 
       gistId: gist._id,
       title, 
       summary: summary.summary, 
       advantages: summary.advantages, 
       disadvantages: summary.disadvantages, 
       fileURL: summary.fileUrl, 
+      docId: summary.file_id,
+      chromaId: ragResponse.data.chromaId,
       date: Date.now(), 
       summaryType: summary.summaryType 
-    });
+    }
+
+    console.log(resp)
+
+    res.json(resp);
   } catch (error) {
     console.error('Upload error:', error.message);
     if (error.response) {

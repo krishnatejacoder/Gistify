@@ -33,6 +33,7 @@ export default function GistIt() {
         if (gistData.sourceType === 'file') {
           const file = gistData.file;
           console.log(gistData)
+          // console.log(file)
 
           if (!file) {
             notifyError('No file selected');
@@ -41,8 +42,7 @@ export default function GistIt() {
           }
 
           if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
-            const url = URL.createObjectURL(file);
-            setContent({ type: 'pdf', data: url, name: file.name });
+            setContent({ type: 'pdf', data: gistData.fileURL, name: file.name });
             setFileProcessed(true);
             setIsLoading(false);
             setSummary(gistData.content);
@@ -70,8 +70,8 @@ export default function GistIt() {
               setContent({ type: 'docx', data: result.value, name: file.name, format: 'html' });
               setFileProcessed(true);
               setIsLoading(false);
-              setSummary("Summary will appear here based on the concise option selected.");
-              setAddis({advantages:"rn in dev, take a pill chill", disadvantages: "rn in dev, dude take a Chai break!"})
+              setSummary(gistData.content);
+              setAddis({advantages: gistData.advantages, disadvantages: gistData.disadvantages})
             } catch (docxError) {
               console.error('Error processing DOCX:', docxError);
               notifyError('Failed to process DOCX file');
@@ -90,8 +90,8 @@ export default function GistIt() {
           setContent({ type: 'text', data: gistData.content, name: 'Text Input' });
           setFileProcessed(true);
           setIsLoading(false);
-          setSummary("Summary will appear here based on the concise option selected.");
-          setAddis({advantages:"rn in dev, take a pill chill", disadvantages: "rn in dev, dude take a Chai break!"})
+          setSummary(gistData.content);
+          setAddis({advantages: gistData.advantages, disadvantages: gistData.disadvantages})
         } else {
           notifyError('Invalid content source');
           setIsLoading(false);
@@ -109,11 +109,6 @@ export default function GistIt() {
 
     processContent();
 
-    return () => {
-      if (content?.type === 'pdf' && content?.data) {
-        URL.revokeObjectURL(content.data);
-      }
-    };
   }, [location.state]);
 
   const goToChatbot = () => {
