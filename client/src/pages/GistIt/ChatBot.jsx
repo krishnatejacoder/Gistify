@@ -12,6 +12,7 @@ const ChatbotPage = () => {
   const [isAsking, setIsAsking] = useState(false);
 
   const handleSendMessage = async () => {
+    console.log(gistData)
     if (!question.trim()) return; // Ignore empty questions
     if (!content) {
       setMessages([
@@ -31,8 +32,6 @@ const ChatbotPage = () => {
     setQuestion('');
 
     try {
-      // Generate doc_id based on sourceType and file metadata
-      // const docId = sourceType === 'file' ? originalFileName || file?.name : `text-${Date.now()}`;
       const response = await fetch('http://localhost:5001/ask', {
         method: 'POST',
         headers: {

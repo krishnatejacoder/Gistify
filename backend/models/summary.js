@@ -13,9 +13,9 @@ const SummarySchema = new mongoose.Schema({
   },
   fileUrl: { type: String, required: true },
   chromaId: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: "ChromaDB", 
-    required: true 
+    type: String, 
+    required: true,
+    select: false  
   },
   summary: { 
     type: String, 

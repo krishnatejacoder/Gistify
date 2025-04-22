@@ -29,6 +29,13 @@
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 0px 8px rgba(0, 0, 0, 0.2);
+  transform: scale(1) translateZ(0);
+  backface-visibility: hidden;
+  transition: transform 0.3s ease-in-out;
+}
+
+.history-card:hover{
+  transform: scale(1.02) rotateZ(0);
 }
 
 .dateCount{

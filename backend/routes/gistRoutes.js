@@ -120,6 +120,7 @@ router.get('/document/:id', authenticateToken, async (req, res) => {
     }
 
     const summary = await Summary.findOne({ _id: gist.summaryId });
+    console.log(summary)
     if (!summary) {
       return res.status(404).json({ error: 'Summary not found' });
     }

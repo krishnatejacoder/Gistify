@@ -33,6 +33,7 @@ export default function Dashboard() {
         const response = await axios.get('http://localhost:5000/api/gists/recent', {
           headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
         });
+        console.log("Recent Summaries: ", response)
         if (isMounted) setRecentSummaries(response.data);
       } catch (err) {
         console.error('Error fetching recent summaries:', err);

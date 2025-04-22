@@ -285,10 +285,11 @@ def summarize():
             }
             result = summaries_collection.insert_one(summary_data)
             logger.info(f"Summary saved to MongoDB for doc_id: {new_doc_id}")
+            logger.info(f"Result: {result}")
 
             return jsonify({
                 "summaryId": str(result.inserted_id),
-                "chromaId": new_doc_id,
+                "chromaId": str(new_doc_id),
                 "summary": summary,
                 "advantages": advantages,
                 "disadvantages": disadvantages,
@@ -342,6 +343,7 @@ def summarize():
             }
             result = summaries_collection.insert_one(summary_data)
             logger.info(f"Summary saved to MongoDB for doc_id: {doc_id}")
+            logger.info(f"result: {result}")
 
             return jsonify({
                 "summaryId": str(result.inserted_id),
