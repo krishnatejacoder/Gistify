@@ -96,13 +96,6 @@ export default function GistIt() {
           setSummary(gistData.content);
           setAddis({advantages: gistData.advantages, disadvantages: gistData.disadvantages})
         } 
-        else if (gistData.sourceType === 'history') {
-          setContent({ type: 'pdf', data: gistData.fileURL, name: gistData.fileName });
-          setFileProcessed(true);
-          setIsLoading(false);
-          setSummary(gistData.content);
-          setAddis({advantages: gistData.advantages, disadvantages: gistData.disadvantages});
-        } 
          else {
           notifyError('Invalid content source');
           setIsLoading(false);
@@ -151,8 +144,8 @@ export default function GistIt() {
         )}
         {content?.type === 'text' && (
           <div className="text-content">
-            <h3>{content.name}</h3>
-            <pre>{content.data}</pre>
+            <p className='baloo-2-semiBold'>{content.name}</p>
+            <p className='baloo-2-regular'>{content.data}</p>
           </div>
         )}
         {!fileProcessed && !isLoading && !content && (

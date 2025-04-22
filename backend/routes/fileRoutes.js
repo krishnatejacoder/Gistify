@@ -5,36 +5,71 @@ const multer = require('multer');
 const { storage, cloudinary } = require('../cloudinary/index');
 const upload = multer({ storage });
 const asyncHandler = require('express-async-handler');
-
-router.get('/', (req, res) => {
-    res.send('FILES ROUTE');
-});
+const fs = require('fs').promises;
+const path = require('path');
+const os = require('os');
 
 router.post(
     '/upload',
     upload.single('file'),
     asyncHandler(async (req, res) => {
-        if (!req.file) {
-            return res.status(400).json({ error: 'No file uploaded' });
-        }
-        console.log('Cloudinary response:', req.file); // Debug upload
-        const newFile = new File({
-            pdfName: req.file.originalname,
-            filePath: req.file.path,
-            publicId: req.file.filename,
-            fileSize: req.file.size,
-            fileType: req.file.mimetype,
-        });
+        try {
+            let filePath, publicId, originalName, fileSize, fileType;
 
-        await newFile.save();
-        res.json({
-            message: 'Successfully uploaded file',
-            file: {
-                id: newFile._id,
-                pdfName: newFile.pdfName,
-                filePath: newFile.filePath,
-            },
-        });
+            if (req.file) {
+                console.log('Cloudinary file response:', req.file);
+                filePath = req.file.path;
+                publicId = req.file.filename;
+                originalName = req.file.originalname;
+                fileSize = req.file.size;
+                fileType = req.file.mimetype;
+            } else if (req.body.text) {
+                const textContent = req.body.text;
+                const timestamp = Date.now();
+                originalName = req.body.title || `text-${timestamp}.txt`;
+
+                const tempDir = os.tmpdir();
+                const tempFilePath = path.join(tempDir, originalName);
+                await fs.writeFile(tempFilePath, textContent);
+
+                const uploadResult = await cloudinary.uploader.upload(tempFilePath, {
+                    resource_type: 'raw', 
+                    public_id: `text_uploads/${originalName}`,
+                });
+
+                await fs.unlink(tempFilePath);
+
+                filePath = uploadResult.secure_url;
+                publicId = uploadResult.public_id;
+                fileSize = uploadResult.bytes;
+                fileType = 'text/plain';
+            } else {
+                return res.status(400).json({ error: 'No file or text provided' });
+            }
+
+            const newFile = new File({
+                pdfName: originalName,
+                filePath: filePath,
+                publicId: publicId,
+                fileSize: fileSize,
+                fileType: fileType,
+                userId: req.body.userId,
+            });
+
+            await newFile.save();
+
+            res.json({
+                message: 'Successfully uploaded content',
+                file: {
+                    id: newFile._id,
+                    pdfName: newFile.pdfName,
+                    filePath: newFile.filePath,
+                },
+            });
+        } catch (error) {
+            console.error('Upload error:', error);
+            res.status(500).json({ error: 'Server error during upload', details: error.message });
+        }
     })
 );
 
@@ -58,8 +93,8 @@ router.delete(
         }
 
         if (file.publicId) {
-            console.log('Deleting from Cloudinary:', file.publicId); // Debug deletion
-            await cloudinary.uploader.destroy(file.publicId);
+            console.log('Deleting from Cloudinary:', file.publicId);
+            await cloudinary.uploader.destroy(file.publicId, { resource_type: 'raw' });
         }
 
         await file.deleteOne();

@@ -19,11 +19,10 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
   try {
     console.log('Hai');
     console.log(req.body);
-    let fileContent = req.file ? req.file.path : null;
+    // let fileContent = req.file ? req.file.path : null;
     const title = req.body.file_name || (req.file ? req.file.originalname.split('.')[0] : 'text-upload');
     const text = req.body.text;
 
-    // Create FormData for the request to Flask
     const formData = new FormData();
     formData.append('doc_id', req.body.doc_id || '');
     formData.append('file_path', req.body.file_path || '');
@@ -32,12 +31,11 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
     formData.append('user_id', req.body.userId || '');
     formData.append('text', text || '');
 
-    // Remove the problematic debugging and rely on Flask logs
     console.log('FormData constructed, sending to Flask...');
 
     const ragResponse = await axios.post('http://127.0.0.1:5001/summarize', formData, {
       headers: {
-        ...formData.getHeaders(), // Set the correct Content-Type for multipart/form-data
+        ...formData.getHeaders(), 
       },
     });
     console.log('yaaa');
@@ -94,6 +92,7 @@ router.get('/recent', authenticateToken, async (req, res) => {
     const data = await Promise.all(
       gists.map(async (gist) => {
         const summary = await Summary.findOne({ _id: gist.summaryId });
+        const file = await File.findOne({_id: summary.file_id});
         let truncatedSummary = summary.summary
         if(truncatedSummary.length > 100){
           truncatedSummary = truncatedSummary.substring(0, 100) + '...'
@@ -108,6 +107,7 @@ router.get('/recent', authenticateToken, async (req, res) => {
           fileUrl: summary ? summary.fileUrl : null,
           chromaId: summary ? summary.chromaId : null,
           summaryType: summary ? summary.summaryType : null,
+          sourceType: summary ? file.fileType : null,
         };
       })
     );

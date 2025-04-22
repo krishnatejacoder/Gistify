@@ -109,6 +109,7 @@ export default function Dashboard() {
         formData.append('file', uploadedFile);
         formData.append('userId', JSON.parse(localStorage.getItem('userGistify')).userId);
         formData.append('selectedUploadOption', selectedUploadOption);
+        console.log(uploadedFile)
 
         // Upload to Cloudinary
         const uploadResponse = await axios.post('http://localhost:5000/files/upload', formData, {
@@ -182,6 +183,8 @@ export default function Dashboard() {
         formData.append('selectedUploadOption', selectedUploadOption);
         formData.append('text', text.trim());
 
+        // console.log(selectedUploadOption)
+
         // Upload text to Cloudinary
         const uploadResponse = await axios.post('http://localhost:5000/files/upload', formData, {
           headers: {
@@ -196,7 +199,6 @@ export default function Dashboard() {
         const docId = uploadResponse.data.file.id;
         if (!filePath) throw new Error('No file path returned from server');
 
-        // Summarize via Flask
         const summarizeFormData = new FormData();
         summarizeFormData.append('file_path', filePath);
         summarizeFormData.append('doc_id', docId);
@@ -204,9 +206,8 @@ export default function Dashboard() {
         summarizeFormData.append('file_name', fileName);
         summarizeFormData.append('userId', JSON.parse(localStorage.getItem('userGistify')).userId);
 
-        const flaskResponse = await axios.post('http://localhost:5001/summarize', summarizeFormData, {
+        const flaskResponse = await axios.post('http://localhost:5000/api/gists/upload', summarizeFormData, {
           headers: {
-            'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },
         });
@@ -255,7 +256,7 @@ export default function Dashboard() {
       navigate('/gistit', {
         state: {
           gistData: {
-            sourceType: 'history',
+            sourceType: response.data.sourceType,
             content: response.data.summary,
             originalFileName: response.data.fileName,
             summaryType: response.data.summaryType,
