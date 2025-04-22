@@ -8,6 +8,7 @@ import PDF from '../../assets/PDF.svg';
 import cross from '../../assets/icons/cross/dark.svg';
 import { notifyError, notifyInfo, notifySuccess, notifyWarn } from '../../components/Toast/Toast';
 import axios from 'axios';
+import dayjs from 'dayjs';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -33,7 +34,6 @@ export default function Dashboard() {
         const response = await axios.get('http://localhost:5000/api/gists/recent', {
           headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
         });
-        console.log("Recent Summaries: ", response)
         if (isMounted) setRecentSummaries(response.data);
       } catch (err) {
         console.error('Error fetching recent summaries:', err);
@@ -109,7 +109,6 @@ export default function Dashboard() {
         formData.append('file', uploadedFile);
         formData.append('userId', JSON.parse(localStorage.getItem('userGistify')).userId);
         formData.append('selectedUploadOption', selectedUploadOption);
-        console.log(uploadedFile)
 
         // Upload to Cloudinary
         const uploadResponse = await axios.post('http://localhost:5000/files/upload', formData, {
@@ -131,28 +130,11 @@ export default function Dashboard() {
         summarizeFormData.append('summary_type', summaryOptions[selectedSummaryOption].toLowerCase());
         summarizeFormData.append('file_name', uploadedFile.name);
 
-        // const flaskResponse = await axios.post('http://localhost:5000/api/gists', summarizeFormData, {
-        //   headers: {
-        //     'Content-Type': 'multipart/form-data',
-        //     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        //   },
-        // });
-        // console.log(filePath)
-        // console.log(docId)
-        // console.log(uploadedFile.name)
-        // console.log(summaryOptions[selectedSummaryOption].toLowerCase())
-
-        // for (let [key, value] of summarizeFormData.entries()) {
-        //   console.log(key, value);
-        // }
-
         const flaskResponse = await axios.post('http://localhost:5000/api/gists/upload', summarizeFormData, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },
         });
-        console.log("flask response")
-        console.log(flaskResponse)
 
         console.log('Summarize Response:', flaskResponse.data);
 
@@ -182,8 +164,6 @@ export default function Dashboard() {
         formData.append('userId', JSON.parse(localStorage.getItem('userGistify')).userId);
         formData.append('selectedUploadOption', selectedUploadOption);
         formData.append('text', text.trim());
-
-        // console.log(selectedUploadOption)
 
         // Upload text to Cloudinary
         const uploadResponse = await axios.post('http://localhost:5000/files/upload', formData, {
@@ -220,12 +200,13 @@ export default function Dashboard() {
         navigate('/gistit', {
           state: {
             gistData: {
-              sourceType: 'text',
+              sourceType: 'text/plain',
               content: summary,
               originalFileName: fileName,
               summaryType: summaryOptions[selectedSummaryOption].toLowerCase(),
               file: null,
               fileURL: flaskResponse.data.fileUrl,
+              fileId: docId, // Correct mapping
               docId: chromaId,
               advantages,
               disadvantages,
@@ -244,35 +225,37 @@ export default function Dashboard() {
   };
 
   const handleRecentSummaryClick = async (summary) => {
-    console.log(summary)
-    try{
+    console.log('Recent Summary Clicked:', summary);
+    try {
       const response = await axios.get(`http://localhost:5000/api/gists/document/${summary._id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
       });
-      console.log("Dashboard fetch recent summary click")
-      console.log(response)
+      console.log('Dashboard fetch recent summary click:', response.data);
+
       navigate('/gistit', {
         state: {
           gistData: {
-            sourceType: response.data.sourceType,
+            locationFrom: 'recentSummary',
+            sourceType: summary.sourceType,
             content: response.data.summary,
             originalFileName: response.data.fileName,
             summaryType: response.data.summaryType,
             fileName: response.data.fileName,
             fileURL: response.data.fileUrl,
+            fileId: response.data.file_id, // Map file_id to fileId
             docId: response.data.chromaId,
             advantages: response.data.advantages,
             disadvantages: response.data.disadvantages,
           },
         },
       });
+    } catch (error) {
+      console.error('Error fetching recent summary:', error.response?.data || error);
+      notifyError(error.response?.data?.error || 'Failed to load summary details.');
     }
-    catch(error){
-      notifyError(error);
-    }
-  }
+  };
 
   return (
     <div className='dashboardContainer'>
@@ -286,11 +269,11 @@ export default function Dashboard() {
           <div className="summaries">
             {recentSummaries.length > 0 ? (
               recentSummaries.map((summary, index) => (
-                <div key={index} className='summary' onClick= {() => handleRecentSummaryClick(summary)}>
+                <div key={index} className='summary' onClick={() => handleRecentSummaryClick(summary)}>
                   <div className="titleCard">
                     <p className="titlePaper baloo-2-medium">{summary.title}</p>
                     <p className="titleDate baloo-2-regular">
-                      {new Date(summary.createdAt).toLocaleDateString()}
+                      {dayjs(summary.createdAt).format('DD/MM/YYYY')}
                     </p>
                   </div>
                   <p className="desc baloo-2-regular">{summary.truncatedSummary}</p>

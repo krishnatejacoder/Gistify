@@ -87,17 +87,18 @@ router.get('/recent', authenticateToken, async (req, res) => {
     const gists = await Gist.find({ userId: req.user.userId })
       .sort({ createdAt: -1 })
       .limit(3);
-    console.log('Gists fetched:', gists);
+    // console.log('Gists fetched:', gists);
 
     const data = await Promise.all(
       gists.map(async (gist) => {
         const summary = await Summary.findOne({ _id: gist.summaryId });
         const file = await File.findOne({_id: summary.file_id});
+        // console.log(file.fileType)
         let truncatedSummary = summary.summary
         if(truncatedSummary.length > 100){
           truncatedSummary = truncatedSummary.substring(0, 100) + '...'
         }
-        return {
+        const respData = {
           ...gist.toObject(), 
           summary: summary ? summary.summary : null,
           truncatedSummary: truncatedSummary ? truncatedSummary : null,
@@ -107,10 +108,14 @@ router.get('/recent', authenticateToken, async (req, res) => {
           fileUrl: summary ? summary.fileUrl : null,
           chromaId: summary ? summary.chromaId : null,
           summaryType: summary ? summary.summaryType : null,
-          sourceType: summary ? file.fileType : null,
-        };
+          sourceType: file ? file.fileType : null,
+        }
+        // console.log(respData)
+        return respData;
       })
     );
+
+    console.log(data)
 
     // console.log('Response data:', data);
     res.json(data);

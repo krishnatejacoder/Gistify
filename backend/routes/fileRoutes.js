@@ -8,6 +8,7 @@ const asyncHandler = require('express-async-handler');
 const fs = require('fs').promises;
 const path = require('path');
 const os = require('os');
+const axios = require('axios');
 
 router.post(
     '/upload',
@@ -83,6 +84,23 @@ router.get(
         res.json(foundFile);
     })
 );
+
+router.get('/fetch-text/:fileId', async (req, res) => {
+    try {
+      const file = await File.findById(req.params.fileId);
+      console.log("FILE")
+      console.log(file)
+      if (!file) return res.status(404).json({ error: 'File not found' });
+  
+      const response = await axios.get(file.filePath, { responseType: 'text' });
+      console.log("FILE RESPONSE")
+    //   console.log(response);
+      res.json({ text: response.data });
+    } catch (error) {
+      console.error('Error fetching text:', error);
+      res.status(500).json({ error: 'Failed to fetch text content' });
+    }
+  });
 
 router.delete(
     '/:id',
