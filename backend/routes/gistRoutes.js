@@ -5,62 +5,60 @@ const multer = require('multer');
 const upload = multer({ storage });
 const Gist = require('../models/Gist');
 const File = require('../models/file');
-const Summary = require('../models/Summary'); // 👈 Import the Summary model
+const Summary = require('../models/summary'); // 👈 Import the Summary model
 const authenticateToken = require('../middleware/auth');
 const axios = require('axios');
-const mongoose = require('mongoose'); 
+const mongoose = require('mongoose');
 
 router.post('/upload', authenticateToken, upload.single('file'), async (req, res) => {
-  if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-
-  const title = req.body.title || req.file.originalname.split('.')[0];
-  const fileContent = req.file.path;
+  if (req.body.selectedUploadOption == 0 && !req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
 
   try {
-    console.log("Hai")
-    const ragResponse = await axios.post('http://127.0.0.1:5001/summarize', {   // check
+    console.log('Hai');
+    let fileContent = req.file ? req.file.path : null;
+    const title = req.body.title || (req.file ? req.file.originalname.split('.')[0] : 'text-upload');
+    const text = req.body.text; // Handle text input
+
+    const ragResponse = await axios.post('http://127.0.0.1:5001/summarize', {
       ...req.body,
-      file_path: fileContent
+      file_path: fileContent,
+      text: text, // Pass text if provided
     });
-    console.log("yaaa")
-    console.log(ragResponse)
+    console.log('yaaa');
+    console.log(ragResponse);
 
     let summaryId = ragResponse.data.summaryId;
-    
-    console.log("Fetching summary with ID:", summaryId);
-    
-    // Convert the string ID to a MongoDB ObjectId
-    // This is one of the most common issues when dealing with MongoDB IDs
-    console.log(summaryId);
-    // const summary = await Summary.findById(summaryId);
-    const summary = await Summary.findOne({_id: summaryId});
-    console.log("Found summary:", summary);
-    console.log("Chroma ID:", ragResponse.data.chromaId); // Explicit check
-    
+
+    console.log('Fetching summary with ID:', summaryId);
+    const summary = await Summary.findOne({ _id: summaryId });
+    console.log('Found summary:', summary);
+    console.log('Chroma ID:', ragResponse.data.chromaId);
+
     if (!summary) return res.status(404).json({ error: 'Summary not found in DB' });
 
     const gist = new Gist({
       userId: req.body.userId,
       summaryId: summaryId,
-      title
+      title,
     });
 
     await gist.save();
-    const resp = { 
+    const resp = {
       gistId: gist._id,
-      title, 
-      summary: summary.summary, 
-      advantages: summary.advantages, 
-      disadvantages: summary.disadvantages, 
-      fileURL: summary.fileUrl, 
+      title,
+      summary: summary.summary,
+      advantages: summary.advantages,
+      disadvantages: summary.disadvantages,
+      fileURL: summary.fileUrl,
       docId: summary.file_id,
       chromaId: ragResponse.data.chromaId,
-      date: Date.now(), 
-      summaryType: summary.summaryType 
-    }
+      date: Date.now(),
+      summaryType: summary.summaryType,
+    };
 
-    console.log(resp)
-
+    console.log(resp);
     res.json(resp);
   } catch (error) {
     console.error('Upload error:', error.message);
@@ -108,7 +106,6 @@ router.get('/recent', authenticateToken, async (req, res) => {
   }
 });
 
-// Gist It: Fetch specific research paper and summary
 router.get('/document/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;

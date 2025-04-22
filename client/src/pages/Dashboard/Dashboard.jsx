@@ -31,10 +31,9 @@ export default function Dashboard() {
     const fetchRecentSummaries = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/gists/recent', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-          },
+          headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
         });
+        console.log("Recent Summaries: ", response)
         if (isMounted) setRecentSummaries(response.data);
       } catch (err) {
         console.error('Error fetching recent summaries:', err);
@@ -42,13 +41,8 @@ export default function Dashboard() {
       }
     };
 
-    if (user) {
-      fetchRecentSummaries();
-    }
-
-    return () => {
-      isMounted = false;
-    };
+    if (user) fetchRecentSummaries();
+    return () => { isMounted = false; };
   }, [user]);
 
   if (!user) return null;
@@ -61,9 +55,7 @@ export default function Dashboard() {
   const handleDrop = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.dataTransfer.files?.length > 0) {
-      handleFile(e.dataTransfer.files[0]);
-    }
+    if (e.dataTransfer.files?.length > 0) handleFile(e.dataTransfer.files[0]);
   };
 
   const handleFile = (file) => {
@@ -72,7 +64,6 @@ export default function Dashboard() {
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       'application/msword',
     ];
-
     const validExtensions = ['.pdf', '.docx'];
     const fileName = file.name.toLowerCase();
     const isValid = validTypes.includes(file.type) || validExtensions.some(ext => fileName.endsWith(ext));
@@ -116,8 +107,10 @@ export default function Dashboard() {
       if (selectedUploadOption === 0 && uploadedFile) {
         const formData = new FormData();
         formData.append('file', uploadedFile);
-        formData.append("userId",  JSON.parse(localStorage.getItem("userGistify")).userId);
+        formData.append('userId', JSON.parse(localStorage.getItem('userGistify')).userId);
+        formData.append('selectedUploadOption', selectedUploadOption);
 
+        // Upload to Cloudinary
         const uploadResponse = await axios.post('http://localhost:5000/files/upload', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
@@ -125,29 +118,31 @@ export default function Dashboard() {
           },
         });
 
-        console.log(uploadResponse);
+        console.log('Upload Response:', uploadResponse.data);
 
-        
         const filePath = uploadResponse.data?.file?.filePath;
-        console.log(filePath);
-
+        const docId = uploadResponse.data.file.id;
         if (!filePath) throw new Error('No file path returned from server');
-        formData.append("doc_id", uploadResponse.data.file.id)
-        formData.append("file_path", filePath)
-        formData.append("summary_type", summaryOptions[selectedSummaryOption].toLowerCase())
-        formData.append("file_name", uploadedFile.name)
 
-        const flaskResponse = await axios.post('http://localhost:5000/api/gists/upload', formData, {
+        // Summarize via Flask
+        const summarizeFormData = new FormData();
+        summarizeFormData.append('file_path', filePath);
+        summarizeFormData.append('doc_id', docId);
+        summarizeFormData.append('summary_type', summaryOptions[selectedSummaryOption].toLowerCase());
+        summarizeFormData.append('file_name', uploadedFile.name);
+        summarizeFormData.append('userId', JSON.parse(localStorage.getItem('userGistify')).userId);
+
+        const flaskResponse = await axios.post('http://localhost:5001/summarize', summarizeFormData, {
           headers: {
+            'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },
         });
 
-        console.log(flaskResponse)
+        console.log('Summarize Response:', flaskResponse.data);
 
         const { summary, advantages, disadvantages } = flaskResponse.data;
-        console.log("Summary: ",summary)
-        console.log("chroma id: ",flaskResponse.data.chromaId)
+        const chromaId = flaskResponse.data.chromaId;
 
         navigate('/gistit', {
           state: {
@@ -157,33 +152,66 @@ export default function Dashboard() {
               originalFileName: uploadedFile.name,
               summaryType: summaryOptions[selectedSummaryOption].toLowerCase(),
               file: uploadedFile,
-              fileURL: flaskResponse.data.fileURL,
-              docId: flaskResponse.data.chromaId,
+              fileURL: flaskResponse.data.fileUrl,
+              docId: chromaId,
               advantages,
               disadvantages,
             },
           },
         });
       } else if (selectedUploadOption === 1 && text.trim()) {
-        const flaskResponse = await axios.post('http://localhost:5001/summarize', {
-          doc_id: `text-${Date.now()}`,
-          summary_type: summaryOptions[selectedSummaryOption].toLowerCase(),
-          file_name: 'text-input.txt',
-          text: text.trim(),
+        const formData = new FormData();
+        const timestamp = Date.now();
+        const fileName = `text-${timestamp}.txt`;
+        formData.append('title', fileName);
+        formData.append('userId', JSON.parse(localStorage.getItem('userGistify')).userId);
+        formData.append('selectedUploadOption', selectedUploadOption);
+        formData.append('text', text.trim());
+
+        // Upload text to Cloudinary
+        const uploadResponse = await axios.post('http://localhost:5000/files/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
         });
 
+        console.log('Text Upload Response:', uploadResponse.data);
+
+        const filePath = uploadResponse.data?.file?.filePath;
+        const docId = uploadResponse.data.file.id;
+        if (!filePath) throw new Error('No file path returned from server');
+
+        // Summarize via Flask
+        const summarizeFormData = new FormData();
+        summarizeFormData.append('file_path', filePath);
+        summarizeFormData.append('doc_id', docId);
+        summarizeFormData.append('summary_type', summaryOptions[selectedSummaryOption].toLowerCase());
+        summarizeFormData.append('file_name', fileName);
+        summarizeFormData.append('userId', JSON.parse(localStorage.getItem('userGistify')).userId);
+
+        const flaskResponse = await axios.post('http://localhost:5001/summarize', summarizeFormData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
+        });
+
+        console.log('Text Summarize Response:', flaskResponse.data);
+
         const { summary, advantages, disadvantages } = flaskResponse.data;
+        const chromaId = flaskResponse.data.chromaId;
 
         navigate('/gistit', {
           state: {
             gistData: {
               sourceType: 'text',
               content: summary,
-              originalFileName:'text-input.txt',
+              originalFileName: fileName,
               summaryType: summaryOptions[selectedSummaryOption].toLowerCase(),
-              file: uploadedFile,
+              file: null,
               fileURL: flaskResponse.data.fileUrl,
-              docId: flaskResponse.data.docId,
+              docId: chromaId,
               advantages,
               disadvantages,
             },
@@ -193,7 +221,7 @@ export default function Dashboard() {
         notifyWarn('Please select a file or enter text before proceeding.');
       }
     } catch (err) {
-      console.error('Summarization error:', err);
+      console.error('Summarization error:', err.response?.data || err);
       notifyError(err.response?.data?.error || 'An error occurred while processing your request.');
     } finally {
       setLoading(false);
@@ -267,7 +295,6 @@ export default function Dashboard() {
         </div>
 
         {/* MAIN GIST AREA */}
-        {/* {console.log(user)} */}
         <div className="gistArea">
           <div className="leftC">
             <div className="intro">

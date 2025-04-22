@@ -29,7 +29,8 @@
 .dashboardContainer .recentSummaries .summaries{
   position: absolute;
   top: 61px;
-  left: 25px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   justify-content: center;

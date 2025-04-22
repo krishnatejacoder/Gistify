@@ -12,6 +12,7 @@ const ChatbotPage = () => {
   const [isAsking, setIsAsking] = useState(false);
 
   const handleSendMessage = async () => {
+    console.log(gistData)
     if (!question.trim()) return; // Ignore empty questions
     if (!content) {
       setMessages([
