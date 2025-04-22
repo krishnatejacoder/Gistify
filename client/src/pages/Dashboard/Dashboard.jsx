@@ -227,6 +227,36 @@ export default function Dashboard() {
     }
   };
 
+  const handleRecentSummaryClick = async (summary) => {
+    console.log(summary)
+    try{
+      const response = await axios.get(`http://localhost:5000/api/gists/document/${summary._id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+      });
+      console.log(response)
+      navigate('/gistit', {
+        state: {
+          gistData: {
+            sourceType: 'history',
+            content: response.data.summary,
+            originalFileName: response.data.fileName,
+            summaryType: response.data.summaryType,
+            fileName: response.data.fileName,
+            fileURL: response.data.fileUrl,
+            docId: response.data.chromaId,
+            advantages: response.data.advantages,
+            disadvantages: response.data.disadvantages,
+          },
+        },
+      });
+    }
+    catch(error){
+      notifyError(error);
+    }
+  }
+
   return (
     <div className='dashboardContainer'>
       <form onSubmit={(e) => {
@@ -239,7 +269,7 @@ export default function Dashboard() {
           <div className="summaries">
             {recentSummaries.length > 0 ? (
               recentSummaries.map((summary, index) => (
-                <div key={index} className='summary'>
+                <div key={index} className='summary' onClick= {() => handleRecentSummaryClick(summary)}>
                   <div className="titleCard">
                     <p className="titlePaper baloo-2-medium">{summary.title}</p>
                     <p className="titleDate baloo-2-regular">

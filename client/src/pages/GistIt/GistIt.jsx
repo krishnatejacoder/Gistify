@@ -81,7 +81,8 @@ export default function GistIt() {
             notifyError('Unsupported file type');
             setIsLoading(false);
           }
-        } else if (gistData.sourceType === 'text') {
+        } 
+        else if (gistData.sourceType === 'text') {
           if (!gistData.content) {
             notifyError('No text content provided');
             setIsLoading(false);
@@ -92,7 +93,15 @@ export default function GistIt() {
           setIsLoading(false);
           setSummary(gistData.content);
           setAddis({advantages: gistData.advantages, disadvantages: gistData.disadvantages})
-        } else {
+        } 
+        else if (gistData.sourceType === 'history') {
+          setContent({ type: 'pdf', data: gistData.fileURL, name: gistData.fileName });
+          setFileProcessed(true);
+          setIsLoading(false);
+          setSummary(gistData.content);
+          setAddis({advantages: gistData.advantages, disadvantages: gistData.disadvantages});
+        } 
+         else {
           notifyError('Invalid content source');
           setIsLoading(false);
         }
@@ -105,7 +114,7 @@ export default function GistIt() {
         notifyError(error.message || 'Failed to process content');
         setIsLoading(false);
       }
-    };
+    } 
 
     processContent();
 

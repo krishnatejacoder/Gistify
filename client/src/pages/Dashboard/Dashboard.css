@@ -38,6 +38,7 @@
 }
 
 .dashboardContainer .recentSummaries .summary{
+  cursor: pointer;
   position: relative;
   width: 331px;
   height: 124px;

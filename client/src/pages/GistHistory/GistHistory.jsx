@@ -42,8 +42,35 @@ export default function GistHistory() {
     }
   }, [user]);
 
-  const handleCardClick = (gist) => {
-    navigate(`/gistit/${gist._id}`, { state: { gistData: gist, fromHistory: true } });
+  const handleCardClick = async (gist) => {
+    // console.log(gist)
+    try{
+      const response = await axios.get(`http://localhost:5000/api/gists/document/${gist._id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+      });
+      console.log(response)
+      navigate('/gistit', {
+        state: {
+          gistData: {
+            sourceType: 'history',
+            content: response.data.summary,
+            originalFileName: response.data.fileName,
+            summaryType: response.data.summaryType,
+            fileName: response.data.fileName,
+            fileURL: response.data.fileUrl,
+            docId: response.data.chromaId,
+            advantages: response.data.advantages,
+            disadvantages: response.data.disadvantages,
+          },
+        },
+      });
+    }
+    catch(error){
+      notifyError(error);
+    }
+    // navigate(`/gistit/${gist._id}`, { state: { gistData: gist, fromHistory: true } });
   };
 
   if (isLoading) {
@@ -60,14 +87,25 @@ export default function GistHistory() {
 
   return (
     <div className="gist-history-container">
-      <h1 className="page-title baloo-2-semiBold">Gist History</h1>
+      {/* <h1 className="page-title baloo-2-semiBold">Gist History</h1> */}
       <div className="history-cards">
         {history.map((item) => (
           <div key={item._id} className="history-card" onClick={() => handleCardClick(item)} style={{ cursor: 'pointer' }}>
             <div className="card-left">
               <h2 className="card-title baloo-2-medium">{item.title}</h2>
-              <p className="card-created baloo-2-regular">Created On: {new Date(item.createdAt).toLocaleDateString()}</p>
-              <p className="card-desc">{item.summary}</p>
+              <div className="dateCount">
+                <div className="sepLine"></div>
+                <div className="dateContainer">
+                  <div className="date">
+                    <p className="card-created baloo-2-medium">Last Visited:</p>
+                    <p className='baloo-2-regular'>{new Date(item.lastVisited).toLocaleDateString()}</p>
+                  </div>
+                  <div className="date">
+                    <p className="card-created baloo-2-medium">Created On:</p>
+                    <p className='baloo-2-regular'>{new Date(item.createdAt).toLocaleDateString()}</p>
+                  </div>
+                </div>
+              </div>
             </div>
             <div className="card-right">
             </div>
