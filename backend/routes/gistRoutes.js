@@ -5,10 +5,11 @@ const multer = require('multer');
 const upload = multer({ storage });
 const Gist = require('../models/Gist');
 const File = require('../models/file');
-const Summary = require('../models/summary'); // 👈 Import the Summary model
+const Summary = require('../models/summary');
 const authenticateToken = require('../middleware/auth');
 const axios = require('axios');
-const mongoose = require('mongoose');
+const FormData = require('form-data');
+const mongoose = require('mongoose'); // Add this import
 
 router.post('/upload', authenticateToken, upload.single('file'), async (req, res) => {
   if (req.body.selectedUploadOption == 0 && !req.file) {
@@ -17,17 +18,30 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
 
   try {
     console.log('Hai');
+    console.log(req.body);
     let fileContent = req.file ? req.file.path : null;
     const title = req.body.title || (req.file ? req.file.originalname.split('.')[0] : 'text-upload');
-    const text = req.body.text; // Handle text input
+    const text = req.body.text;
 
-    const ragResponse = await axios.post('http://127.0.0.1:5001/summarize', {
-      ...req.body,
-      file_path: fileContent,
-      text: text, // Pass text if provided
+    // Create FormData for the request to Flask
+    const formData = new FormData();
+    formData.append('doc_id', req.body.doc_id || '');
+    formData.append('file_path', req.body.file_path || '');
+    formData.append('summary_type', req.body.summary_type || '');
+    formData.append('file_name', req.body.file_name || title);
+    formData.append('user_id', req.body.userId || '');
+    formData.append('text', text || '');
+
+    // Remove the problematic debugging and rely on Flask logs
+    console.log('FormData constructed, sending to Flask...');
+
+    const ragResponse = await axios.post('http://127.0.0.1:5001/summarize', formData, {
+      headers: {
+        ...formData.getHeaders(), // Set the correct Content-Type for multipart/form-data
+      },
     });
     console.log('yaaa');
-    console.log(ragResponse);
+    console.log(ragResponse.data);
 
     let summaryId = ragResponse.data.summaryId;
 
@@ -39,7 +53,7 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
     if (!summary) return res.status(404).json({ error: 'Summary not found in DB' });
 
     const gist = new Gist({
-      userId: req.body.userId,
+      userId: req.user.userId,
       summaryId: summaryId,
       title,
     });

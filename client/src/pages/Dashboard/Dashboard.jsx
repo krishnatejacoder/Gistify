@@ -124,20 +124,34 @@ export default function Dashboard() {
         const docId = uploadResponse.data.file.id;
         if (!filePath) throw new Error('No file path returned from server');
 
-        // Summarize via Flask
         const summarizeFormData = new FormData();
         summarizeFormData.append('file_path', filePath);
         summarizeFormData.append('doc_id', docId);
         summarizeFormData.append('summary_type', summaryOptions[selectedSummaryOption].toLowerCase());
         summarizeFormData.append('file_name', uploadedFile.name);
-        summarizeFormData.append('userId', JSON.parse(localStorage.getItem('userGistify')).userId);
 
-        const flaskResponse = await axios.post('http://localhost:5001/summarize', summarizeFormData, {
+        // const flaskResponse = await axios.post('http://localhost:5000/api/gists', summarizeFormData, {
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data',
+        //     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        //   },
+        // });
+        // console.log(filePath)
+        // console.log(docId)
+        // console.log(uploadedFile.name)
+        // console.log(summaryOptions[selectedSummaryOption].toLowerCase())
+
+        // for (let [key, value] of summarizeFormData.entries()) {
+        //   console.log(key, value);
+        // }
+
+        const flaskResponse = await axios.post('http://localhost:5000/api/gists/upload', summarizeFormData, {
           headers: {
-            'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },
         });
+        console.log("flask response")
+        console.log(flaskResponse)
 
         console.log('Summarize Response:', flaskResponse.data);
 
@@ -152,7 +166,7 @@ export default function Dashboard() {
               originalFileName: uploadedFile.name,
               summaryType: summaryOptions[selectedSummaryOption].toLowerCase(),
               file: uploadedFile,
-              fileURL: flaskResponse.data.fileUrl,
+              fileURL: flaskResponse.data.fileURL,
               docId: chromaId,
               advantages,
               disadvantages,
