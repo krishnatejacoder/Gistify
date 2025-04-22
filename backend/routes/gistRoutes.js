@@ -4,6 +4,7 @@ const { cloudinary, storage } = require('../cloudinary/index');
 const multer = require('multer');
 const upload = multer({ storage });
 const Gist = require('../models/Gist');
+const File = require('../models/file');
 const Summary = require('../models/Summary'); // 👈 Import the Summary model
 const authenticateToken = require('../middleware/auth');
 const axios = require('axios');
@@ -111,10 +112,41 @@ router.get('/recent', authenticateToken, async (req, res) => {
 router.get('/document/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const gist = await Gist.findOne({ _id: id, userId: req.user.id });
-    if (!gist) return res.status(404).json({ error: 'Gist not found' });
-    res.json(gist);
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid ID format' });
+    }
+
+    const gist = await Gist.findOne({ _id: id, userId: req.user.userId });
+    if (!gist) {
+      return res.status(404).json({ error: 'Gist not found' });
+    }
+
+    const summary = await Summary.findOne({ _id: gist.summaryId });
+    if (!summary) {
+      return res.status(404).json({ error: 'Summary not found' });
+    }
+
+    let fileName = 'Text Upload';
+    if (summary.file_id) {
+      const file = await File.findOne({ _id: summary.file_id });
+      fileName = file ? file.pdfName : 'Unknown File';
+    }
+
+    res.json({
+      ...gist.toObject(),
+      summary: summary.summary,
+      advantages: summary.advantages,
+      disadvantages: summary.disadvantages,
+      fileName: fileName,
+      file_id: summary.file_id,
+      chromaId: summary.chromaId,
+      fileUrl: summary.fileUrl,
+      chromaId: summary.chromaId,
+      summaryType: summary.summaryType,
+    });
   } catch (error) {
+    console.error('Error fetching document:', error);
     res.status(500).json({ error: 'Failed to fetch document' });
   }
 });
