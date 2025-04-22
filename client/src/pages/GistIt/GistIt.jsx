@@ -24,6 +24,8 @@ export default function GistIt() {
         setSummary('');
 
         const { gistData } = location.state || {};
+        console.log("Gistit")
+        console.log(gistData)
 
         if (!gistData) {
           setIsLoading(false);

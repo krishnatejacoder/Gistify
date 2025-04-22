@@ -29,9 +29,10 @@ const ChatbotPage = () => {
     const newUserMessage = { text: question, sender: 'user' };
     setMessages([...messages, newUserMessage]);
     setQuestion('');
+    console.log("chatbot")
+    console.log(gistData);
 
     try {
-      // Generate doc_id based on sourceType and file metadata
       // const docId = sourceType === 'file' ? originalFileName || file?.name : `text-${Date.now()}`;
       const response = await fetch('http://localhost:5001/ask', {
         method: 'POST',

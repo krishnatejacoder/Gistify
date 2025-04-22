@@ -208,6 +208,7 @@ export default function Dashboard() {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
       });
+      console.log("Dashboard fetch recent summary click")
       console.log(response)
       navigate('/gistit', {
         state: {
