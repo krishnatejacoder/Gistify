@@ -20,7 +20,7 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
     console.log('Hai');
     console.log(req.body);
     let fileContent = req.file ? req.file.path : null;
-    const title = req.body.title || (req.file ? req.file.originalname.split('.')[0] : 'text-upload');
+    const title = req.body.file_name || (req.file ? req.file.originalname.split('.')[0] : 'text-upload');
     const text = req.body.text;
 
     // Create FormData for the request to Flask
