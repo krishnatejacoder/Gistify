@@ -168,7 +168,6 @@ export default function GistIt() {
           <p className='baloo-2-regular text'>{dayjs(gistData.date).format('MMM D, YYYY')}</p>
         </div>
         <div className="summary-section">
-          <h2 className="baloo-2-semiBold">Summary ({location.state?.gistData?.summaryType || 'concise'})</h2>
           <div className="summary-content baloo-2-regular">
             <div className="summary">
               <p className="gistTitles">Summary</p>
