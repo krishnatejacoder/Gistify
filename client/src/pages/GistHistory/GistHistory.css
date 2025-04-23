@@ -6,6 +6,21 @@
   align-items: center;
 }
 
+.loadingContainer{
+  background-color: #FEF6F6;
+  /* box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.34); */
+  border-radius: 27px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  overflow: hidden;
+  will-change: transform, width;
+  opacity: 1;
+  transition: height 0.3s ease, width 0.2s ease-out;
+  user-select: none;
+}
+
 .page-title {
   color: #333;
 }
