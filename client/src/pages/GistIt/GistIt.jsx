@@ -5,6 +5,7 @@ import mammoth from 'mammoth';
 import Loading from '../../components/Loading/Loading';
 import { notifyError } from '../../components/Toast/Toast';
 import axios from 'axios';
+import dayjs from 'dayjs';
 import './GistIt.css';
 
 export default function GistIt() {
@@ -15,6 +16,7 @@ export default function GistIt() {
   const [fileProcessed, setFileProcessed] = useState(false);
   const [summary, setSummary] = useState('');
   const [addis, setAddis] = useState({});
+  const [gistData, setGistData] = useState({});
 
   useEffect(() => {
     const processContent = async () => {
@@ -25,6 +27,7 @@ export default function GistIt() {
         setSummary('');
 
         const { gistData } = location.state || {};
+        setGistData(gistData)
         console.log('GistIt:', gistData);
 
         if (!gistData) {
@@ -125,7 +128,7 @@ export default function GistIt() {
   };
 
   if (isLoading) {
-    return <Loading val="Processing your content" />;
+    return <Loading className='gistitContainer' val="Processing your content" />;
   }
 
   if (!content) {
@@ -157,6 +160,13 @@ export default function GistIt() {
         {!fileProcessed && !isLoading && !content && <div>Failed to load file.</div>}
       </div>
       <div className="secondHalf">
+        <div className="metaData">
+          <p className='baloo-2-semiBold'>Gist</p>
+          <div className="sepLine"></div>
+          <p className='baloo-2-regular text'>{gistData.summaryType}</p>
+          <div className="sepLine"></div>
+          <p className='baloo-2-regular text'>{dayjs(gistData.date).format('MMM D, YYYY')}</p>
+        </div>
         <div className="summary-section">
           <h2 className="baloo-2-semiBold">Summary ({location.state?.gistData?.summaryType || 'concise'})</h2>
           <div className="summary-content baloo-2-regular">

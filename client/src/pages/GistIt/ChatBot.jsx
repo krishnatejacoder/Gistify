@@ -92,6 +92,7 @@ const ChatbotPage = () => {
         </div>
       </div>
       <div className="chat-area">
+        <div className="shadow"></div>
         <div className="message-list">
           {messages.map((msg, index) => (
             <div key={index} className={`baloo-2-regular message ${msg.sender} ${msg.isError ? 'error' : ''}`}>
@@ -99,22 +100,25 @@ const ChatbotPage = () => {
             </div>
           ))}
         </div>
-        <div className="input-area">
-          <input
-            type="text"
-            className='baloo-2-regular'
-            placeholder="Ask a question..."
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            onKeyDown={(e) => {
-              // console.log(e.key)
-              if(e.key === 'Enter') handleSendMessage();
-            }}
-            disabled={isAsking}
-          />
-          <button ref={loadingRef} className='baloo-2-medium' onClick={handleSendMessage} disabled={isAsking}>
-            {isAsking ? <Loading className='loadingChat' /> : 'Send'}
-          </button>
+        <div className="inputContent">
+          <div className="input-area">
+            <input
+              type="text"
+              className='baloo-2-regular'
+              placeholder="Ask a question..."
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              onKeyDown={(e) => {
+                // console.log(e.key)
+                if(e.key === 'Enter') handleSendMessage();
+              }}
+              disabled={isAsking}
+            />
+            <button ref={loadingRef} className='baloo-2-medium' onClick={handleSendMessage} disabled={isAsking}>
+              {isAsking ? <Loading className='loadingChat' /> : 'Send'}
+            </button>
+          </div>
+          <p className='baloo-2-regular'>Gisti can make mistakes, so double check it</p>
         </div>
       </div>
     </div>

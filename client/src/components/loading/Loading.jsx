@@ -1,8 +1,8 @@
 import "./Loading.css";
 
-export default function Loading({ val }) {
+export default function Loading({ val, className }) {
   return (
-    <div className="loadingContainer piazzolla-bold">
+    <div className={`loadingContainer piazzolla-bold ${className}`}>
       {val && <span>{val}</span>}
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
         <radialGradient

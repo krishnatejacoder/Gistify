@@ -39,6 +39,7 @@ export default function Dashboard() {
         });
         if (isMounted) setRecentSummaries(response.data);
         setFetchingRecentSummaries(false);
+
       } catch (err) {
         console.error('Error fetching recent summaries:', err);
         notifyError('Failed to load recent summaries.');
@@ -115,6 +116,8 @@ export default function Dashboard() {
         formData.append('userId', JSON.parse(localStorage.getItem('userGistify')).userId);
         formData.append('selectedUploadOption', selectedUploadOption);
 
+        console.log(uploadedFile)
+
         // Upload to Cloudinary
         const uploadResponse = await axios.post('http://localhost:5000/files/upload', formData, {
           headers: {
@@ -158,6 +161,7 @@ export default function Dashboard() {
               docId: chromaId,
               advantages,
               disadvantages,
+              data: flaskResponse.data.date,
             },
           },
         });
@@ -215,6 +219,7 @@ export default function Dashboard() {
               docId: chromaId,
               advantages,
               disadvantages,
+              data: flaskResponse.data.date,
             },
           },
         });
@@ -253,6 +258,7 @@ export default function Dashboard() {
             docId: response.data.chromaId,
             advantages: response.data.advantages,
             disadvantages: response.data.disadvantages,
+            data: response.data.date,
           },
         },
       });
@@ -272,7 +278,7 @@ export default function Dashboard() {
         <div className="recentSummaries">
           <p className='title piazzolla-bold'>Recent Summaries</p>
           <div className="summaries">
-            {fetchingRecentSummaries ? <Loading /> : (
+            {fetchingRecentSummaries ? (<Loading />) : (
               recentSummaries.length > 0 ? (
                 recentSummaries.map((summary, index) => (
                   <div key={index} className='summary' onClick={() => handleRecentSummaryClick(summary)}>

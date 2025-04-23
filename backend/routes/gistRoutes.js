@@ -164,6 +164,7 @@ router.get('/document/:id', authenticateToken, async (req, res) => {
       fileUrl: summary.fileUrl,
       chromaId: summary.chromaId,
       summaryType: summary.summaryType,
+      date: file.date,
     });
   } catch (error) {
     console.error('Error fetching document:', error);

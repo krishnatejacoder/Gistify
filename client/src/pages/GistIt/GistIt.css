@@ -6,6 +6,34 @@
   display: flex;
   justify-content: center;
   gap: 58px;
+  min-height: 500px;
+}
+
+
+.gistitContainer.loadingContainer{
+  background-color: #FEF6F6;
+  box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.34);
+  border-radius: 27px;
+  position: absolute;
+  top: calc(50% - 50px);
+  width: 360px;
+  height: 372px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  overflow: hidden;
+  will-change: transform, width;
+  opacity: 1;
+  transition: height 0.3s ease, width 0.2s ease-out;
+  user-select: none;
+}
+
+.gistitContainer.loadingContainer span{
+  bottom: 23px;
+}
+
+.gistitContainer.loadingContainer svg{
+  width: 240px;
+  height: 240px;
 }
 
 .contentDisplay {
@@ -70,7 +98,36 @@
   bottom: -60px;
 }
 
+.secondHalf .metaData{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 10px;
+  /* position: absolute;
+  top: -40px;
+  left: 15px; */
+}
+
+.secondHalf .metaData .sepLine{
+  background-color: #C7C7C7;
+  width: 0.5px;
+  height: 25px;
+}
+
+.secondHalf .metaData p:nth-child(1){
+  font-size: 18px;
+  color: #6E00B3;
+}
+
+.secondHalf .metaData .text{
+  font-size: 16px;
+}
+
 .summary-content {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
   color:#232323;
 }
 
@@ -134,7 +191,7 @@
 }
 
 .gistTitles{
-  font-size: 14.5px;
+  font-size: 15px;
   color: #6E00B3;
 }
 
