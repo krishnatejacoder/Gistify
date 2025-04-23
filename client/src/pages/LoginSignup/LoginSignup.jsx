@@ -67,6 +67,7 @@ export default function LoginSignup() {
           setLoading(false);
           loginContext.login({username: res.data.username, email: res.data.email, userId: res.data.userId });
           localStorage.setItem('accessToken', res.data.token);
+          console.log(localStorage.getItem('accessToken'))
           navigate("/dashboard");
         }, 1500);
       }
@@ -102,6 +103,7 @@ export default function LoginSignup() {
       setTimeout(() => {
         setLoading(false);
         loginContext.login({ username: signupFormData.username });
+        console.log(res.data.token)
         localStorage.setItem('accessToken', res.data.token);
         navigate("/dashboard");
       }, 2500);
