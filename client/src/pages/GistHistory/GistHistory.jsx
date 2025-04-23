@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Loading from '../../components/Loading/Loading';
 import { notifyError } from '../../components/Toast/Toast';
 import axios from 'axios'; // Import axios
+import dayjs from 'dayjs';
 
 export default function GistHistory() {
   const { user } = useContext(AuthContext);
@@ -98,11 +99,11 @@ export default function GistHistory() {
                 <div className="dateContainer">
                   <div className="date">
                     <p className="card-created baloo-2-medium">Last Visited:</p>
-                    <p className='baloo-2-regular'>{new Date(item.lastVisited).toLocaleDateString()}</p>
+                    <p className='baloo-2-regular'>{dayjs(item.lastVisited).format('MMM D, YYYY')}</p>
                   </div>
                   <div className="date">
                     <p className="card-created baloo-2-medium">Created On:</p>
-                    <p className='baloo-2-regular'>{new Date(item.createdAt).toLocaleDateString()}</p>
+                    <p className='baloo-2-regular'>{dayjs(item.createdAt).format('MMM D, YYYY')}</p>
                   </div>
                 </div>
               </div>

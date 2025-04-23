@@ -285,7 +285,7 @@ export default function Dashboard() {
                     <div className="titleCard">
                       <p className="titlePaper baloo-2-medium">{summary.title}</p>
                       <p className="titleDate baloo-2-regular">
-                        {dayjs(summary.createdAt).format('DD/MM/YYYY')}
+                        {dayjs(summary.createdAt).format('MMM D, YYYY')}
                       </p>
                     </div>
                     <p className="desc baloo-2-regular">{summary.truncatedSummary}</p>

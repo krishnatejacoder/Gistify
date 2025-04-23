@@ -56,7 +56,13 @@
 
 .text-content{
   padding: 17px;
-  border-radius: ;
+  /* border-radius: ; */
+}
+
+.text-content pre{
+  width: 100%;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .text-content p:nth-child(1){
