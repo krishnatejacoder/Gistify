@@ -139,6 +139,7 @@ router.get('/document/:id', authenticateToken, async (req, res) => {
     }
 
     const summary = await Summary.findOne({ _id: gist.summaryId });
+    const file = await File.findOne({ _id: summary.file_id });
     if (!summary) {
       return res.status(404).json({ error: 'Summary not found' });
     }
@@ -149,6 +150,8 @@ router.get('/document/:id', authenticateToken, async (req, res) => {
       fileName = file ? file.pdfName : 'Unknown File';
     }
 
+    // console.log(file.fileType)
+
     res.json({
       ...gist.toObject(),
       summary: summary.summary,
@@ -156,6 +159,7 @@ router.get('/document/:id', authenticateToken, async (req, res) => {
       disadvantages: summary.disadvantages,
       fileName: fileName,
       file_id: summary.file_id,
+      sourceType: file.fileType,
       chromaId: summary.chromaId,
       fileUrl: summary.fileUrl,
       chromaId: summary.chromaId,

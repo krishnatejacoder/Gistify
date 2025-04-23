@@ -43,32 +43,36 @@ export default function GistHistory() {
   }, [user]);
 
   const handleCardClick = async (gist) => {
+    console.log("GIST")
     // console.log(gist)
-    try{
+    try {
       const response = await axios.get(`http://localhost:5000/api/gists/document/${gist._id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
       });
-      console.log(response)
+      console.log('Dashboard fetch recent summary click:', response.data);
+
       navigate('/gistit', {
         state: {
           gistData: {
-            sourceType: 'history',
+            locationFrom: 'recentSummary',
+            sourceType: response.data.sourceType,
             content: response.data.summary,
             originalFileName: response.data.fileName,
             summaryType: response.data.summaryType,
             fileName: response.data.fileName,
             fileURL: response.data.fileUrl,
+            fileId: response.data.file_id, // Map file_id to fileId
             docId: response.data.chromaId,
             advantages: response.data.advantages,
             disadvantages: response.data.disadvantages,
           },
         },
       });
-    }
-    catch(error){
-      notifyError(error);
+    } catch (error) {
+      console.error('Error fetching recent summary:', error.response?.data || error);
+      notifyError(error.response?.data?.error || 'Failed to load summary details.');
     }
     // navigate(`/gistit/${gist._id}`, { state: { gistData: gist, fromHistory: true } });
   };

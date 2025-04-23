@@ -17,6 +17,7 @@
   font-size: 17px;
   justify-content: center;
   align-items: center;
+  user-select: none;
   transition: opacity 0.25s ease-out,
     transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }

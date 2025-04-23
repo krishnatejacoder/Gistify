@@ -15,7 +15,7 @@
   padding: 0px;
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent; /* Standard way */
-  user-select: none;
+  /* user-select: none; */
 }
 
 .baloo-2-regular {
@@ -91,6 +91,7 @@ button {
   cursor: pointer;
   font-family: inherit;
   transition: all 0.3s ease-out;
+  user-select: none;
 }
 
 button:disabled:hover{
