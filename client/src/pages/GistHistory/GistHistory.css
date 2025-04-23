@@ -8,10 +8,12 @@
 
 .gist-history-container .loadingContainer{
   background-color: #FEF6F6;
-  /* box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.34); */
+  box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.34);
   border-radius: 27px;
   position: absolute;
-  top: 50%;
+  top: calc(50% - 50px);
+  width: 360px;
+  height: 372px;
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
   overflow: hidden;
@@ -19,6 +21,15 @@
   opacity: 1;
   transition: height 0.3s ease, width 0.2s ease-out;
   user-select: none;
+}
+
+.gist-history-container .loadingContainer span{
+  bottom: 23px;
+}
+
+.gist-history-container .loadingContainer svg{
+  width: 240px;
+  height: 240px;
 }
 
 .page-title {

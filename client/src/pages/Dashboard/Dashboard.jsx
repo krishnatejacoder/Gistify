@@ -9,6 +9,7 @@ import cross from '../../assets/icons/cross/dark.svg';
 import { notifyError, notifyInfo, notifySuccess, notifyWarn } from '../../components/Toast/Toast';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import Loading from '../../components/loading/Loading';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ export default function Dashboard() {
   const [recentSummaries, setRecentSummaries] = useState([]);
   const [loading, setLoading] = useState(false);
   const [uploadedFileFadeIn, setUploadedFileFadeIn] = useState(false);
+  const [fetchingRecentSummaries, setFetchingRecentSummaries] = useState(false);
 
   const uploadOptions = ['PDF / Docx', 'Text'];
   const summaryOptions = ['Concise', 'Analytical', 'Comprehensive'];
@@ -31,13 +33,16 @@ export default function Dashboard() {
 
     const fetchRecentSummaries = async () => {
       try {
+        setFetchingRecentSummaries(true);
         const response = await axios.get('http://localhost:5000/api/gists/recent', {
           headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
         });
         if (isMounted) setRecentSummaries(response.data);
+        setFetchingRecentSummaries(false);
       } catch (err) {
         console.error('Error fetching recent summaries:', err);
         notifyError('Failed to load recent summaries.');
+        setFetchingRecentSummaries(false);
       }
     };
 
@@ -267,23 +272,26 @@ export default function Dashboard() {
         <div className="recentSummaries">
           <p className='title piazzolla-bold'>Recent Summaries</p>
           <div className="summaries">
-            {recentSummaries.length > 0 ? (
-              recentSummaries.map((summary, index) => (
-                <div key={index} className='summary' onClick={() => handleRecentSummaryClick(summary)}>
-                  <div className="titleCard">
-                    <p className="titlePaper baloo-2-medium">{summary.title}</p>
-                    <p className="titleDate baloo-2-regular">
-                      {dayjs(summary.createdAt).format('DD/MM/YYYY')}
-                    </p>
+            {fetchingRecentSummaries ? <Loading /> : (
+              recentSummaries.length > 0 ? (
+                recentSummaries.map((summary, index) => (
+                  <div key={index} className='summary' onClick={() => handleRecentSummaryClick(summary)}>
+                    <div className="titleCard">
+                      <p className="titlePaper baloo-2-medium">{summary.title}</p>
+                      <p className="titleDate baloo-2-regular">
+                        {dayjs(summary.createdAt).format('DD/MM/YYYY')}
+                      </p>
+                    </div>
+                    <p className="desc baloo-2-regular">{summary.truncatedSummary}</p>
                   </div>
-                  <p className="desc baloo-2-regular">{summary.truncatedSummary}</p>
-                </div>
-              ))
-            ) : (
-              <p className="noSummary baloo-2-regular">No summaries yet. Try uploading something!</p>
+                ))
+              ) : (
+                <p className="noSummary baloo-2-regular">No summaries yet. Try uploading something!</p>
+              )
             )}
           </div>
           <button 
+            disabled={fetchingRecentSummaries}
             type="button" 
             className='viewMore baloo-2-semiBold' 
             onClick={() => navigate('/gisthistory')}

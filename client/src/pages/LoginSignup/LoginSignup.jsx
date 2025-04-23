@@ -69,7 +69,7 @@ export default function LoginSignup() {
           localStorage.setItem('accessToken', res.data.token);
           console.log(localStorage.getItem('accessToken'))
           navigate("/dashboard");
-        }, 1500);
+        }, 500);
       }
     } catch (err) {
       setLoading(false);
@@ -106,7 +106,7 @@ export default function LoginSignup() {
         console.log(res.data.token)
         localStorage.setItem('accessToken', res.data.token);
         navigate("/dashboard");
-      }, 2500);
+      }, 500);
     } catch (err) {
       setLoading(false);
       notifyError(err.response?.data?.error || "Signup Failed");

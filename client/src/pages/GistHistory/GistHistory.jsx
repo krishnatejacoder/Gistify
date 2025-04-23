@@ -77,10 +77,6 @@ export default function GistHistory() {
     // navigate(`/gistit/${gist._id}`, { state: { gistData: gist, fromHistory: true } });
   };
 
-  if (isLoading) {
-    return <Loading val="Loading Gist History" />;
-  }
-
   if (error) {
     return <div className="gist-history-container error baloo-2-medium">{error}</div>;
   }
@@ -91,8 +87,8 @@ export default function GistHistory() {
 
   return (
     <div className="gist-history-container">
-      {/* <h1 className="page-title baloo-2-semiBold">Gist History</h1> */}
-      <div className="history-cards">
+      {isLoading ? (<Loading val="Fetching Gist History" />) : (
+        <div className="history-cards">
         {history.map((item) => (
           <div key={item._id} className="history-card" onClick={() => handleCardClick(item)} style={{ cursor: 'pointer' }}>
             <div className="card-left">
@@ -116,7 +112,9 @@ export default function GistHistory() {
           </div>
         ))}
       </div>
-      {history.length === 0 && <p className="no-history baloo-2-regular">No gist history available yet.</p>}
+      )}
+      
+      {!isLoading && history.length === 0 && <p className="no-history baloo-2-regular">No gist history available yet.</p>}
     </div>
   );
 }
