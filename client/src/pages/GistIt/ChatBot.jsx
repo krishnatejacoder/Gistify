@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import Loading from '../../components/loading/Loading'
 import './ChatBot.css';
 
 const ChatbotPage = () => {
@@ -10,6 +11,7 @@ const ChatbotPage = () => {
   const [question, setQuestion] = useState('');
   const [messages, setMessages] = useState([]);
   const [isAsking, setIsAsking] = useState(false);
+  const loadingRef = useRef();
 
   const handleSendMessage = async () => {
     console.log(gistData)
@@ -27,6 +29,8 @@ const ChatbotPage = () => {
     }
 
     setIsAsking(true);
+    loadingRef.current.style.backgroundColor = "transparent"
+
     const newUserMessage = { text: question, sender: 'user' };
     setMessages([...messages, newUserMessage]);
     setQuestion('');
@@ -59,6 +63,7 @@ const ChatbotPage = () => {
       const aiErrorMessage = 'Failed to communicate with the AI.';
       setMessages([...messages, newUserMessage, { text: aiErrorMessage, sender: 'ai', isError: true }]);
     } finally {
+      loadingRef.current.style.backgroundColor = "#5E5FA5"
       setIsAsking(false);
     }
   };
@@ -89,7 +94,7 @@ const ChatbotPage = () => {
       <div className="chat-area">
         <div className="message-list">
           {messages.map((msg, index) => (
-            <div key={index} className={`message ${msg.sender} ${msg.isError ? 'error' : ''}`}>
+            <div key={index} className={`baloo-2-regular message ${msg.sender} ${msg.isError ? 'error' : ''}`}>
               {msg.text}
             </div>
           ))}
@@ -97,13 +102,18 @@ const ChatbotPage = () => {
         <div className="input-area">
           <input
             type="text"
+            className='baloo-2-regular'
             placeholder="Ask a question..."
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
+            onKeyDown={(e) => {
+              // console.log(e.key)
+              if(e.key === 'Enter') handleSendMessage();
+            }}
             disabled={isAsking}
           />
-          <button onClick={handleSendMessage} disabled={isAsking}>
-            {isAsking ? 'Asking...' : 'Send'}
+          <button ref={loadingRef} className='baloo-2-medium' onClick={handleSendMessage} disabled={isAsking}>
+            {isAsking ? <Loading className='loadingChat' /> : 'Send'}
           </button>
         </div>
       </div>

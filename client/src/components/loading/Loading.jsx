@@ -3,7 +3,7 @@ import "./Loading.css";
 export default function Loading({ val }) {
   return (
     <div className="loadingContainer piazzolla-bold">
-      <span>{val}</span>
+      {val && <span>{val}</span>}
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
         <radialGradient
           id="a6"

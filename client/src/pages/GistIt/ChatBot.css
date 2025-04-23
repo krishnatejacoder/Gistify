@@ -29,6 +29,24 @@
   width: 80%;
   height: 529px;
   overflow: auto;
+  scrollbar-gutter: stable;
+  position: relative; 
+  scrollbar-width: thin;
+  scrollbar-color: #5E5FA5 transparent;
+}
+
+.summary-display::-webkit-scrollbar {
+  width: 8px;
+}
+
+.summary-display::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.summary-display::-webkit-scrollbar-thumb {
+  background-color: #5E5FA5;
+  border-radius: 10px;
+  border: 2px solid transparent;
 }
 
 .summary-display h2 {
@@ -41,6 +59,7 @@
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 15px;
+  padding-right: 0px;
   width: 80%;
   display: flex;
   flex-direction: column;
@@ -51,6 +70,25 @@
   overflow-y: auto;
   max-height: 300px;
   margin-bottom: 10px;
+  padding-right: 10px;
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: thin;
+  scrollbar-color: #5E5FA5 rgba(231, 230, 230, 0);
+}
+
+.message-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.message-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.message-list::-webkit-scrollbar-thumb {
+  background-color: #5E5FA5;
+  border-radius: 10px;
+  border: 2px solid transparent;
 }
 
 .message {
@@ -58,43 +96,56 @@
   border-radius: 6px;
   margin-bottom: 5px;
   word-break: break-word;
+  font-size: 14.5px;
 }
 
 .message.user {
   background-color: #007bff;
   color: white;
   align-self: flex-end;
+  max-width: 80%;
 }
 
 .message.ai {
   background-color: #6c757d;
   color: white;
   align-self: flex-start;
+  max-width: 80%;
 }
 
 .input-area {
   display: flex;
+  padding-right: 20px;
 }
 
 .input-area input {
   flex-grow: 1;
   padding: 10px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 8px 4px 4px 8px;
+  font-size: 13.5px;
+  height: 37px;
 }
 
 .input-area button {
-  padding: 10px 15px;
-  background-color: #28a745;
+  position: relative;
+  box-sizing: border-box;
+  /* padding: 10px 15px; */
+  width: 65px;
+  height: 36px;
+  background-color: #5E5FA5;
   color: white;
+  font-size: 14px;
   border: none;
-  border-radius: 4px;
+  border-radius: 4px 8px 8px 4px;
   cursor: pointer;
-  margin-left: 10px;
-}
-
-.input-area button:hover {
-  background-color: #218838;
+  margin-left: 6px;
+  text-align: center;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .gistTitles{

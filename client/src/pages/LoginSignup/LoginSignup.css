@@ -16,6 +16,16 @@
   transition: height 0.3s ease, width 0.2s ease-out;
 }
 
+.loginSignupContainer .loadingContainer{
+  /* width: 250px;
+  height: 250px; */
+}
+
+.loginSignupContainer .loadingContainer svg{
+  width: 250px;
+  height: 250px;
+}
+
 .innerContainer{
   transition: opacity 0.05s ease-in-out;
 }
