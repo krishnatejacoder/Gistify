@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import './GistHistory.css';
 import { AuthContext } from '../../context/AuthContext/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import Loading from '../../components/Loading/Loading';
+import Loading from '../../components/loading/Loading';
 import { notifyError } from '../../components/Toast/Toast';
 import axios from 'axios'; // Import axios
 import dayjs from 'dayjs';
@@ -45,7 +45,7 @@ export default function GistHistory() {
 
   const handleCardClick = async (gist) => {
     console.log("GIST")
-    // console.log(gist)
+    console.log(gist)
     try {
       const response = await axios.get(`http://localhost:5000/api/gists/document/${gist._id}`, {
         headers: {

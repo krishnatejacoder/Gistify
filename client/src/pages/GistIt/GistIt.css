@@ -67,6 +67,7 @@
   width: 100%;
   white-space: pre-wrap;
   word-wrap: break-word;
+  font-size: 14.5px;
 }
 
 .text-content p:nth-child(1){

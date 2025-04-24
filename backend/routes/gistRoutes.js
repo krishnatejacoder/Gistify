@@ -108,7 +108,7 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
         
         const uploadResult = await cloudinary.uploader.upload(tempFilePath, {
           resource_type: 'raw',
-          folder: 'text_uploads',
+          folder: 'gistify',
           public_id: fileName
         });
         
@@ -137,7 +137,7 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
     
         docId = flaskResponse.data.doc_id;
         filePath = flaskResponse.data.cloudinary_url;
-        fileId = flaskResponse.data.file.id;
+        fileId = req.body.doc_id;
     
       } catch (error) {
         console.error('Text upload error:', error);
@@ -308,6 +308,8 @@ router.get('/document/:id', authenticateToken, async (req, res) => {
       console.error('Summary not found for summaryId:', gist.summaryId);
       return res.status(404).json({ error: 'Summary not found' });
     }
+    console.log("summary")
+    console.log(summary)
 
     let fileName = 'Text Upload';
     let fileType = 'text/plain';
@@ -330,9 +332,9 @@ router.get('/document/:id', authenticateToken, async (req, res) => {
       fileName,
       file_id: summary.file_id || null,
       sourceType: fileType,
-      chromaId: summary.chromaId || null,
-      fileUrl: summary.fileUrl || null,
-      summaryType: summary.summaryType || null,
+      chromaId: summary.doc_id || null,
+      fileUrl: summary.file_path || null,
+      summaryType: summary.summary_type || null,
       date: fileDate,
     });
   } catch (error) {
