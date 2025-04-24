@@ -12,65 +12,143 @@ const FormData = require('form-data');
 const mongoose = require('mongoose'); // Add this import
 
 router.post('/upload', authenticateToken, upload.single('file'), async (req, res) => {
-  if (req.body.selectedUploadOption == 0 && !req.file) {
-    return res.status(400).json({ error: 'No file uploaded' });
-  }
-
   try {
-    console.log('Hai');
-    console.log(req.body);
-    // let fileContent = req.file ? req.file.path : null;
+    console.log('Request body:', JSON.stringify(req.body, null, 2));
     const title = req.body.file_name || (req.file ? req.file.originalname.split('.')[0] : 'text-upload');
     const text = req.body.text;
+    const selectedUploadOption = req.body.selectedUploadOption;
 
-    const formData = new FormData();
-    formData.append('doc_id', req.body.doc_id || '');
-    formData.append('file_path', req.body.file_path || '');
-    formData.append('summary_type', req.body.summary_type || '');
-    formData.append('file_name', req.body.file_name || title);
-    formData.append('user_id', req.body.userId || '');
-    formData.append('text', text || '');
+    // Map summary_type to Flask-compatible values
+    const summaryTypeMap = {
+      'concise': 'summary_concise',
+      'analytical': 'summary_analytical',
+      'comprehensive': 'summary_comprehensive'
+    };
+    const summaryType = summaryTypeMap[req.body.summary_type?.toLowerCase()];
+    if (!summaryType) {
+      console.error('Invalid summary_type received:', req.body.summary_type);
+      return res.status(400).json({ error: 'Invalid summary type provided' });
+    }
 
-    console.log('FormData constructed, sending to Flask...');
+    if (!req.user.userId || !mongoose.Types.ObjectId.isValid(req.user.userId)) {
+      console.error('Invalid or missing userId from authenticateToken:', req.user.userId);
+      return res.status(401).json({ error: 'Valid user authentication required' });
+    }
 
-    const ragResponse = await axios.post('http://127.0.0.1:5001/summarize', formData, {
+    let docId, filePath;
+
+    // Handle file upload (selectedUploadOption == 0)
+    if (selectedUploadOption == 0) {
+      if (!req.body.doc_id || !mongoose.Types.ObjectId.isValid(req.body.doc_id)) {
+        console.error('Invalid or missing MongoDB file ID:', req.body.doc_id);
+        return res.status(400).json({ error: 'Valid MongoDB file ID required' });
+      }
+
+      // Retrieve File document from MongoDB
+      const fileDoc = await File.findById(req.body.doc_id);
+      if (!fileDoc) {
+        console.error('File not found in MongoDB for ID:', req.body.doc_id);
+        return res.status(404).json({ error: 'File not found in database' });
+      }
+
+      // Fetch file from Cloudinary URL
+      const cloudinaryUrl = fileDoc.filePath; // Changed from fileUrl to filePath
+      if (!cloudinaryUrl) {
+        console.error('No Cloudinary URL in File document:', fileDoc);
+        return res.status(400).json({ error: 'File document missing Cloudinary URL' });
+      }
+
+      console.log('Fetching file from Cloudinary:', cloudinaryUrl);
+      const fileResponse = await axios.get(cloudinaryUrl, { responseType: 'arraybuffer' });
+      const fileBuffer = Buffer.from(fileResponse.data);
+
+      // Send file to Flask /upload endpoint
+      const uploadFormData = new FormData();
+      uploadFormData.append('file', fileBuffer, {
+        filename: fileDoc.pdfName || 'document.pdf',
+        contentType: fileDoc.fileType === 'application/pdf' ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      });
+
+      console.log('Sending file to Flask /upload...');
+      const uploadResponse = await axios.post('http://127.0.0.1:5001/upload', uploadFormData, {
+        headers: {
+          ...uploadFormData.getHeaders(),
+        },
+      });
+      console.log('Flask /upload Response:', JSON.stringify(uploadResponse.data, null, 2));
+
+      if (!uploadResponse.data.doc_id || !uploadResponse.data.cloudinary_url) {
+        console.error('Invalid response from Flask /upload:', uploadResponse.data);
+        return res.status(500).json({ error: 'Failed to upload file to Flask' });
+      }
+
+      docId = uploadResponse.data.doc_id;
+      filePath = uploadResponse.data.cloudinary_url;
+    } else if (selectedUploadOption == 1) {
+      // Text upload: Generate a doc_id and send text to /summarize
+      if (!text) {
+        console.error('No text provided for text upload option');
+        return res.status(400).json({ error: 'Text is required for text upload' });
+      }
+      docId = new mongoose.Types.ObjectId().toString(); // Generate a unique ID
+      filePath = '';
+      // Note: For text uploads, Flask /summarize handles text directly
+    } else {
+      console.error('Invalid selectedUploadOption:', selectedUploadOption);
+      return res.status(400).json({ error: 'Invalid upload option' });
+    }
+
+    // Call Flask /summarize endpoint
+    const summarizeFormData = new FormData();
+    summarizeFormData.append('doc_id', docId);
+    summarizeFormData.append('file_path', filePath);
+    summarizeFormData.append('summary_type', summaryType);
+    summarizeFormData.append('file_name', req.body.file_name || title);
+    summarizeFormData.append('user_id', req.user.userId);
+    summarizeFormData.append('text', text || '');
+
+    console.log('Summarize FormData contents:', {
+      doc_id: docId,
+      file_path: filePath,
+      summary_type: summaryType,
+      file_name: req.body.file_name || title,
+      user_id: req.user.userId,
+      text: text || ''
+    });
+
+    const ragResponse = await axios.post('http://127.0.0.1:5001/summarize', summarizeFormData, {
       headers: {
-        ...formData.getHeaders(), 
+        ...summarizeFormData.getHeaders(),
       },
     });
-    console.log('yaaa');
-    console.log(ragResponse.data);
+    console.log('Flask /summarize Response:', JSON.stringify(ragResponse.data, null, 2));
 
-    let summaryId = ragResponse.data.summaryId;
-
-    console.log('Fetching summary with ID:', summaryId);
-    const summary = await Summary.findOne({ _id: summaryId });
-    console.log('Found summary:', summary);
-    console.log('Chroma ID:', ragResponse.data.chromaId);
-
-    if (!summary) return res.status(404).json({ error: 'Summary not found in DB' });
+    if (!ragResponse.data.summaryId || !ragResponse.data.chromaId) {
+      console.error('Missing summaryId or chromaId in Flask response:', ragResponse.data);
+      return res.status(500).json({ error: 'Invalid response from summarization service' });
+    }
 
     const gist = new Gist({
       userId: req.user.userId,
-      summaryId: summaryId,
+      summaryId: ragResponse.data.summaryId,
       title,
     });
-
     await gist.save();
+
     const resp = {
       gistId: gist._id,
       title,
-      summary: summary.summary,
-      advantages: summary.advantages,
-      disadvantages: summary.disadvantages,
-      fileURL: summary.fileUrl,
-      docId: summary.file_id,
+      summary: ragResponse.data.summary,
+      advantages: ragResponse.data.advantages,
+      disadvantages: ragResponse.data.disadvantages,
+      fileURL: ragResponse.data.fileUrl || filePath,
+      docId: ragResponse.data.chromaId,
       chromaId: ragResponse.data.chromaId,
       date: Date.now(),
-      summaryType: summary.summaryType,
+      summaryType: req.body.summary_type?.toLowerCase(),
     };
 
-    console.log(resp);
+    console.log('Response:', JSON.stringify(resp, null, 2));
     res.json(resp);
   } catch (error) {
     console.error('Upload error:', error.message);
@@ -78,7 +156,9 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
       console.error('Response data:', error.response.data);
       console.error('Response status:', error.response.status);
     }
-    res.status(500).json({ error: 'Failed to generate summary' });
+    res.status(error.response?.status || 500).json({
+      error: error.response?.data?.error || 'Failed to generate summary'
+    });
   }
 });
 

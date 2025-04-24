@@ -106,18 +106,18 @@ export default function Dashboard() {
 
   const handleGistItClick = async () => {
     if (loading) return;
-
+  
     setLoading(true);
-
+  
     try {
       if (selectedUploadOption === 0 && uploadedFile) {
         const formData = new FormData();
         formData.append('file', uploadedFile);
         formData.append('userId', JSON.parse(localStorage.getItem('userGistify')).userId);
         formData.append('selectedUploadOption', selectedUploadOption);
-
-        console.log(uploadedFile)
-
+  
+        console.log(uploadedFile);
+  
         // Upload to Cloudinary
         const uploadResponse = await axios.post('http://localhost:5000/files/upload', formData, {
           headers: {
@@ -125,30 +125,31 @@ export default function Dashboard() {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },
         });
-
+  
         console.log('Upload Response:', uploadResponse.data);
-
+  
         const filePath = uploadResponse.data?.file?.filePath;
         const docId = uploadResponse.data.file.id;
         if (!filePath) throw new Error('No file path returned from server');
-
+  
         const summarizeFormData = new FormData();
         summarizeFormData.append('file_path', filePath);
         summarizeFormData.append('doc_id', docId);
         summarizeFormData.append('summary_type', summaryOptions[selectedSummaryOption].toLowerCase());
         summarizeFormData.append('file_name', uploadedFile.name);
-
+        summarizeFormData.append('selectedUploadOption', selectedUploadOption); // Add this
+  
         const flaskResponse = await axios.post('http://localhost:5000/api/gists/upload', summarizeFormData, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },
         });
-
+  
         console.log('Summarize Response:', flaskResponse.data);
-
+  
         const { summary, advantages, disadvantages } = flaskResponse.data;
         const chromaId = flaskResponse.data.chromaId;
-
+  
         navigate('/gistit', {
           state: {
             gistData: {
@@ -173,7 +174,7 @@ export default function Dashboard() {
         formData.append('userId', JSON.parse(localStorage.getItem('userGistify')).userId);
         formData.append('selectedUploadOption', selectedUploadOption);
         formData.append('text', text.trim());
-
+  
         // Upload text to Cloudinary
         const uploadResponse = await axios.post('http://localhost:5000/files/upload', formData, {
           headers: {
@@ -181,31 +182,33 @@ export default function Dashboard() {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },
         });
-
+  
         console.log('Text Upload Response:', uploadResponse.data);
-
+  
         const filePath = uploadResponse.data?.file?.filePath;
         const docId = uploadResponse.data.file.id;
         if (!filePath) throw new Error('No file path returned from server');
-
+  
         const summarizeFormData = new FormData();
         summarizeFormData.append('file_path', filePath);
         summarizeFormData.append('doc_id', docId);
         summarizeFormData.append('summary_type', summaryOptions[selectedSummaryOption].toLowerCase());
         summarizeFormData.append('file_name', fileName);
         summarizeFormData.append('userId', JSON.parse(localStorage.getItem('userGistify')).userId);
-
+        summarizeFormData.append('selectedUploadOption', selectedUploadOption); // Add this
+        summarizeFormData.append('text', text.trim()); // Add text for summarization
+  
         const flaskResponse = await axios.post('http://localhost:5000/api/gists/upload', summarizeFormData, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },
         });
-
+  
         console.log('Text Summarize Response:', flaskResponse.data);
-
+  
         const { summary, advantages, disadvantages } = flaskResponse.data;
         const chromaId = flaskResponse.data.chromaId;
-
+  
         navigate('/gistit', {
           state: {
             gistData: {
@@ -215,7 +218,7 @@ export default function Dashboard() {
               summaryType: summaryOptions[selectedSummaryOption].toLowerCase(),
               file: null,
               fileURL: flaskResponse.data.fileUrl,
-              fileId: docId, // Correct mapping
+              fileId: docId,
               docId: chromaId,
               advantages,
               disadvantages,
