@@ -16,4 +16,4 @@ const summarySchema = new mongoose.Schema({
 });
 
 // Explicitly map to 'summary' collection
-module.exports = mongoose.model('Summary', summarySchema, 'summary');
+module.exports = mongoose.model('Summary', summarySchema, 'Summary');

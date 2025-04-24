@@ -21,6 +21,7 @@ from io import BytesIO
 from dotenv import load_dotenv
 import cloudinary.utils
 from bson import ObjectId
+from pymongo.errors import WriteError
 
 def ensure_nltk_resources():
     try:
@@ -341,7 +342,45 @@ def upload_file():
         logger.error(f"Upload error: {e}")
         return jsonify({"error": "An error occurred during upload"}), 500
 
-from pymongo.errors import WriteError
+@app.route("/upload_text", methods=["POST"])
+def upload_text():
+    try:
+        text = request.form.get("text")
+        file_name = request.form.get("file_name")
+        cloudinary_url = request.form.get("cloudinary_url")
+        user_id = request.form.get("user_id")
+
+        if not text or not file_name:
+            return jsonify({"error": "Text and file_name are required"}), 400
+
+        # Generate a unique document ID
+        doc_id = str(uuid.uuid4())
+        
+        # Store in ChromaDB
+        collection.add(
+            ids=[doc_id],
+            documents=[text],
+            metadatas=[{
+                "source": file_name,
+                "cloudinary_url": cloudinary_url,
+                "user_id": user_id,
+                "type": "text"
+            }]
+        )
+
+        return jsonify({
+            "message": "Text uploaded to ChromaDB",
+            "doc_id": doc_id,
+            "cloudinary_url": cloudinary_url,
+            "file": {
+                "filePath": cloudinary_url,
+                "id": doc_id,
+                "fileName": file_name
+            }
+        })
+    except Exception as e:
+        logger.error(f"Text upload error: {str(e)}")
+        return jsonify({"error": "An error occurred during text upload"}), 500
 
 @app.route("/summarize", methods=["POST"])
 def summarize():

@@ -10,6 +10,9 @@ const authenticateToken = require('../middleware/auth');
 const axios = require('axios');
 const FormData = require('form-data');
 const mongoose = require('mongoose'); // Add this import
+const path = require('path');
+const os = require('os');
+const fs = require('fs').promises;
 
 router.post('/upload', authenticateToken, upload.single('file'), async (req, res) => {
   try {
@@ -25,6 +28,7 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
       'comprehensive': 'summary_comprehensive'
     };
     const summaryType = summaryTypeMap[req.body.summary_type?.toLowerCase()];
+    console.log(summaryType)
     if (!summaryType) {
       console.error('Invalid summary_type received:', req.body.summary_type);
       return res.status(400).json({ error: 'Invalid summary type provided' });
@@ -85,20 +89,66 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
       docId = uploadResponse.data.doc_id;
       filePath = uploadResponse.data.cloudinary_url;
       fileId = req.body.doc_id; // MongoDB file ID
-    } else if (selectedUploadOption == 1) {
-      // Text upload: Generate a doc_id and send text to /summarize
+    } 
+    else if (selectedUploadOption == 1) {
+      // Text upload: Store the text in Cloudinary first
       if (!text) {
         console.error('No text provided for text upload option');
         return res.status(400).json({ error: 'Text is required for text upload' });
       }
-      docId = new mongoose.Types.ObjectId().toString();
-      filePath = '';
-      fileId = ''; // No file_id for text uploads
+    
+      try {
+        // 1. Upload text to Cloudinary as a raw file
+        const timestamp = Date.now();
+        const fileName = `text-${timestamp}.txt`;
+        
+        // Create a temporary file to upload
+        const tempFilePath = path.join(os.tmpdir(), fileName);
+        await fs.writeFile(tempFilePath, text);
+        
+        const uploadResult = await cloudinary.uploader.upload(tempFilePath, {
+          resource_type: 'raw',
+          folder: 'text_uploads',
+          public_id: fileName
+        });
+        
+        await fs.unlink(tempFilePath); // Clean up temp file
+    
+        if (!uploadResult.secure_url) {
+          throw new Error('Cloudinary upload failed');
+        }
+    
+        // 2. Send to Flask /upload_text endpoint for ChromaDB storage
+        const flaskFormData = new FormData();
+        flaskFormData.append('text', text);
+        flaskFormData.append('file_name', fileName);
+        flaskFormData.append('user_id', req.user.userId);
+        flaskFormData.append('cloudinary_url', uploadResult.secure_url);
+    
+        const flaskResponse = await axios.post('http://127.0.0.1:5001/upload_text', flaskFormData, {
+          headers: {
+            ...flaskFormData.getHeaders(),
+          },
+        });
+    
+        if (!flaskResponse.data.doc_id) {
+          throw new Error('Failed to store text in ChromaDB');
+        }
+    
+        docId = flaskResponse.data.doc_id;
+        filePath = flaskResponse.data.cloudinary_url;
+        fileId = flaskResponse.data.file.id;
+    
+      } catch (error) {
+        console.error('Text upload error:', error);
+        return res.status(500).json({ error: 'Failed to process text upload' });
+      }
     } else {
       console.error('Invalid selectedUploadOption:', selectedUploadOption);
       return res.status(400).json({ error: 'Invalid upload option' });
     }
 
+    // Rest of your existing code...
     // Call Flask /summarize endpoint
     const summarizeFormData = new FormData();
     summarizeFormData.append('doc_id', docId);
@@ -107,7 +157,7 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
     summarizeFormData.append('file_name', req.body.file_name || title);
     summarizeFormData.append('user_id', req.user.userId);
     summarizeFormData.append('text', text || '');
-    summarizeFormData.append('file_id', fileId || ''); // Add file_id
+    summarizeFormData.append('file_id', fileId || '');
 
     console.log('Summarize FormData contents:', {
       doc_id: docId,
@@ -141,19 +191,19 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
     console.log('Gist saved:', gist);
 
     // Save Summary in MongoDB (Express side)
-    const summary = new Summary({
-      _id: ragResponse.data.summaryId,
-      userId: req.user.userId,
-      file_id: fileId || null,
-      summary: ragResponse.data.summary,
-      advantages: ragResponse.data.advantages,
-      disadvantages: ragResponse.data.disadvantages,
-      fileUrl: ragResponse.data.fileUrl,
-      chromaId: ragResponse.data.chromaId,
-      summaryType: req.body.summary_type?.toLowerCase(),
-    });
-    await summary.save();
-    console.log('Summary saved:', summary);
+    // const summary = new Summary({
+    //   _id: ragResponse.data.summaryId,
+    //   userId: req.user.userId,
+    //   file_id: fileId || null,
+    //   summary: ragResponse.data.summary,
+    //   advantages: ragResponse.data.advantages,
+    //   disadvantages: ragResponse.data.disadvantages,
+    //   fileUrl: ragResponse.data.fileUrl,
+    //   chromaId: ragResponse.data.chromaId,
+    //   summaryType: req.body.summary_type?.toLowerCase(),
+    // });
+    // await summary.save();
+    // console.log('Summary saved:', summary);
 
     const resp = {
       gistId: gist._id,
