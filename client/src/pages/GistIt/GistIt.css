@@ -18,6 +18,7 @@
   top: calc(50% - 50px);
   width: 360px;
   height: 372px;
+  min-height: 372px;
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
   overflow: hidden;
@@ -28,10 +29,12 @@
 }
 
 .gistitContainer.loadingContainer span{
-  bottom: 23px;
+  bottom: -5px;
 }
 
 .gistitContainer.loadingContainer svg{
+  position: relative;
+  bottom: 14px;
   width: 240px;
   height: 240px;
 }
