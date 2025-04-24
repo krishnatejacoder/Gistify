@@ -35,7 +35,7 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
       return res.status(401).json({ error: 'Valid user authentication required' });
     }
 
-    let docId, filePath;
+    let docId, filePath, fileId;
 
     // Handle file upload (selectedUploadOption == 0)
     if (selectedUploadOption == 0) {
@@ -52,7 +52,7 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
       }
 
       // Fetch file from Cloudinary URL
-      const cloudinaryUrl = fileDoc.filePath; // Changed from fileUrl to filePath
+      const cloudinaryUrl = fileDoc.filePath;
       if (!cloudinaryUrl) {
         console.error('No Cloudinary URL in File document:', fileDoc);
         return res.status(400).json({ error: 'File document missing Cloudinary URL' });
@@ -84,15 +84,16 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
 
       docId = uploadResponse.data.doc_id;
       filePath = uploadResponse.data.cloudinary_url;
+      fileId = req.body.doc_id; // MongoDB file ID
     } else if (selectedUploadOption == 1) {
       // Text upload: Generate a doc_id and send text to /summarize
       if (!text) {
         console.error('No text provided for text upload option');
         return res.status(400).json({ error: 'Text is required for text upload' });
       }
-      docId = new mongoose.Types.ObjectId().toString(); // Generate a unique ID
+      docId = new mongoose.Types.ObjectId().toString();
       filePath = '';
-      // Note: For text uploads, Flask /summarize handles text directly
+      fileId = ''; // No file_id for text uploads
     } else {
       console.error('Invalid selectedUploadOption:', selectedUploadOption);
       return res.status(400).json({ error: 'Invalid upload option' });
@@ -106,6 +107,7 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
     summarizeFormData.append('file_name', req.body.file_name || title);
     summarizeFormData.append('user_id', req.user.userId);
     summarizeFormData.append('text', text || '');
+    summarizeFormData.append('file_id', fileId || ''); // Add file_id
 
     console.log('Summarize FormData contents:', {
       doc_id: docId,
@@ -113,7 +115,8 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
       summary_type: summaryType,
       file_name: req.body.file_name || title,
       user_id: req.user.userId,
-      text: text || ''
+      text: text || '',
+      file_id: fileId || ''
     });
 
     const ragResponse = await axios.post('http://127.0.0.1:5001/summarize', summarizeFormData, {
@@ -128,12 +131,29 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
       return res.status(500).json({ error: 'Invalid response from summarization service' });
     }
 
+    // Save Gist
     const gist = new Gist({
       userId: req.user.userId,
       summaryId: ragResponse.data.summaryId,
       title,
     });
     await gist.save();
+    console.log('Gist saved:', gist);
+
+    // Save Summary in MongoDB (Express side)
+    const summary = new Summary({
+      _id: ragResponse.data.summaryId,
+      userId: req.user.userId,
+      file_id: fileId || null,
+      summary: ragResponse.data.summary,
+      advantages: ragResponse.data.advantages,
+      disadvantages: ragResponse.data.disadvantages,
+      fileUrl: ragResponse.data.fileUrl,
+      chromaId: ragResponse.data.chromaId,
+      summaryType: req.body.summary_type?.toLowerCase(),
+    });
+    await summary.save();
+    console.log('Summary saved:', summary);
 
     const resp = {
       gistId: gist._id,
@@ -167,37 +187,52 @@ router.get('/recent', authenticateToken, async (req, res) => {
     const gists = await Gist.find({ userId: req.user.userId })
       .sort({ createdAt: -1 })
       .limit(3);
-    // console.log('Gists fetched:', gists);
 
     const data = await Promise.all(
       gists.map(async (gist) => {
         const summary = await Summary.findOne({ _id: gist.summaryId });
-        const file = await File.findOne({_id: summary.file_id});
-        // console.log(file.fileType)
-        let truncatedSummary = summary.summary
-        if(truncatedSummary.length > 100){
-          truncatedSummary = truncatedSummary.substring(0, 100) + '...'
+        if (!summary) {
+          console.error('Summary not found for summaryId:', gist.summaryId);
+          return {
+            ...gist.toObject(),
+            summary: null,
+            truncatedSummary: null,
+            advantages: 'Unknown',
+            disadvantages: 'Unknown',
+            file_id: null,
+            fileUrl: null,
+            chromaId: null,
+            summaryType: null,
+            sourceType: null,
+          };
         }
-        const respData = {
-          ...gist.toObject(), 
-          summary: summary ? summary.summary : null,
-          truncatedSummary: truncatedSummary ? truncatedSummary : null,
-          advantages: summary ? summary.advantages : 'Unknown',
-          disadvantages: summary ? summary.disadvantages : 'Unknown',
-          file_id: summary ? summary.file_id : null,
-          fileUrl: summary ? summary.fileUrl : null,
-          chromaId: summary ? summary.chromaId : null,
-          summaryType: summary ? summary.summaryType : null,
+
+        let file = null;
+        if (summary.file_id && mongoose.Types.ObjectId.isValid(summary.file_id)) {
+          file = await File.findOne({ _id: summary.file_id });
+        }
+
+        let truncatedSummary = summary.summary;
+        if (truncatedSummary && truncatedSummary.length > 100) {
+          truncatedSummary = truncatedSummary.substring(0, 100) + '...';
+        }
+
+        return {
+          ...gist.toObject(),
+          summary: summary.summary,
+          truncatedSummary: truncatedSummary || null,
+          advantages: summary.advantages || 'Unknown',
+          disadvantages: summary.disadvantages || 'Unknown',
+          file_id: summary.file_id || null,
+          fileUrl: summary.fileUrl || null,
+          chromaId: summary.chromaId || null,
+          summaryType: summary.summaryType || null,
           sourceType: file ? file.fileType : null,
-        }
-        // console.log(respData)
-        return respData;
+        };
       })
     );
 
-    console.log(data)
-
-    // console.log('Response data:', data);
+    console.log('Recent gists data:', JSON.stringify(data, null, 2));
     res.json(data);
   } catch (error) {
     console.error('Error fetching recent summaries:', error);
@@ -219,32 +254,36 @@ router.get('/document/:id', authenticateToken, async (req, res) => {
     }
 
     const summary = await Summary.findOne({ _id: gist.summaryId });
-    const file = await File.findOne({ _id: summary.file_id });
     if (!summary) {
+      console.error('Summary not found for summaryId:', gist.summaryId);
       return res.status(404).json({ error: 'Summary not found' });
     }
 
     let fileName = 'Text Upload';
-    if (summary.file_id) {
-      const file = await File.findOne({ _id: summary.file_id });
-      fileName = file ? file.pdfName : 'Unknown File';
-    }
+    let fileType = 'text/plain';
+    let fileDate = summary.createdAt || new Date();
 
-    // console.log(file.fileType)
+    if (summary.file_id && mongoose.Types.ObjectId.isValid(summary.file_id)) {
+      const file = await File.findOne({ _id: summary.file_id });
+      if (file) {
+        fileName = file.pdfName || 'Unknown File';
+        fileType = file.fileType || 'application/octet-stream';
+        fileDate = file.date || fileDate;
+      }
+    }
 
     res.json({
       ...gist.toObject(),
       summary: summary.summary,
-      advantages: summary.advantages,
-      disadvantages: summary.disadvantages,
-      fileName: fileName,
-      file_id: summary.file_id,
-      sourceType: file.fileType,
-      chromaId: summary.chromaId,
-      fileUrl: summary.fileUrl,
-      chromaId: summary.chromaId,
-      summaryType: summary.summaryType,
-      date: file.date,
+      advantages: summary.advantages || [],
+      disadvantages: summary.disadvantages || [],
+      fileName,
+      file_id: summary.file_id || null,
+      sourceType: fileType,
+      chromaId: summary.chromaId || null,
+      fileUrl: summary.fileUrl || null,
+      summaryType: summary.summaryType || null,
+      date: fileDate,
     });
   } catch (error) {
     console.error('Error fetching document:', error);

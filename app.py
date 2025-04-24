@@ -352,12 +352,18 @@ def summarize():
         file_name = request.form.get("file_name")
         user_id = request.form.get("user_id")
         text = request.form.get("text")
+        file_id = request.form.get("file_id")
 
-        logger.info(f"Received /summarize request with: doc_id='{doc_id}', file_path='{file_path}', summary_type='{summary_type}', file_name='{file_name}', user_id='{user_id}'")
+        logger.info(f"Received /summarize request with: doc_id='{doc_id}', file_path='{file_path}', summary_type='{summary_type}', file_name='{file_name}', user_id='{user_id}', file_id='{file_id}'")
 
         if not doc_id or not user_id or not summary_type:
             logger.warning("Missing required fields in summarize request")
-            return jsonify({"error": "Missing required fields"}), 400
+            return jsonify({"error": "Missing required fields: doc_id, user_id, and summary_type are required"}), 400
+
+        # Validate user_id
+        if not isinstance(user_id, str) or len(user_id) < 1:
+            logger.error(f"Invalid user_id: {user_id}")
+            return jsonify({"error": "Invalid user_id"}), 400
 
         # Retrieve document from ChromaDB
         chroma_result = collection.get(ids=[doc_id])
@@ -387,7 +393,7 @@ def summarize():
 
         # Store summary in MongoDB
         summary_data = {
-            "user_id": user_id,
+            "userId": user_id,  # Match Express schema
             "doc_id": doc_id,
             "summary": summary,
             "advantages": advantages,
@@ -395,9 +401,10 @@ def summarize():
             "file_path": file_path,
             "file_name": file_name,
             "summary_type": summary_type,
+            "file_id": ObjectId(file_id) if file_id and ObjectId.is_valid(file_id) else None,
             "created_at": datetime.utcnow()
         }
-        mongo_result = db.summaries.insert_one(summary_data)
+        mongo_result = db.Summary.insert_one(summary_data)  # Use 'summary' collection
         summary_id = str(mongo_result.inserted_id)
         logger.info(f"Stored summary in MongoDB with ID: {summary_id}")
 
@@ -411,11 +418,15 @@ def summarize():
             "chromaId": doc_id,
             "source": source,
             "fileName": file_name,
-            "date": summary_data["created_at"].isoformat()
+            "date": summary_data["created_at"].isoformat(),
+            "file_id": file_id if file_id else None
         }
 
         logger.info(f"Sending response: {response}")
         return jsonify(response)
+    except pymongo.errors.WriteError as e:
+        logger.error(f"MongoDB write error: {str(e)}")
+        return jsonify({"error": "Failed to save summary due to database error"}), 500
     except Exception as e:
         logger.error(f"Summarize error: {str(e)}")
         return jsonify({"error": "An error occurred during summarization"}), 500
