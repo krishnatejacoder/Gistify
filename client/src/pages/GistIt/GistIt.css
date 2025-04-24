@@ -1,10 +1,11 @@
 .gistitContainer {
   position: absolute;
-  top: 70px;
+  top: 33px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 58px;
   min-height: 500px;
 }
@@ -40,8 +41,8 @@
 }
 
 .contentDisplay {
-  position: relative;
-  bottom: 50px;
+  /* position: relative;
+  bottom: 50px; */
   height: 549px;
   width: 450px;
   overflow: auto;
@@ -89,7 +90,7 @@
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.17);
   border-radius: 10px;
   width: 842px;
-  height: 471px;
+  height: 460px;
   overflow: auto;
 }
 
@@ -107,12 +108,17 @@
   bottom: -60px;
 }
 
+.gistitContainer .secondHalf{
+  position: relative;
+  bottom: 25px;
+}
+
 .secondHalf .metaData{
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 13px;
-  margin-bottom: 10px;
+  margin-bottom: 11px;
   /* position: absolute;
   top: -40px;
   left: 15px; */
@@ -143,7 +149,7 @@
 .secondHalf{
   position: relative;
   width: 842px;
-  height: 471px;
+  height: 501px;
   display: flex;
   flex-direction: column;
 }

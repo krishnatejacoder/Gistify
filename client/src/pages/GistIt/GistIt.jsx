@@ -19,6 +19,10 @@ export default function GistIt() {
   const [addis, setAddis] = useState({});
   const [gistData, setGistData] = useState({});
 
+  const capitalizeFirstLetter = (val) => {
+    return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+  }
+
   useEffect(() => {
     const processContent = async () => {
       try {
@@ -164,7 +168,7 @@ export default function GistIt() {
         <div className="metaData">
           <p className='baloo-2-semiBold'>Gist</p>
           <div className="sepLine"></div>
-          <p className='baloo-2-regular text'>{gistData.summaryType}</p>
+          <p className='baloo-2-regular text'>{capitalizeFirstLetter(gistData.summaryType)}</p>
           <div className="sepLine"></div>
           <p className='baloo-2-regular text'>{dayjs(gistData.date).format('MMM D, YYYY')}</p>
         </div>
