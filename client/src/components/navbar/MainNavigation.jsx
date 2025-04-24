@@ -14,7 +14,7 @@ export default function NavBar() {
   const [isSettingClicked, setSettingClicked] = useState(false);
   const menuItems = [
     { name: "Home", paths: ["/", "/dashboard"] },
-    { name: "Gist It", paths: ["/gistit"] },
+    { name: "Gist It", paths: ["/gistit", "/chatbot"] },
     { name: "Gist History", paths: ["/gisthistory"] },
   ];
 

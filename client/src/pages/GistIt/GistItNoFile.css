@@ -1,0 +1,213 @@
+.gistItNoFileContainer{
+  position: relative;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.gistItNoFileContainer .uploadedFile .primary p{
+  max-width: 340px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.gistItNoFileContainer .gistArea{
+  position: absolute;
+  top: 41px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 32px;
+}
+
+.gistItNoFileContainer .gistArea .welcome{
+  font-size: 22px;
+  color: #6E00B3;
+  text-align: center;
+  margin-top: 5px;
+}
+
+.gistItNoFileContainer .gistArea .welcomeQuestion{
+  display: flex;
+  gap: 4px;
+}
+
+.gistItNoFileContainer .gistArea .welcomeHelp{
+  color: rgba(67, 64, 64, 0.83);
+  font-size: 15px;
+}
+.gistItNoFileContainer .gistArea .intro{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.gistItNoFileContainer .gistArea .secondaryIntro{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1px;
+}
+
+.gistItNoFileContainer .leftC{
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+}
+
+.gistItNoFileContainer .leftC .uploadContent .uploadArea{
+  width: 469px;
+  height: 242px;
+  stroke-dasharray: 15 8 3 5;
+  position: relative;
+  border-radius: 20px;
+}
+
+.gistItNoFileContainer .leftC .uploadContent .text{
+  font-size: 18px;
+  line-height: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: 46px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.gistItNoFileContainer .uploadContent .text div{
+  display: flex;
+  gap: 4px;
+}
+
+.gistItNoFileContainer .uploadArea img{
+  display: block;
+}
+
+.gistItNoFileContainer .uploadArea .uploadCloud{
+  position: absolute;
+  top: 43.44px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.gistItNoFileContainer .uploadArea .uploadedFile{
+  margin: 15px 5px 0px 5px;
+  padding: 10px 17px;
+  background-color: rgba(254, 246, 246, 0.8);
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.13);
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-10px);
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: all 0.2s ease;
+}
+
+.gistItNoFileContainer .uploadArea .uploadedFile.active{
+  visibility: visible;
+  pointer-events: all;
+  opacity: 1;
+  transform: translateY(0px);
+}
+
+.gistItNoFileContainer .uploadedFile .primary{
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.gistItNoFileContainer .uploadedFile .primary p{
+  position: relative;
+  top: 2px;
+}
+
+.gistItNoFileContainer .uploadedFile .PDF{
+  width: 22px;
+}
+
+.gistItNoFileContainer .uploadedFile .cross{
+  width: 25px;
+}
+
+.gistItNoFileContainer .gistIt{
+  position: absolute;
+  bottom: -58px;
+  left: 4px;
+  font-size: 18.5px;
+  color: #fff;
+  background-color: #3F4086;
+  border-radius: 10px;
+  width: 143px;
+  height: 47px;
+  text-align: center;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.17);
+}
+
+.gistItNoFileContainer .gistIt:disabled{
+  color: rgb(91, 91, 91);
+  background-color: #dad5d5;
+  box-shadow: 0px 0px 0px rgba(0, 0, 0, 0);
+  cursor:auto;
+}
+
+.gistItNoFileContainer .rightC{
+  position: relative;
+  width: auto;
+}
+
+.gistItNoFileContainer .options{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 150px;
+  padding: 9px;
+  background-color: #5E5FA5;
+  color: white;
+  gap: 13px;
+  border-radius: 15px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.gistItNoFileContainer .opt{
+  position: absolute;
+  top: 115px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 15px;
+}
+
+.gistItNoFileContainer .activeContainer{
+  position: absolute;
+  background-color: #C5D8FF;
+  border-radius: 8px;
+  width: 134px;
+  height: 26px;
+  left: 50%;
+  top: 8px;
+  transform: translateX(-50%);
+}
+
+.gistItNoFileContainer .option{
+  position: relative;
+  font-size: 15px;
+  transition: all 0.25s ease-out;
+}
+
+.gistItNoFileContainer .textContent textarea{
+  width: 469px;
+  height: 237px;
+  font-size: 14px;
+  padding: 8px 13px;
+  resize: none;
+  border-radius: 10px;
+  color: rgb(62, 62, 62);
+}

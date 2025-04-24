@@ -7,7 +7,7 @@ const ChatbotPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const gistData = location.state?.gistData || {};
-  const { advantages: summary, content, sourceType, originalFileName, file } = gistData;
+  const { advantages, content, disadvantages, sourceType, originalFileName, file } = gistData;
   const [question, setQuestion] = useState('');
   const [messages, setMessages] = useState([]);
   const [isAsking, setIsAsking] = useState(false);
@@ -80,15 +80,15 @@ const ChatbotPage = () => {
       <div className="summary-display">
         <div className="summary">
           <p className='baloo-2-medium gistTitles'>Summary</p>
-          <p className='baloo-2-regular gistInfo'>{summary || 'No summary available.'}</p>
+          <p className='baloo-2-regular gistInfo'>{content || 'No summary available.'}</p>
         </div>
         <div className="advant">
           <p className='baloo-2-medium gistTitles'>Advantages</p>
-          <p className='baloo-2-regular gistInfo'>{gistData.advantages || 'No advantages available.'}</p>
+          <p className='baloo-2-regular gistInfo'>{advantages || 'No advantages available.'}</p>
         </div>
         <div className="disadvant">
           <p className='baloo-2-medium gistTitles'>Disadvantages</p>
-          <p className='baloo-2-regular gistInfo'>{gistData.disadvantages || 'No disadvantages available.'}</p>
+          <p className='baloo-2-regular gistInfo'>{disadvantages || 'No disadvantages available.'}</p>
         </div>
       </div>
       <div className="chat-area">

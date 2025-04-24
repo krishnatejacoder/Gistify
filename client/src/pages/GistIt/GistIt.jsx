@@ -7,6 +7,7 @@ import { notifyError } from '../../components/Toast/Toast';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import './GistIt.css';
+import GistItNoFile from './GistItNoFile';
 
 export default function GistIt() {
   const location = useLocation();
@@ -132,7 +133,7 @@ export default function GistIt() {
   }
 
   if (!content) {
-    return <Dashboard />;
+    return <GistItNoFile />;
   }
 
   return (
