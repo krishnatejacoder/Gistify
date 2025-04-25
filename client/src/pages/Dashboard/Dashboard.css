@@ -2,7 +2,8 @@
   position: relative;
   width: 100%;
   max-width: 1440px;
-  margin: 0 auto;
+  /* height: 100%; */
+  margin: 8px auto;
 }
 
 .dashboardContainer .recentSummaries{
@@ -322,7 +323,7 @@
   width: 469px;
   height: 237px;
   font-size: 14px;
-  padding: 8px 13px;
+  padding: 9px 13px;
   resize: none;
   border-radius: 10px;
   color: rgb(62, 62, 62);

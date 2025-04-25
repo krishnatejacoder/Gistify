@@ -4,7 +4,7 @@
   margin: 0 auto;
   width: 100%;
   /* margin-top: 100px; */
-  min-height: calc(100vh - 80px);
+  height: calc(100vh - 80px);
 }
 
 .layout {
