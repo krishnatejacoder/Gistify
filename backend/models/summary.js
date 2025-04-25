@@ -11,7 +11,7 @@ const summarySchema = new mongoose.Schema({
   file_name: { type: String, default: '' },
   fileUrl: { type: String, default: '' },
   chromaId: { type: String, required: true },
-  summaryType: { type: String, required: true },
+  summary_type: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
 });
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Dashboard from './../Dashboard/Dashboard';
 import mammoth from 'mammoth';
-import Loading from '../../components/Loading/Loading';
+import Loading from '../../components/loading/Loading';
 import { notifyError } from '../../components/Toast/Toast';
 import axios from 'axios';
 import dayjs from 'dayjs';
@@ -20,6 +20,7 @@ export default function GistIt() {
   const [gistData, setGistData] = useState({});
 
   const capitalizeFirstLetter = (val) => {
+    val = val.slice(8)
     return String(val).charAt(0).toUpperCase() + String(val).slice(1);
   }
 
@@ -89,7 +90,8 @@ export default function GistIt() {
             notifyError('Unsupported file type');
             setIsLoading(false);
           }
-        } else if (gistData.sourceType === 'text/plain') {
+        } 
+        else if (gistData.sourceType === 'text/plain') {
           try {
             console.log('Fetching text for fileId:', gistData.fileId);
             console.log('Access Token:', localStorage.getItem('accessToken'));
@@ -103,12 +105,13 @@ export default function GistIt() {
               return;
             }
             console.log('Setting text content:', textContent);
-            setContent({ type: 'text', data: textContent, name: gistData.originalFileName || 'Text Input' });
+            setContent({ type: 'text', data: textContent, name: gistData.originalFileName || 'Text Content'});
             setFileProcessed(true);
             setIsLoading(false);
             setSummary(gistData.content);
             setAddis({ advantages: gistData.advantages, disadvantages: gistData.disadvantages });
-          } catch (textError) {
+          } 
+          catch (textError) {
             console.error('Error fetching text content:', textError.response?.data || textError);
             notifyError('Failed to fetch text content from file');
             setIsLoading(false);
