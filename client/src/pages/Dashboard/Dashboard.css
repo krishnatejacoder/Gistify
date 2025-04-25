@@ -172,10 +172,23 @@
 
 .dashboardContainer .leftC .uploadContent .uploadArea{
   width: 469px;
-  height: 242px;
+  height: 241px;
   stroke-dasharray: 15 8 3 5;
   position: relative;
-  border-radius: 20px;
+  border-radius: 22px;
+  background-color: rgba(0, 0, 255, 0);
+  user-select: none;
+  cursor: pointer;
+  background-clip: content-box;
+  transition: background-color 0.25s ease;
+}
+
+.dashboardContainer .leftC .uploadContent .uploadArea.dragOver{
+  background-color: rgba(0, 0, 255, 0.05);
+}
+
+.dashboardContainer .leftC .uploadContent .uploadArea:hover{
+  background-color: rgba(0, 0, 255, 0.05);
 }
 
 .dashboardContainer .leftC .uploadContent .text{
@@ -186,9 +199,10 @@
   justify-content: center;
   align-items: center;
   position: absolute;
-  bottom: 46px;
+  bottom: 49px;
   left: 50%;
   transform: translateX(-50%);
+  color: rgba(0, 0, 0, 0.72)
 }
 
 .dashboardContainer .uploadContent .text div{
@@ -198,16 +212,17 @@
 
 .dashboardContainer .uploadArea img{
   display: block;
+  cursor: pointer;
 }
 
 .dashboardContainer .uploadArea .uploadCloud{
   position: absolute;
-  top: 43.44px;
+  top: 50px;
   left: 50%;
   transform: translateX(-50%);
 }
 
-.dashboardContainer .uploadArea .uploadedFile{
+.dashboardContainer .uploadedFile{
   margin: 15px 5px 0px 5px;
   padding: 10px 17px;
   background-color: rgba(254, 246, 246, 0.8);
@@ -222,7 +237,7 @@
   transition: all 0.2s ease;
 }
 
-.dashboardContainer .uploadArea .uploadedFile.active{
+.dashboardContainer .uploadedFile.active{
   visibility: visible;
   pointer-events: all;
   opacity: 1;

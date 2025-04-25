@@ -22,9 +22,22 @@ export default function GistItNoFile() {
   const [selectedSummaryOption, setSelectedSummaryOption] = useState(0);
   const [loading, setLoading] = useState(false);
   const [uploadedFileFadeIn, setUploadedFileFadeIn] = useState(false);
+  const dragRef = useRef(null);
 
   const uploadOptions = ['PDF', 'Text'];
   const summaryOptions = ['Concise', 'Analytical', 'Comprehensive'];
+
+  useEffect(() => {
+    dragRef.current.addEventListener('dragenter', () => {
+      dragRef.current.classList.add('dragOver');
+    })
+
+    dragRef.current.addEventListener('dragleave', (e) => {
+      if(!dragRef.current.contains(e.relatedTarget)){
+        dragRef.current.classList.remove('dragOver')
+      }
+    })
+  }, [dragRef])
 
   if (!user) return null;
 
@@ -251,22 +264,18 @@ export default function GistItNoFile() {
                   onDragOver={handleDragOver}
                   onDrop={handleDrop}
                   tabIndex="0"
+                  onClick={handleBrowseClick}
+                  ref={dragRef}
                 >
                   <img draggable="false" src={uploadArea} alt="uploadArea" />
                   <img draggable="false" className='uploadCloud' src={uploadCloud} alt="cloud" />
 
-                  <div className="text">
-                    <p className='baloo-2-medium' style={{ color: "rgba(0,0,0,0.77)" }}>Drag & Drop</p>
+                  <div className="text" >
+                    <p className='baloo-2-medium'>Drag & Drop</p>
                     <div>
-                      <p className='baloo-2-medium' style={{ color: "rgba(0,0,0,0.77)" }}>or</p>
-                      <p
-                        className='baloo-2-bold'
-                        style={{ color: "#6E00B3", cursor: "pointer" }}
-                        onClick={handleBrowseClick}
-                      >
-                        Browse
-                      </p>
-                      <p className='baloo-2-medium' style={{ color: "rgba(0,0,0,0.77)" }}>PDF</p>
+                      <p className='baloo-2-medium'>or</p>
+                      <p className='baloo-2-medium'>Browse</p>
+                      <p className='baloo-2-medium'>PDF</p>
                     </div>
                   </div>
 
@@ -279,6 +288,7 @@ export default function GistItNoFile() {
                     key={uploadedFile ? "file-input-1" : "file-input-0"}
                   />
 
+                </div>
                   <div className={`uploadedFile ${uploadedFileFadeIn ? "active" : ""}`}>
                     {isUploaded && (
                       <>
@@ -296,7 +306,6 @@ export default function GistItNoFile() {
                       </>
                     )}
                   </div>
-                </div>
               </div>
             ) : (
               <div className='textContent'>

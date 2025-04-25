@@ -59,10 +59,23 @@
 
 .gistItNoFileContainer .leftC .uploadContent .uploadArea{
   width: 469px;
-  height: 242px;
+  height: 241px;
   stroke-dasharray: 15 8 3 5;
   position: relative;
-  border-radius: 20px;
+  border-radius: 22px;
+  background-color: rgba(0, 0, 255, 0);
+  user-select: none;
+  cursor: pointer;
+  background-clip: content-box;
+  transition: background-color 0.25s ease;
+}
+
+.gistItNoFileContainer .leftC .uploadContent .uploadArea.dragOver{
+  background-color: rgba(0, 0, 255, 0.05);
+}
+
+.gistItNoFileContainer .leftC .uploadContent .uploadArea:hover{
+  background-color: rgba(0, 0, 255, 0.05);
 }
 
 .gistItNoFileContainer .leftC .uploadContent .text{
