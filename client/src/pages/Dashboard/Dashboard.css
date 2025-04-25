@@ -82,6 +82,10 @@
 }
 
 .dashboardContainer .recentSummaries .titleCard .titlePaper{
+  width: 190px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 18px;
 }
 
@@ -232,6 +236,10 @@
 .dashboardContainer .uploadedFile .primary p{
   position: relative;
   top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 320px;
 }
 
 .dashboardContainer .uploadedFile .PDF{

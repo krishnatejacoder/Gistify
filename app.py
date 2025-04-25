@@ -295,15 +295,7 @@ def upload_file():
             logger.error("Unsupported file type")
             return jsonify({"error": "Only PDF and DOCX files are supported"}), 400
 
-        response = cloudinary.uploader.upload(
-            file,
-            public_id=filename,
-            folder="Gistify",
-            resource_type="raw", 
-            format=ext,          
-            access_mode="public",
-        )
-        cloudinary_url = response.get("secure_url")
+        cloudinary_url = request.form.get("secure_url")
         if not cloudinary_url:
             logger.error("Failed to retrieve Cloudinary URL")
             return jsonify({"error": "Failed to upload file to Cloudinary"}), 500

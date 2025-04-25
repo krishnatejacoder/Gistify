@@ -21,7 +21,6 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
     const text = req.body.text;
     const selectedUploadOption = req.body.selectedUploadOption;
 
-    // Map summary_type to Flask-compatible values
     const summaryTypeMap = {
       'concise': 'summary_concise',
       'analytical': 'summary_analytical',
@@ -41,21 +40,18 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
 
     let docId, filePath, fileId;
 
-    // Handle file upload (selectedUploadOption == 0)
     if (selectedUploadOption == 0) {
       if (!req.body.doc_id || !mongoose.Types.ObjectId.isValid(req.body.doc_id)) {
         console.error('Invalid or missing MongoDB file ID:', req.body.doc_id);
         return res.status(400).json({ error: 'Valid MongoDB file ID required' });
       }
 
-      // Retrieve File document from MongoDB
       const fileDoc = await File.findById(req.body.doc_id);
       if (!fileDoc) {
         console.error('File not found in MongoDB for ID:', req.body.doc_id);
         return res.status(404).json({ error: 'File not found in database' });
       }
 
-      // Fetch file from Cloudinary URL
       const cloudinaryUrl = fileDoc.filePath;
       if (!cloudinaryUrl) {
         console.error('No Cloudinary URL in File document:', fileDoc);
@@ -66,12 +62,12 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
       const fileResponse = await axios.get(cloudinaryUrl, { responseType: 'arraybuffer' });
       const fileBuffer = Buffer.from(fileResponse.data);
 
-      // Send file to Flask /upload endpoint
       const uploadFormData = new FormData();
       uploadFormData.append('file', fileBuffer, {
         filename: fileDoc.pdfName || 'document.pdf',
         contentType: fileDoc.fileType === 'application/pdf' ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       });
+      uploadFormData.append('secure_url', cloudinaryUrl)
 
       console.log('Sending file to Flask /upload...');
       const uploadResponse = await axios.post('http://127.0.0.1:5001/upload', uploadFormData, {
@@ -232,6 +228,7 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
   }
 });
 
+
 router.get('/recent', authenticateToken, async (req, res) => {
   try {
     const gists = await Gist.find({ userId: req.user.userId })
@@ -290,6 +287,7 @@ router.get('/recent', authenticateToken, async (req, res) => {
   }
 });
 
+
 router.get('/document/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
@@ -343,7 +341,7 @@ router.get('/document/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// Gist History: Fetch all user gists
+
 router.get('/history', authenticateToken, async (req, res) => {
   try {
     const gists = await Gist.find({ userId: req.user.userId }).sort({ createdAt: -1 });

@@ -4,13 +4,11 @@ const { cloudinary, storage } = require('../cloudinary/index');
 const multer = require('multer');
 const upload = multer({ storage });
 
-// Upload file to Cloudinary
 router.post('/upload', upload.single('file'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
   res.json({ url: req.file.path, public_id: req.file.filename });
 });
 
-// List recent files (for Home Page)
 router.get('/files', async (req, res) => {
   try {
     const { resources } = await cloudinary.search

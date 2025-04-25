@@ -104,6 +104,10 @@
 
 .card-title {
   color: #5e00b3; /* Purple title */
+  white-space: nowrap;
+  width: 570px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .card-author {

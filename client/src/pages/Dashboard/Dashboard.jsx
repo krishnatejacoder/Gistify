@@ -257,7 +257,7 @@ export default function Dashboard() {
             summaryType: response.data.summaryType,
             fileName: response.data.fileName,
             fileURL: response.data.fileUrl,
-            fileId: response.data.file_id, // Map file_id to fileId
+            fileId: response.data.file_id,
             docId: response.data.chromaId,
             advantages: response.data.advantages,
             disadvantages: response.data.disadvantages,
