@@ -159,7 +159,7 @@
   border-radius: 8px 3px 3px 8px;
   font-size: 13.5px;
   height: 36px;
-  transition: outline 0.2s ease-in-out;
+  transition: outline 0.2s ease-out;
 }
 
 .input-area input:focus {

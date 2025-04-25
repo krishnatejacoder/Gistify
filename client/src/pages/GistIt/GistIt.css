@@ -87,12 +87,25 @@
 
 .summary-section {
   background-color: #F5F5F5;
-  padding: 13px 27px;
+  padding: 16px 26px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.17);
   border-radius: 10px;
   width: 842px;
   height: 460px;
-  overflow: auto;
+  overflow-y: auto;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
+  word-break: break-all;
+}
+
+.gistInfo {
+  font-size: 14.5px;
+  color: #232323;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .gistitContainer button {
@@ -145,6 +158,10 @@
   flex-direction: column;
   gap: 15px;
   color:#232323;
+  width: 100%;
+  white-space: wrap;
+  word-wrap:break-word;
+  word-break: break-all;
 }
 
 .secondHalf{
@@ -209,11 +226,6 @@
 .gistTitles{
   font-size: 15px;
   color: #6E00B3;
-}
-
-.gistInfo{
-  font-size: 14.5px;
-  color: #232323;
 }
 
 .gistitContainer .back{

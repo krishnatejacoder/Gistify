@@ -23,7 +23,7 @@ export default function GistItNoFile() {
   const [loading, setLoading] = useState(false);
   const [uploadedFileFadeIn, setUploadedFileFadeIn] = useState(false);
 
-  const uploadOptions = ['PDF / Docx', 'Text'];
+  const uploadOptions = ['PDF', 'Text'];
   const summaryOptions = ['Concise', 'Analytical', 'Comprehensive'];
 
   if (!user) return null;
@@ -45,7 +45,7 @@ export default function GistItNoFile() {
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       'application/msword',
     ];
-    const validExtensions = ['.pdf', '.docx'];
+    const validExtensions = ['.pdf'];
     const fileName = file.name.toLowerCase();
     const isValid = validTypes.includes(file.type) || validExtensions.some(ext => fileName.endsWith(ext));
 
@@ -54,7 +54,7 @@ export default function GistItNoFile() {
       setUploadedFileFadeIn(true);
       setIsUploaded(true);
     } else {
-      notifyError('Please upload a valid PDF or DOCX file');
+      notifyError('Please upload a valid PDF file');
       setIsUploaded(false);
       setUploadedFile(null);
     }
@@ -81,18 +81,18 @@ export default function GistItNoFile() {
 
   const handleGistItClick = async () => {
     if (loading) return;
-
+  
     setLoading(true);
-
+  
     try {
       if (selectedUploadOption === 0 && uploadedFile) {
         const formData = new FormData();
         formData.append('file', uploadedFile);
         formData.append('userId', JSON.parse(localStorage.getItem('userGistify')).userId);
         formData.append('selectedUploadOption', selectedUploadOption);
-
-        console.log(uploadedFile)
-
+  
+        console.log(uploadedFile);
+  
         // Upload to Cloudinary
         const uploadResponse = await axios.post('http://localhost:5000/files/upload', formData, {
           headers: {
@@ -100,47 +100,52 @@ export default function GistItNoFile() {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },
         });
-
+  
         console.log('Upload Response:', uploadResponse.data);
-
+  
         const filePath = uploadResponse.data?.file?.filePath;
         const docId = uploadResponse.data.file.id;
         if (!filePath) throw new Error('No file path returned from server');
-
+  
         const summarizeFormData = new FormData();
         summarizeFormData.append('file_path', filePath);
         summarizeFormData.append('doc_id', docId);
         summarizeFormData.append('summary_type', summaryOptions[selectedSummaryOption].toLowerCase());
         summarizeFormData.append('file_name', uploadedFile.name);
-
+        summarizeFormData.append('selectedUploadOption', selectedUploadOption); // Add this
+  
         const flaskResponse = await axios.post('http://localhost:5000/api/gists/upload', summarizeFormData, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },
         });
-
+  
         console.log('Summarize Response:', flaskResponse.data);
-
+  
         const { summary, advantages, disadvantages } = flaskResponse.data;
         const chromaId = flaskResponse.data.chromaId;
 
-        navigate('/gistit', {
-          state: {
-            gistData: {
-              sourceType: 'file',
-              content: summary,
-              originalFileName: uploadedFile.name,
-              summaryType: summaryOptions[selectedSummaryOption].toLowerCase(),
-              file: uploadedFile,
-              fileURL: flaskResponse.data.fileURL,
-              docId: chromaId,
-              advantages,
-              disadvantages,
-              data: flaskResponse.data.date,
-            },
+        const gistData = {
+          gistData: {
+            sourceType: 'file',
+            content: summary,
+            originalFileName: uploadedFile.name,
+            summaryType: "summary_" + summaryOptions[selectedSummaryOption].toLowerCase(),
+            file: uploadedFile,
+            fileURL: flaskResponse.data.fileURL,
+            docId: chromaId,
+            advantages,
+            disadvantages,
+            data: flaskResponse.data.date,
           },
+        }
+        // console.log("Dashboard ")
+  
+        navigate('/gistit', {
+          state: gistData
         });
-      } else if (selectedUploadOption === 1 && text.trim()) {
+      } 
+      else if (selectedUploadOption === 1 && text.trim()) {
         const formData = new FormData();
         const timestamp = Date.now();
         const fileName = `text-${timestamp}.txt`;
@@ -148,7 +153,7 @@ export default function GistItNoFile() {
         formData.append('userId', JSON.parse(localStorage.getItem('userGistify')).userId);
         formData.append('selectedUploadOption', selectedUploadOption);
         formData.append('text', text.trim());
-
+  
         // Upload text to Cloudinary
         const uploadResponse = await axios.post('http://localhost:5000/files/upload', formData, {
           headers: {
@@ -156,47 +161,54 @@ export default function GistItNoFile() {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },
         });
-
+  
         console.log('Text Upload Response:', uploadResponse.data);
-
+  
         const filePath = uploadResponse.data?.file?.filePath;
         const docId = uploadResponse.data.file.id;
         if (!filePath) throw new Error('No file path returned from server');
-
+  
         const summarizeFormData = new FormData();
         summarizeFormData.append('file_path', filePath);
         summarizeFormData.append('doc_id', docId);
         summarizeFormData.append('summary_type', summaryOptions[selectedSummaryOption].toLowerCase());
         summarizeFormData.append('file_name', fileName);
         summarizeFormData.append('userId', JSON.parse(localStorage.getItem('userGistify')).userId);
-
+        summarizeFormData.append('selectedUploadOption', selectedUploadOption); // Add this
+        summarizeFormData.append('text', text.trim()); // Add text for summarization
+  
         const flaskResponse = await axios.post('http://localhost:5000/api/gists/upload', summarizeFormData, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },
         });
-
+  
         console.log('Text Summarize Response:', flaskResponse.data);
-
+  
         const { summary, advantages, disadvantages } = flaskResponse.data;
         const chromaId = flaskResponse.data.chromaId;
 
+        const gistData = {
+          gistData: {
+            sourceType: 'text/plain',
+            content: summary,
+            originalFileName: fileName,
+            summaryType: "summary_" + summaryOptions[selectedSummaryOption].toLowerCase(),
+            file: null,
+            fileURL: flaskResponse.data.fileUrl,
+            fileId: docId,
+            docId: chromaId,
+            advantages,
+            disadvantages,
+            data: flaskResponse.data.date,
+          }
+        }
+
+        console.log("Dashboard gistData:\n", gistData)
+            
+  
         navigate('/gistit', {
-          state: {
-            gistData: {
-              sourceType: 'text/plain',
-              content: summary,
-              originalFileName: fileName,
-              summaryType: summaryOptions[selectedSummaryOption].toLowerCase(),
-              file: null,
-              fileURL: flaskResponse.data.fileUrl,
-              fileId: docId, // Correct mapping
-              docId: chromaId,
-              advantages,
-              disadvantages,
-              data: flaskResponse.data.date,
-            },
-          },
+          state: gistData,
         });
       } else {
         notifyWarn('Please select a file or enter text before proceeding.');
@@ -227,7 +239,7 @@ export default function GistItNoFile() {
                   <p className="baloo-2-semiBold" style={{ color: "#6E00B3" }}>Gistify </p>
                   <p className="baloo-2-regular" style={{ color: "rgba(67, 64, 64, 0.83)" }}>today?</p>
                 </div>
-                <p className="welcomeHelp baloo-2-regular">Upload a PDF or Docx, paste text</p>
+                <p className="welcomeHelp baloo-2-regular">Upload a PDF, paste text</p>
               </div>
             </div>
 
@@ -254,7 +266,7 @@ export default function GistItNoFile() {
                       >
                         Browse
                       </p>
-                      <p className='baloo-2-medium' style={{ color: "rgba(0,0,0,0.77)" }}>PDF / Docx</p>
+                      <p className='baloo-2-medium' style={{ color: "rgba(0,0,0,0.77)" }}>PDF</p>
                     </div>
                   </div>
 
@@ -262,7 +274,7 @@ export default function GistItNoFile() {
                     type="file"
                     ref={fileInputRef}
                     style={{ display: 'none' }}
-                    accept=".pdf,.docx"
+                    accept=".pdf"
                     onChange={handleFileSelect}
                     key={uploadedFile ? "file-input-1" : "file-input-0"}
                   />
