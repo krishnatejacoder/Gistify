@@ -107,7 +107,7 @@
   transform: translateX(-50%);
 }
 
-.gistItNoFileContainer .uploadArea .uploadedFile{
+.gistItNoFileContainer .uploadedFile{
   margin: 15px 5px 0px 5px;
   padding: 10px 17px;
   background-color: rgba(254, 246, 246, 0.8);
@@ -122,7 +122,7 @@
   transition: all 0.2s ease;
 }
 
-.gistItNoFileContainer .uploadArea .uploadedFile.active{
+.gistItNoFileContainer .uploadedFile.active{
   visibility: visible;
   pointer-events: all;
   opacity: 1;
@@ -150,7 +150,7 @@
 
 .gistItNoFileContainer .gistIt{
   position: absolute;
-  bottom: -58px;
+  top: 364px;
   left: 4px;
   font-size: 18.5px;
   color: #fff;
