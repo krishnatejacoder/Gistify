@@ -30,15 +30,17 @@ export default function Dashboard() {
   const summaryOptions = ['Concise', 'Analytical', 'Comprehensive'];
 
   useEffect(() => {
-    dragRef.current.addEventListener('dragenter', () => {
-      dragRef.current.classList.add('dragOver');
-    })
-
-    dragRef.current.addEventListener('dragleave', (e) => {
-      if(!dragRef.current.contains(e.relatedTarget)){
-        dragRef.current.classList.remove('dragOver')
-      }
-    })
+    if(dragRef.current){
+      dragRef.current.addEventListener('dragenter', () => {
+        dragRef.current.classList.add('dragOver');
+      })
+  
+      dragRef.current.addEventListener('dragleave', (e) => {
+        if(!dragRef.current.contains(e.relatedTarget)){
+          dragRef.current.classList.remove('dragOver')
+        }
+      })
+    }
   }, [dragRef])
 
   useEffect(() => {
