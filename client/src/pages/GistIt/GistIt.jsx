@@ -56,7 +56,8 @@ export default function GistIt() {
             setFileProcessed(true);
             setIsLoading(false);
             setSummary(gistData.content);
-            setAddis({ advantages: gistData.advantages, disadvantages: gistData.disadvantages });
+            // console.log("Advantages", JSON.parse(gistData.advantages))
+            setAddis({ advantages: JSON.parse(gistData.advantages), disadvantages: JSON.parse(gistData.disadvantages) });
           } else if (
             file &&
             (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
@@ -80,7 +81,7 @@ export default function GistIt() {
               setFileProcessed(true);
               setIsLoading(false);
               setSummary(gistData.content);
-              setAddis({ advantages: gistData.advantages, disadvantages: gistData.disadvantages });
+              setAddis({ advantages: JSON.parse(gistData.advantages), disadvantages: JSON.parse(gistData.disadvantages) });
             } catch (docxError) {
               console.error('Error processing DOCX:', docxError);
               notifyError('Failed to process DOCX file');
@@ -109,7 +110,8 @@ export default function GistIt() {
             setFileProcessed(true);
             setIsLoading(false);
             setSummary(gistData.content);
-            setAddis({ advantages: gistData.advantages, disadvantages: gistData.disadvantages });
+            // console.log()
+            setAddis({ advantages: JSON.parse(gistData.advantages), disadvantages: JSON.parse(gistData.disadvantages) });
           } 
           catch (textError) {
             console.error('Error fetching text content:', textError.response?.data || textError);
@@ -183,11 +185,15 @@ export default function GistIt() {
             </div>
             <div className="advant">
               <p className="gistTitles">Advantages</p>
-              <p className="gistInfo">{addis.advantages}</p>
+              {addis.advantages.map((val, ind) => {
+                return <p className="gistInfo" key={ind}>{val}</p>
+              })}
             </div>
             <div className="disadvant">
               <p className="gistTitles">Disadvantages</p>
-              <p className="gistInfo">{addis.disadvantages}</p>
+              {addis.disadvantages.map((val, ind) => {
+                return <p className="gistInfo" key={ind}>{val}</p>
+              })}
             </div>
           </div>
         </div>

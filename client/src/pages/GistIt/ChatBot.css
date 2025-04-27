@@ -1,6 +1,6 @@
 /* ChatbotPage.css */
 .chatbot-container {
-  margin: 60px 45px;
+  margin: 60px 45px 40px 45px;
   display: flex;
   justify-content: center;
   gap: 42px;
@@ -9,7 +9,7 @@
 .chatbot-container .back{
   position: absolute;
   right: 45px;
-  top: 10px;
+  top: 9px;
   background-color: #5E5FA5;
   color: white;
   font-size: 16px;

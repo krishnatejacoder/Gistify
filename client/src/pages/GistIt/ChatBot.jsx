@@ -7,7 +7,9 @@ const ChatbotPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const gistData = location.state?.gistData || {};
-  const { advantages, content, disadvantages, sourceType, originalFileName, file } = gistData;
+  const {content, sourceType, originalFileName, file } = gistData;
+  const disadvantages = JSON.parse(gistData.disadvantages)
+  const advantages = JSON.parse(gistData.advantages)
   const [question, setQuestion] = useState('');
   const [messages, setMessages] = useState([]);
   const [isAsking, setIsAsking] = useState(false);
@@ -84,11 +86,24 @@ const ChatbotPage = () => {
         </div>
         <div className="advant">
           <p className='baloo-2-medium gistTitles'>Advantages</p>
-          <p className='baloo-2-regular gistInfo'>{advantages || 'No advantages available.'}</p>
+          {
+            advantages ? 
+              advantages.map((val, ind) => {
+                return <p className='baloo-2-regular gistInfo' key={ind}>{val}</p>
+              }) : 
+              <p className='baloo-2-regular gistInfo'>No advantages available.</p>
+          }
+          
         </div>
         <div className="disadvant">
           <p className='baloo-2-medium gistTitles'>Disadvantages</p>
-          <p className='baloo-2-regular gistInfo'>{disadvantages || 'No disadvantages available.'}</p>
+          {
+            disadvantages ? 
+              disadvantages.map((val, ind) => {
+                return <p className='baloo-2-regular gistInfo' key={ind}>{val}</p>
+              }) : 
+              <p className='baloo-2-regular gistInfo'>No disadvantages available.</p>
+          }
         </div>
       </div>
       <div className="chat-area">

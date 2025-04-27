@@ -172,15 +172,15 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
     });
     console.log('Flask /summarize Response:', JSON.stringify(ragResponse.data, null, 2));
 
-    if (!ragResponse.data.summaryId || !ragResponse.data.chromaId) {
-      console.error('Missing summaryId or chromaId in Flask response:', ragResponse.data);
-      return res.status(500).json({ error: 'Invalid response from summarization service' });
-    }
+    // if (!ragResponse.data.summaryId || !ragResponse.data.chromaId) {
+    //   console.error('Missing summaryId or chromaId in Flask response:', ragResponse.data);
+    //   return res.status(500).json({ error: 'Invalid response from summarization service' });
+    // }
 
     // Save Gist
     const gist = new Gist({
       userId: req.user.userId,
-      summaryId: ragResponse.data.summaryId,
+      summaryId: ragResponse.data.summary_id,
       title,
     });
     await gist.save();
@@ -205,11 +205,11 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
       gistId: gist._id,
       title,
       summary: ragResponse.data.summary,
-      advantages: ragResponse.data.advantages,
-      disadvantages: ragResponse.data.disadvantages,
+      advantages: JSON.stringify(ragResponse.data.advantages),
+      disadvantages: JSON.stringify(ragResponse.data.disadvantages),
       fileURL: ragResponse.data.fileUrl || filePath,
-      docId: ragResponse.data.chromaId,
-      chromaId: ragResponse.data.chromaId,
+      docId,
+      chromaId: docId,
       date: Date.now(),
       summaryType: req.body.summary_type?.toLowerCase(),
     };
@@ -311,14 +311,13 @@ router.get('/document/:id', authenticateToken, async (req, res) => {
 
     let fileName = 'Text Upload';
     let fileType = 'text/plain';
-    let fileDate = summary.createdAt || new Date();
+    let gistDate = gist.createdAt || new Date();
 
     if (summary.file_id && mongoose.Types.ObjectId.isValid(summary.file_id)) {
       const file = await File.findOne({ _id: summary.file_id });
       if (file) {
         fileName = file.pdfName || 'Unknown File';
         fileType = file.fileType || 'application/octet-stream';
-        fileDate = file.date || fileDate;
       }
     }
 
@@ -331,9 +330,9 @@ router.get('/document/:id', authenticateToken, async (req, res) => {
       file_id: summary.file_id || null,
       sourceType: fileType,
       chromaId: summary.doc_id || null,
-      fileUrl: summary.file_path || null,
+      fileUrl: summary.fileUrl,
       summaryType: summary.summary_type || null,
-      date: fileDate,
+      date: gistDate,
     });
   } catch (error) {
     console.error('Error fetching document:', error);

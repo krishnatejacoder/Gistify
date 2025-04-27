@@ -6,7 +6,6 @@ const FileSchema = new mongoose.Schema({
     publicId: { type: String },
     fileSize: { type: Number, required: true },
     fileType: { type: String, required: true },
-    date: { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.model('File', FileSchema);

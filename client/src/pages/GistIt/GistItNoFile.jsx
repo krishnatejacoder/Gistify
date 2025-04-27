@@ -149,7 +149,7 @@ export default function GistItNoFile() {
             docId: chromaId,
             advantages,
             disadvantages,
-            data: flaskResponse.data.date,
+            date: flaskResponse.data.date,
           },
         }
         // console.log("Dashboard ")
@@ -213,7 +213,7 @@ export default function GistItNoFile() {
             docId: chromaId,
             advantages,
             disadvantages,
-            data: flaskResponse.data.date,
+            date: flaskResponse.data.date,
           }
         }
 

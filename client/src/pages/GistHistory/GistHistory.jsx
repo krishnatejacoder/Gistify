@@ -66,8 +66,9 @@ export default function GistHistory() {
             fileURL: response.data.fileUrl,
             fileId: response.data.file_id, // Map file_id to fileId
             docId: response.data.chromaId,
-            advantages: response.data.advantages,
-            disadvantages: response.data.disadvantages,
+            advantages: JSON.stringify(response.data.advantages),
+            disadvantages: JSON.stringify(response.data.disadvantages),
+            date: response.data.date,
           },
         },
       });

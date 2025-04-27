@@ -176,7 +176,7 @@ export default function Dashboard() {
             docId: chromaId,
             advantages,
             disadvantages,
-            data: flaskResponse.data.date,
+            date: flaskResponse.data.date,
           },
         }
         // console.log("Dashboard ")
@@ -240,7 +240,7 @@ export default function Dashboard() {
             docId: chromaId,
             advantages,
             disadvantages,
-            data: flaskResponse.data.date,
+            date: flaskResponse.data.date,
           }
         }
 
@@ -283,9 +283,9 @@ export default function Dashboard() {
             fileURL: response.data.fileUrl,
             fileId: response.data.file_id,
             docId: response.data.chromaId,
-            advantages: response.data.advantages,
-            disadvantages: response.data.disadvantages,
-            data: response.data.date,
+            advantages: JSON.stringify(response.data.advantages),
+            disadvantages: JSON.stringify(response.data.disadvantages),
+            date: response.data.date,
           },
         },
       });
