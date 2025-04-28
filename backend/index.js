@@ -8,6 +8,7 @@ const summaryRoutes = require('./routes/summaryRoutes');
 const authRoutes = require('./routes/authRoutes');
 const gistRoutes = require('./routes/gistRoutes');
 const authenticateToken = require('./middleware/auth');
+// require("./utils/cleanupTasks");
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use('/files', authenticateToken, fileRoutes);
 app.use('/summary', authenticateToken, summaryRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/gists', authenticateToken, gistRoutes);
+// app.use("/api/tasks", require("./routes/tasks"));
 
 // MongoDB Connection
 const connectDB = async () => {

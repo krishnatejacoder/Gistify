@@ -83,6 +83,18 @@
   align-items: center;
 }
 
+.uploadArea.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.cross.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
 .dashboardContainer .recentSummaries .titleCard .titlePaper{
   width: 190px;
   overflow: hidden;
