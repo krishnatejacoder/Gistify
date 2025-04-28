@@ -40,6 +40,10 @@ export default function Dashboard() {
           dragRef.current.classList.remove('dragOver')
         }
       })
+
+      dragRef.current.addEventListener('drop', () => {
+        dragRef.current.classList.remove('dragOver');
+      })
     }
   }, [dragRef])
 
