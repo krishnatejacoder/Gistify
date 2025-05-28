@@ -3,7 +3,7 @@ import { RxCross1 } from "react-icons/rx";
 import { useState } from "react";
 import {FaEye, FaEyeSlash } from "react-icons/fa";
 import pass from './password.gif';
-import "./setting.css";
+import "./Setting.css";
 
 export default function Setting({ onclose }) {
   const [curPass,setCurPass] = useState("");

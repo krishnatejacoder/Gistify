@@ -141,10 +141,7 @@ def is_answer_relevant(answer, question):
     answer_words = set(re.findall(r'\w+', answer.lower()))
     common_words = question_words.intersection(answer_words)
     relevant_words = [word for word in common_words if len(word) > 3]
-    
-    doc_keywords = {'chatgpt', 'gpt', 'ethics', 'scholarly', 'publishing', 'ai', 'language', 'model', 'research', 'academic', 'plagiarism', 'bias', 'copyright'}
-    answer_keywords = [keyword for keyword in doc_keywords if keyword in answer.lower()]
-    
+        
     # Check for repetition
     answer_phrases = [answer[i:i+10] for i in range(0, len(answer), 10)]  # Check 10-char phrases
     phrase_counts = Counter(answer_phrases)
@@ -154,27 +151,22 @@ def is_answer_relevant(answer, question):
     is_summary_question = any(phrase in question.lower() for phrase in ["summary of this paper", "summarize the paper", "what is the paper about"])
     word_count = len(answer.split())
     
-    logger.info(f"Relevance check: common words = {relevant_words}, doc keywords = {answer_keywords}, word count = {word_count}, max repetition = {max_repetition}")
+    logger.info(f"Relevance check: common words = {relevant_words}, word count = {word_count}, max repetition = {max_repetition}")
     
     if is_summary_question:
         return (
             len(relevant_words) >= 3 and
-            len(answer_keywords) >= 2 and
             word_count >= 50 and
             max_repetition <= 2
         )
     return (
         len(relevant_words) >= 2 and
-        len(answer_keywords) >= 1 and
         word_count >= 20 and
         max_repetition <= 2
     )
 
 def is_summary_relevant(summary, doc_id):
-    """Check if the summary is relevant to the document content."""
-    doc_keywords = {'chatgpt', 'gpt', 'ethics', 'scholarly', 'publishing', 'ai', 'language', 'model', 'research', 'academic', 'plagiarism', 'bias', 'copyright'}
-    summary_keywords = [keyword for keyword in doc_keywords if keyword in summary.lower()]
-    
+    """Check if the summary is relevant to the document content."""    
     # Check for repetition
     summary_phrases = [summary[i:i+10] for i in range(0, len(summary), 10)]
     phrase_counts = Counter(summary_phrases)
@@ -187,10 +179,9 @@ def is_summary_relevant(summary, doc_id):
     
     word_count = len(summary.split())
     
-    logger.info(f"Summary relevance: keywords = {summary_keywords}, word count = {word_count}, max repetition = {max_repetition}, query overlap = {query_overlap}")
+    logger.info(f"Word count = {word_count}, max repetition = {max_repetition}, query overlap = {query_overlap}")
     
     return (
-        len(summary_keywords) >= 3 and
         word_count >= 200 and
         max_repetition <= 2 and
         query_overlap <= 2  # Reject if summary contains too many query-like terms
@@ -223,7 +214,7 @@ def rag_pipeline(query, top_k=15, doc_id=None, use_model_knowledge=False, contex
             if len(retrieved_docs) < 3:
                 logger.info("Insufficient chunks, attempting secondary retrieval with keyword filter")
                 keyword_results = collection.query(
-                    query_texts=["chatgpt ethics scholarly publishing"],
+                    query_texts=query,
                     n_results=5,
                     where={"doc_id": doc_id}
                 )
@@ -241,7 +232,6 @@ def rag_pipeline(query, top_k=15, doc_id=None, use_model_knowledge=False, contex
             logger.info(f"Context (first 100 chars): {context[:100]}...")
 
         if use_model_knowledge:
-            context_info = context_info or "the document content"
             if is_summary:
                 prompt = (
                     f"Based on your knowledge of '{context_info}', generate a {summary_type} summary of at least 250 words. "
@@ -619,13 +609,6 @@ def summarize():
 
         if attempt == max_attempts:
             logger.error(f"Failed to generate relevant summary after {max_attempts} attempts")
-            summary = (
-                f"The document examines ChatGPT’s role in scholarly publishing, developed by OpenAI. "
-                f"It discusses how ChatGPT automates essay and manuscript creation, raising ethical concerns like bias, "
-                f"plagiarism, and copyright issues. The study highlights risks to research integrity, including the 'Matthew Effect' "
-                f"and citation challenges. It recommends ethical guidelines to ensure transparency and trust in academic work."
-            )
-            logger.info(f"Using fallback summary: {summary[:100]}...")
 
         word_count = len(summary.split())
         logger.info(f"Initial {summary_type_internal} summary word count: {word_count}")
@@ -816,16 +799,6 @@ def ask():
         if attempt == max_attempts:
             logger.error(f"Failed to generate relevant answer after {max_attempts} attempts")
             is_summary_question = any(phrase in question.lower() for phrase in ["summary of this paper", "summarize the paper", "what is the paper about"])
-            if is_summary_question:
-                answer = (
-                    f"The paper investigates ChatGPT’s role in scholarly publishing, developed by OpenAI. "
-                    f"It examines how ChatGPT automates essay and manuscript creation, raising ethical issues like bias in training data, "
-                    f"potential plagiarism, and copyright concerns. The study highlights risks to research integrity, such as the 'Matthew Effect' "
-                    f"and citation challenges. It recommends ethical guidelines to ensure transparency and trust in academic work. "
-                    f"This summary is based on the provided document context."
-                )
-            else:
-                answer = f"Unable to find specific information to answer '{question}' based on the document content."
 
         answer = clean_and_extend_answer(answer, question, source)
         logger.info(f"Final answer: {answer}")
