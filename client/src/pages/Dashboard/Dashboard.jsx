@@ -97,9 +97,10 @@ export default function Dashboard() {
   const handleFile = (file) => {
     const validTypes = [
       "application/pdf",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      "application/msword",
     ];
+
+    // "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    // "application/msword",
     const validExtensions = [".pdf"];
     const fileName = file.name.toLowerCase();
     const isValid =
@@ -152,9 +153,8 @@ export default function Dashboard() {
         );
         formData.append("selectedUploadOption", selectedUploadOption);
 
-        console.log(uploadedFile);
+        // console.log(uploadedFile);
 
-        // Upload to Cloudinary
         const uploadResponse = await axios.post(
           "http://localhost:5000/files/upload",
           formData,
@@ -166,7 +166,7 @@ export default function Dashboard() {
           }
         );
 
-        console.log("Upload Response:", uploadResponse.data);
+        // console.log("Upload Response:", uploadResponse.data);
 
         const filePath = uploadResponse.data?.file?.filePath;
         const docId = uploadResponse.data.file.id;
@@ -192,7 +192,7 @@ export default function Dashboard() {
           }
         );
 
-        console.log("Summarize Response:", flaskResponse.data);
+        // console.log("Summarize Response:", flaskResponse.data);
 
         const { summary, advantages, disadvantages } = flaskResponse.data;
         const chromaId = flaskResponse.data.chromaId;
@@ -231,7 +231,6 @@ export default function Dashboard() {
         formData.append("selectedUploadOption", selectedUploadOption);
         formData.append("text", text.trim());
 
-        // Upload text to Cloudinary
         const uploadResponse = await axios.post(
           "http://localhost:5000/files/upload",
           formData,
@@ -243,7 +242,7 @@ export default function Dashboard() {
           }
         );
 
-        console.log("Text Upload Response:", uploadResponse.data);
+        // console.log("Text Upload Response:", uploadResponse.data);
 
         const filePath = uploadResponse.data?.file?.filePath;
         const docId = uploadResponse.data.file.id;
@@ -274,7 +273,7 @@ export default function Dashboard() {
           }
         );
 
-        console.log("Text Summarize Response:", flaskResponse.data);
+        // console.log("Text Summarize Response:", flaskResponse.data);
 
         const { summary, advantages, disadvantages } = flaskResponse.data;
         const chromaId = flaskResponse.data.chromaId;
@@ -296,7 +295,7 @@ export default function Dashboard() {
           },
         };
 
-        console.log("Dashboard gistData:\n", gistData);
+        // console.log("Dashboard gistData:\n", gistData);
 
         uploadingUpdate();
 
@@ -318,7 +317,7 @@ export default function Dashboard() {
   };
 
   const handleRecentSummaryClick = async (summary) => {
-    console.log("Recent Summary Clicked:", summary);
+    // console.log("Recent Summary Clicked:", summary);
     try {
       const response = await axios.get(
         `http://localhost:5000/api/gists/document/${summary._id}`,
@@ -328,7 +327,7 @@ export default function Dashboard() {
           },
         }
       );
-      console.log("Dashboard fetch recent summary click:", response.data);
+      // console.log("Dashboard fetch recent summary click:", response.data);
 
       navigate("/gistit", {
         state: {

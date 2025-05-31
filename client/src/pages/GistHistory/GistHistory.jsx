@@ -52,7 +52,7 @@ export default function GistHistory() {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
       });
-      console.log('Dashboard fetch recent summary click:', response.data);
+      // console.log('Dashboard fetch recent summary click:', response.data);
 
       navigate('/gistit', {
         state: {
@@ -64,7 +64,7 @@ export default function GistHistory() {
             summaryType: response.data.summaryType,
             fileName: response.data.fileName,
             fileURL: response.data.fileUrl,
-            fileId: response.data.file_id, // Map file_id to fileId
+            fileId: response.data.file_id, 
             docId: response.data.chromaId,
             advantages: JSON.stringify(response.data.advantages),
             disadvantages: JSON.stringify(response.data.disadvantages),

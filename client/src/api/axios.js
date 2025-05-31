@@ -1,12 +1,11 @@
-// src/api/axios.js
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://127.0.0.1:5000/api',  // Replace with your actual backend URL
+  baseURL: 'http://127.0.0.1:5000/api',
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true,  // Include credentials (cookies) in requests if needed
+  withCredentials: true, 
 });
 
 export default axiosInstance;

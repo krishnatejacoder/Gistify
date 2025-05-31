@@ -17,7 +17,7 @@ const ChatbotPage = () => {
 
   const handleSendMessage = async () => {
     console.log(gistData)
-    if (!question.trim()) return; // Ignore empty questions
+    if (!question.trim()) return;
     if (!content) {
       setMessages([
         ...messages,
@@ -36,8 +36,8 @@ const ChatbotPage = () => {
     const newUserMessage = { text: question, sender: 'user' };
     setMessages([...messages, newUserMessage]);
     setQuestion('');
-    console.log("chatbot")
-    console.log(gistData);
+    // console.log("chatbot")
+    // console.log(gistData);
 
     try {
       // const docId = sourceType === 'file' ? originalFileName || file?.name : `text-${Date.now()}`;

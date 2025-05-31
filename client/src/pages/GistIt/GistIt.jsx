@@ -34,7 +34,7 @@ export default function GistIt() {
 
         const { gistData } = location.state || {};
         setGistData(gistData)
-        console.log('GistIt:', gistData);
+        // console.log('GistIt:', gistData);
 
         if (!gistData) {
           setIsLoading(false);
@@ -43,7 +43,7 @@ export default function GistIt() {
 
         if (gistData.sourceType === 'file' || gistData.sourceType === 'application/pdf') {
           const file = gistData.file;
-          console.log('File gistData:', gistData);
+          // console.log('File gistData:', gistData);
 
           if (!file && (!gistData.locationFrom || gistData.locationFrom !== 'recentSummary')) {
             notifyError('No file selected');
@@ -94,8 +94,8 @@ export default function GistIt() {
         } 
         else if (gistData.sourceType === 'text/plain') {
           try {
-            console.log('Fetching text for fileId:', gistData.fileId);
-            console.log('Access Token:', localStorage.getItem('accessToken'));
+            // console.log('Fetching text for fileId:', gistData.fileId);
+            // console.log('Access Token:', localStorage.getItem('accessToken'));
             const response = await axios.get(`http://localhost:5000/files/fetch-text/${gistData.fileId}`, {
               headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
             });
@@ -105,7 +105,7 @@ export default function GistIt() {
               setIsLoading(false);
               return;
             }
-            console.log('Setting text content:', textContent);
+            // console.log('Setting text content:', textContent);
             setContent({ type: 'text', data: textContent, name: gistData.originalFileName || 'Text Content'});
             setFileProcessed(true);
             setIsLoading(false);
@@ -133,7 +133,7 @@ export default function GistIt() {
   }, [location.state]);
 
   const goToChatbot = () => {
-    console.log(location.state);
+    // console.log(location.state);
     navigate('/chatbot', { state: location.state });
   };
 
@@ -167,7 +167,7 @@ export default function GistIt() {
             <pre className="baloo-2-regular">{content.data}</pre>
           </div>
         )}
-        {!fileProcessed && !isLoading && !content && <div>Failed to load file.</div>}
+        {/* { && !isLoading && !content && <div>Failed to load file.</div>} */}
       </div>
       <div className="secondHalf">
         <div className="metaData">
